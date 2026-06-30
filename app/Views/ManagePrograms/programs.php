@@ -18,13 +18,6 @@
               </h4>
               <?= view('includes/messages'); ?>
               <div class="d-flex align-items-center">
-                <label for="statusFilter" class="me-2">Status:</label>
-                <select id="statusFilter" class="form-select me-3" style="width: 150px;">
-                  <option value="">All</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Completed">Completed</option>
-                </select>
                 <a href="<?php echo base_url('forms/add_programs'); ?>" class="btn btn-primary btn-sm">
                   <i class="mdi mdi-plus-circle-outline me-1"></i> Add New Program
                 </a>
@@ -32,6 +25,76 @@
             </div>
             <div class="card">
               <div class="card-body">
+                <div class="row mb-4">
+
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold">
+                      <i class="mdi mdi-magnify"></i> Search Program
+                    </label>
+
+                    <input
+                      type="text"
+                      id="programSearch"
+                      class="form-control"
+                      placeholder="Search by Program Name">
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                      <i class="mdi mdi-book-open-page-variant"></i> Program Theme
+                    </label>
+
+                    <select id="themeFilter" class="form-select">
+                      <option value="">All Themes</option>
+
+                      <?php
+                      $themes = [];
+
+                      foreach ($programs as $program) {
+                        $themes[] = $program['Program_Theme_Name'];
+                      }
+
+                      $themes = array_unique($themes);
+                      sort($themes);
+
+                      foreach ($themes as $theme):
+                      ?>
+                        <option value="<?= esc($theme) ?>">
+                          <?= esc($theme) ?>
+                        </option>
+                      <?php endforeach; ?>
+
+                    </select>
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                      <i class="mdi mdi-filter"></i> Status
+                    </label>
+
+                    <select id="statusFilter" class="form-select">
+                      <option value="">All Status</option>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-2 d-flex align-items-end">
+
+                    <button
+                      id="resetFilters"
+                      class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+
+                      <i class="mdi mdi-refresh me-1"></i>
+
+                      Reset
+
+                    </button>
+
+                  </div>
+
+                </div>
                 <div class="table-responsive">
                   <table id="programsTable" class="table table-striped">
                     <thead>
@@ -108,33 +171,78 @@
             <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
             <script>
               $(document).ready(function() {
+
                 var table = $('#programsTable').DataTable({
+
+                  dom: 'lrtip',
+
                   paging: true,
-                  searching: true,
+
                   ordering: true,
+
                   info: true,
-                  createdRow: function(row, data, dataIndex) {
-                    // Store clean text in a data attribute
-                    var statusText = $(row).find('td:eq(4)').text().trim();
-                    $('td:eq(4)', row).attr('data-search', statusText);
-                  },
+
+                  pageLength: 10,
+
                   columnDefs: [{
                     targets: 4,
-                    render: function(data, type, row) {
+                    render: function(data, type) {
+
                       if (type === 'filter' || type === 'sort') {
                         return $('<div>').html(data).text().trim();
                       }
+
                       return data;
+
                     }
                   }]
+
                 });
 
-                // Status Filter - exact match using regex
-                $('#statusFilter').on('change', function() {
-                  var selected = $(this).val();
-                  table.column(4)
-                    .search(selected ? '^' + selected + '$' : '', true, false) // exact match
-                    .draw();
+                // Search Program
+                $('#programSearch').keyup(function() {
+
+                  table.search($(this).val()).draw();
+
                 });
+
+                $('#themeFilter').change(function() {
+
+                  table
+                    .column(2)
+                    .search($(this).val())
+                    .draw();
+
+                });
+
+                // Status Filter
+                $('#statusFilter').change(function() {
+
+                  let status = $(this).val();
+
+                  table
+                    .column(4)
+                    .search(status ? '^' + status + '$' : '', true, false)
+                    .draw();
+
+                });
+
+                // Reset
+                $('#resetFilters').click(function() {
+
+                  $('#programSearch').val('');
+
+                  $('#themeFilter').val('');
+
+                  $('#statusFilter').val('');
+
+                  table.search('');
+
+                  table.column(4).search('');
+
+                  table.draw();
+
+                });
+
               });
             </script>

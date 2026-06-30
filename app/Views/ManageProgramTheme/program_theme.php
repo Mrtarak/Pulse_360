@@ -27,6 +27,40 @@
             </div>
             <div class="card">
               <div class="card-body">
+                <div class="row mb-4">
+
+                  <div class="col-md-5">
+                    <label class="form-label fw-bold">
+                      <i class="mdi mdi-magnify"></i> Search Theme
+                    </label>
+
+                    <input type="text"
+                      id="themeSearch"
+                      class="form-control"
+                      placeholder="Search by Theme Name">
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                      <i class="mdi mdi-filter"></i> Status
+                    </label>
+
+                    <select id="statusFilter" class="form-select">
+                      <option value="">All Status</option>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-2 d-flex align-items-end">
+                    <button id="resetFilters"
+                      class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+                      <i class="mdi mdi-refresh"></i>
+                      Reset
+                    </button>
+                  </div>
+
+                </div>
                 <div class="table-responsive ">
                   <table id="themeTable" class="table table-striped">
                     <thead>
@@ -93,7 +127,7 @@
                           </tr>
                         <?php endforeach; ?>
                       <?php else: ?>
-                       
+
                       <?php endif; ?>
                     </tbody>
                   </table>
@@ -110,14 +144,43 @@
       <script>
         $(document).ready(function() {
           var table = $('#themeTable').DataTable({
+
+            dom: 'lrtip',
+
             paging: true,
-            searching: true,
+
             ordering: true,
+
             info: true,
-            language: {
-              search: "_INPUT_",
-              searchPlaceholder: "Search program theme..."
-            }
+
+            pageLength: 10
+
+          });
+          $('#themeSearch').keyup(function() {
+
+            table.search($(this).val()).draw();
+
+          });
+          $('#statusFilter').change(function() {
+
+            table
+              .column(4)
+              .search($(this).val())
+              .draw();
+
+          });
+          $('#resetFilters').click(function() {
+
+            $('#themeSearch').val('');
+
+            $('#statusFilter').val('');
+
+            table.search('');
+
+            table.column(4).search('');
+
+            table.draw();
+
           });
         });
       </script>
