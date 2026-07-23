@@ -169,9 +169,7 @@
                       </tr>
                     <?php endforeach; ?>
                   <?php else: ?>
-                    <tr>
-                      <td colspan="8" class="text-center">No centers found.</td>
-                    </tr>
+                    
                   <?php endif; ?>
                 </tbody>
 

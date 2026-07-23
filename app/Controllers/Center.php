@@ -17,11 +17,21 @@ class Center extends BaseController
 
     public function view($id)
     {
+        $db = \Config\Database::connect();
+
         $data['center'] = $this->centerModel->find($id);
 
         if (!$data['center']) {
             return redirect()->to('/center')->with('error', 'Center not found');
         }
+
+        // Get Programs assigned to this Center
+        $data['programs'] = $db->table('program_center_rel pcr')
+            ->select('pm.Program_Name')
+            ->join('program_m pm', 'pm.Program_Id = pcr.Program_Id')
+            ->where('pcr.Center_Id', $id)
+            ->get()
+            ->getResultArray();
 
         return view('ManageCenter/view_center', $data);
     }
@@ -82,14 +92,49 @@ class Center extends BaseController
             'Center_Capacity' => $this->request->getPost('Center_Capacity'),
 
             // 🔥 SAFE DEFAULT VALUES
-            'Rec_Added_By' => $this->request->getPost('Rec_Added_By') ?? 'Admin',
+            'Rec_Added_By' => 'USER_6a29461b2852a',
             'Rec_Added_On' => date('Y-m-d'),
-            'Rec_Updated_By' => 'Admin',
+            'Rec_Updated_By' => 'USER_6a29461b2852a',
             'Rec_Last_Updated_On' => date('Y-m-d')
         ];
 
         // ✅ Save Center
         $db->table('center_m')->insert($data);
+        // Get selected programs
+        $programIds = $this->request->getPost('Program_Id');
+
+        if (!empty($programIds)) {
+
+            // Get last relation id
+            $lastRel = $db->table('program_center_rel')
+                ->select('PC_Rel_Id')
+                ->orderBy('PC_Rel_Id', 'DESC')
+                ->get()
+                ->getRow();
+
+            if ($lastRel) {
+                $num = (int) substr($lastRel->PC_Rel_Id, 3) + 1;
+            } else {
+                $num = 1;
+            }
+
+            foreach ($programIds as $programId) {
+
+                $pcRelId = 'PCR' . str_pad($num, 3, '0', STR_PAD_LEFT);
+
+                $db->table('program_center_rel')->insert([
+                    'PC_Rel_Id'            => $pcRelId,
+                    'Program_Id'           => $programId,
+                    'Center_Id'            => $newId,
+                    'Rec_Added_By'         => 'USER_6a29461b2852a',
+                    'Rec_Added_On'         => date('Y-m-d'),
+                    'Rec_Updated_By'       => 'USER_6a29461b2852a',
+                    'Rec_Last_Updated_On'  => date('Y-m-d')
+                ]);
+
+                $num++;
+            }
+        }
 
         return redirect()->to('/center')->with('success', 'Center added successfully');
     }

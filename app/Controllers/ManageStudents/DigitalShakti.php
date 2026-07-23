@@ -50,19 +50,15 @@ class DigitalShakti extends BaseController
             ->where('Batch_Status', 'Active')
             ->findAll();
 
-        $centerIds = $batchModel
-            ->select('Center_Id')
-            ->where('Program_Id', 'PRG_DS')
-            ->findAll();
+        $db = \Config\Database::connect();
 
-        $centerIds = array_unique(
-            array_column($centerIds, 'Center_Id')
-        );
-
-        $data['centers'] = $centerModel
-            ->whereIn('Center_Id', $centerIds)
-            ->where('Center_Status', 'Active')
-            ->findAll();
+        $data['centers'] = $db->table('program_center_rel pcr')
+            ->select('cm.*')
+            ->join('center_m cm', 'cm.Center_Id = pcr.Center_Id')
+            ->where('pcr.Program_Id', CorePrograms::DIGITAL_SHAKTI)
+            ->where('cm.Center_Status', 'Active')
+            ->get()
+            ->getResultArray();
 
         return view(
             'ManageStudents/DigitalShakti/add_digitalShakti',
