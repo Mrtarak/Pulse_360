@@ -166,6 +166,63 @@ class Vijetaas extends BaseController
         // Vijetaas ID
         $vijetaasId = 'VJ' . date('YmdHis');
 
+
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'photo' => [
+                'rules' => 'permit_empty|is_image[photo]|max_size[photo,2048]|mime_in[photo,image/jpg,image/jpeg,image/png]',
+            ],
+            'aadhar_photo' => [
+                'rules' => 'permit_empty|is_image[aadhar_photo]|max_size[aadhar_photo,2048]|mime_in[aadhar_photo,image/jpg,image/jpeg,image/png]',
+            ],
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $validation->getErrors()));
+        }
+
+
+        //-------------------------------------
+        // Upload Student Photo
+        //-------------------------------------
+
+        $photoName = null;
+
+        $photo = $this->request->getFile('photo');
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            $photoName = $photo->getRandomName();
+
+            $photo->move(
+                FCPATH . 'uploads/students/photos/',
+                $photoName
+            );
+        }
+
+
+        //-------------------------------------
+        // Upload Aadhaar Photo
+        //-------------------------------------
+
+        $aadharPhotoName = null;
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+
+        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+            $aadharPhotoName = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                FCPATH . 'uploads/students/aadhar/',
+                $aadharPhotoName
+            );
+        }
+
         /*
     |--------------------------------------------------------------------------
     | Save Student
@@ -190,6 +247,10 @@ class Vijetaas extends BaseController
             'Pincode' => $this->request->getPost('Pincode'),
             'Nationality' => $this->request->getPost('Nationality'),
             'Address' => $this->request->getPost('Address'),
+
+            'Photo_URL' => $photoName,
+
+            'Aadhar_Photo_URL' => $aadharPhotoName,
 
             'Current_Education_level'
             => $this->request->getPost('Current_Education_level'),
@@ -474,6 +535,82 @@ class Vijetaas extends BaseController
 
         $studentId = $record['Student_Id'];
 
+        $studentRecord = $studentModel->find($studentId);
+
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'photo' => [
+                'rules' => 'permit_empty|is_image[photo]|max_size[photo,2048]|mime_in[photo,image/jpg,image/jpeg,image/png]',
+            ],
+            'aadhar_photo' => [
+                'rules' => 'permit_empty|is_image[aadhar_photo]|max_size[aadhar_photo,2048]|mime_in[aadhar_photo,image/jpg,image/jpeg,image/png]',
+            ],
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $validation->getErrors()));
+        }
+
+
+        //-------------------------------------
+        // Student Photo Upload
+        //-------------------------------------
+
+        $photoName = $studentRecord['Photo_URL'];
+
+        $photo = $this->request->getFile('photo');
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            if (!empty($studentRecord['Photo_URL'])) {
+
+                $oldPhoto = FCPATH . 'uploads/students/photos/' . $studentRecord['Photo_URL'];
+
+                if (file_exists($oldPhoto)) {
+                    unlink($oldPhoto);
+                }
+            }
+
+            $photoName = $photo->getRandomName();
+
+            $photo->move(
+                FCPATH . 'uploads/students/photos/',
+                $photoName
+            );
+        }
+
+
+        //-------------------------------------
+        // Aadhaar Photo Upload
+        //-------------------------------------
+
+        $aadharPhotoName = $studentRecord['Aadhar_Photo_URL'];
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+
+        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+            if (!empty($studentRecord['Aadhar_Photo_URL'])) {
+
+                $oldAadhar = FCPATH . 'uploads/students/aadhar/' . $studentRecord['Aadhar_Photo_URL'];
+
+                if (file_exists($oldAadhar)) {
+                    unlink($oldAadhar);
+                }
+            }
+
+            $aadharPhotoName = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                FCPATH . 'uploads/students/aadhar/',
+                $aadharPhotoName
+            );
+        }
+
         /*
     |--------------------------------------------------------------------------
     | Update STUDENT TABLE
@@ -507,6 +644,10 @@ class Vijetaas extends BaseController
             'Nationality' => $this->request->getPost('nationality'),
 
             'Address' => $this->request->getPost('address'),
+
+            'Photo_URL' => $photoName,
+
+            'Aadhar_Photo_URL' => $aadharPhotoName,
 
             'Current_Education_level'
             => $this->request->getPost('current_edu'),

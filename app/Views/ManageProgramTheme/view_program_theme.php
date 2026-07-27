@@ -12,9 +12,7 @@
                     <div class="card">
                         <div class="card-body">
 
-                            <a href="<?= site_url('program_theme') ?>" class="btn btn-secondary mb-3">
-                                <i class="mdi mdi-arrow-left"></i> Back
-                            </a>
+                            
 
                             <?= view('includes/breadcrumb'); ?>
 
@@ -49,7 +47,7 @@
 
                                     <div class="col-md-12 mb-2 d-flex">
                                         <div style="min-width: 200px;">
-                                            <strong>Status</strong> :
+                                            <strong>Status:</strong>
                                         </div>
 
                                         <?php

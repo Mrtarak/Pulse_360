@@ -49,7 +49,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-4 mb-3"><label>Date of Birth <span class="text-danger">*</span></label>
-                                                <input type="date" name="DOB" class="form-control" value="<?= old('DOB') ?>"max="<?= date('Y-m-d') ?>">
+                                                <input type="date" name="DOB" class="form-control" value="<?= old('DOB') ?>" max="<?= date('Y-m-d') ?>">
                                             </div>
                                             <div class="col-md-6 mb-3"><label>Caste <span class="text-danger">*</span></label><input type="text" class="form-control" name="caste"></div>
                                             <div class="col-md-4 mb-3"><label>Aadhar No</label>
@@ -80,10 +80,16 @@
                                                 <textarea name="Address" class="form-control" value="<?= old('Address') ?>"></textarea>
                                             </div>
                                             <div class="col-md-4 mb-3"><label>Photo </label>
-                                                <input type="file" name="Photo_URL" class="form-control">
+                                                <input type="file"
+                                                    name="photo"
+                                                    class="form-control"
+                                                    accept="image/*">
                                             </div>
                                             <div class="col-md-4 mb-3"><label>Aadhar Photo</label>
-                                                <input type="file" name="Aadhar_Photo_URL" class="form-control">
+                                                <input type="file"
+                                                    name="aadhar_photo"
+                                                    class="form-control"
+                                                    accept="image/*">
                                             </div>
                                             <div class="col-md-12 mb-3"><label>Remarks</label>
                                                 <textarea name="Remarks" class="form-control" value="<?= old('Remarks') ?>"></textarea>

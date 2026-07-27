@@ -118,6 +118,56 @@ class LearningAdda extends BaseController
         $laId      = 'LA' . date('YmdHis');
         $spId      = 'SP' . date('YmdHis');
 
+
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'photo' => [
+                'rules' => 'permit_empty|is_image[photo]|max_size[photo,2048]|mime_in[photo,image/jpg,image/jpeg,image/png]',
+            ],
+            'aadhar_photo' => [
+                'rules' => 'permit_empty|is_image[aadhar_photo]|max_size[aadhar_photo,2048]|mime_in[aadhar_photo,image/jpg,image/jpeg,image/png]',
+            ],
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $validation->getErrors()));
+        }
+
+
+        //-------------------------------------
+        // Upload Student Photo
+        //-------------------------------------
+
+        $photoName = null;
+
+        $photo = $this->request->getFile('photo');
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            $photoName = $photo->getRandomName();
+
+            $photo->move(FCPATH . 'uploads/students/photos', $photoName);
+        }
+
+
+        //-------------------------------------
+        // Upload Aadhar Photo
+        //-------------------------------------
+
+        $aadharPhotoName = null;
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+
+        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+            $aadharPhotoName = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(FCPATH . 'uploads/students/aadhar', $aadharPhotoName);
+        }
+
         //-------------------------------------
         // STUDENT TABLE
         //-------------------------------------
@@ -144,6 +194,10 @@ class LearningAdda extends BaseController
 
             'Nationality' => $this->request->getPost('nationality'),
             'Address'     => $this->request->getPost('address'),
+
+            'Photo_URL' => $photoName,
+
+            'Aadhar_Photo_URL' => $aadharPhotoName,
 
             'Enrollment_Date' =>
             $this->request->getPost('enroll_date'),
@@ -345,6 +399,68 @@ class LearningAdda extends BaseController
 
         $studentId = $laStudent['Student_Id'];
 
+
+        $currentStudent = $this->studentModel->find($studentId);
+
+        $photoName = $currentStudent['Photo_URL'];
+        $aadharPhotoName = $currentStudent['Aadhar_Photo_URL'];
+
+
+        //-------------------------------------
+        // Update Student Photo
+        //-------------------------------------
+
+        $photo = $this->request->getFile('photo');
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            // Delete old photo
+            if (!empty($photoName)) {
+
+                $oldPhoto = FCPATH . 'uploads/students/photos/' . $photoName;
+
+                if (file_exists($oldPhoto)) {
+                    unlink($oldPhoto);
+                }
+            }
+
+            // Upload new photo
+            $photoName = $photo->getRandomName();
+
+            $photo->move(
+                FCPATH . 'uploads/students/photos/',
+                $photoName
+            );
+        }
+
+
+        //-------------------------------------
+        // Update Aadhar Photo
+        //-------------------------------------
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+
+        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+            // Delete old photo
+            if (!empty($aadharPhotoName)) {
+
+                $oldAadhar = FCPATH . 'uploads/students/aadhar/' . $aadharPhotoName;
+
+                if (file_exists($oldAadhar)) {
+                    unlink($oldAadhar);
+                }
+            }
+
+            // Upload new file
+            $aadharPhotoName = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                FCPATH . 'uploads/students/aadhar/',
+                $aadharPhotoName
+            );
+        }
+
         //------------------------------------------------
         // UPDATE STUDENT TABLE
         //------------------------------------------------
@@ -376,6 +492,10 @@ class LearningAdda extends BaseController
             'Nationality' => $this->request->getPost('nationality'),
 
             'Address' => $this->request->getPost('address'),
+
+            'Photo_URL' => $photoName,
+
+            'Aadhar_Photo_URL' => $aadharPhotoName,
 
             'Current_Education_level' =>
             $this->request->getPost('current_edu'),

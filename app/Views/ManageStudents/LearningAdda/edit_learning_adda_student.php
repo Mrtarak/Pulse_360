@@ -111,7 +111,7 @@
                         <input type="date"
                           class="form-control"
                           name="dob"
-                          value="<?= $student['DOB'] ?>"max="<?= date('Y-m-d') ?>">
+                          value="<?= $student['DOB'] ?>" max="<?= date('Y-m-d') ?>">
                       </div>
 
                       <div class="col-md-4 mb-3">
@@ -182,6 +182,110 @@
                         <label>Address</label>
                         <textarea class="form-control"
                           name="address"><?= esc($student['Address']) ?></textarea>
+                      </div>
+
+
+                      <div class="row">
+
+                        <!-- Student Photo -->
+                        <div class="col-md-6 mb-4">
+
+                          <div class="card shadow-sm border-0">
+
+                            <div class="card-header bg-primary text-white text-center">
+                              <h5 class="mb-0">
+                                <i class="mdi mdi-account-circle"></i>
+                                Student Photo
+                              </h5>
+                            </div>
+
+                            <div class="card-body text-center">
+
+                              <?php if (!empty($student['Photo_URL'])) : ?>
+
+                                <a href="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>" target="_blank">
+
+                                  <img src="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
+                                    class="img-thumbnail shadow mb-3"
+                                    style="width:220px;height:220px;object-fit:cover;border-radius:10px;"
+                                    alt="Student Photo">
+
+                                </a>
+
+                              <?php else : ?>
+
+                                <div class="text-muted py-5">
+                                  <i class="mdi mdi-image-off mdi-48px"></i>
+                                  <p class="mb-0">No Student Photo Available</p>
+                                </div>
+
+                              <?php endif; ?>
+
+                              <input type="file"
+                                name="photo"
+                                class="form-control"
+                                accept="image/*">
+
+                              <small class="text-muted">
+                                Leave empty to keep the existing photo.
+                              </small>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+
+                        <!-- Aadhaar Photo -->
+                        <div class="col-md-6 mb-4">
+
+                          <div class="card shadow-sm border-0">
+
+                            <div class="card-header bg-success text-white text-center">
+                              <h5 class="mb-0">
+                                <i class="mdi mdi-card-account-details"></i>
+                                Aadhaar Photo
+                              </h5>
+                            </div>
+
+                            <div class="card-body text-center">
+
+                              <?php if (!empty($student['Aadhar_Photo_URL'])) : ?>
+
+                                <a href="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>" target="_blank">
+
+                                  <img src="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
+                                    class="img-thumbnail shadow mb-3"
+                                    style="width:220px;height:220px;object-fit:cover;border-radius:10px;"
+                                    alt="Aadhaar Photo">
+
+                                </a>
+
+                              <?php else : ?>
+
+                                <div class="text-muted py-5">
+                                  <i class="mdi mdi-image-off mdi-48px"></i>
+                                  <p class="mb-0">No Aadhaar Photo Available</p>
+                                </div>
+
+                              <?php endif; ?>
+
+                              <input type="file"
+                                name="aadhar_photo"
+                                class="form-control"
+                                accept="image/*">
+
+                              <small class="text-muted">
+                                Leave empty to keep the existing Aadhaar photo.
+                              </small>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
                       </div>
 
                       <div class="col-md-12 mb-3">
@@ -346,7 +450,7 @@
 
                         <input type="date"
                           class="form-control"
-                          name="enroll_date"max="<?= date('Y-m-d') ?>"
+                          name="enroll_date" max="<?= date('Y-m-d') ?>"
                           value="<?= $student['Enrollment_Date'] ?>">
                       </div>
 

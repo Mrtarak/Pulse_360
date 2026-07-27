@@ -83,6 +83,45 @@ class DigitalShakti extends BaseController
         $dsId      = 'DS' . date('YmdHis');
         $spId      = 'SP' . date('YmdHis');
 
+
+        //--------------------------------
+        // Upload Student Photo
+        //--------------------------------
+
+        $photo = $this->request->getFile('photo');
+        $photoName = null;
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            $photoName = $photo->getRandomName();
+
+            $photo->move(
+                FCPATH . 'uploads/students/photos',
+                $photoName
+            );
+        }
+
+        //--------------------------------
+        // Upload Aadhaar Photo
+        //--------------------------------
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+        $aadharPhotoName = null;
+
+        if (
+            $aadharPhoto &&
+            $aadharPhoto->isValid() &&
+            !$aadharPhoto->hasMoved()
+        ) {
+
+            $aadharPhotoName = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                FCPATH . 'uploads/students/aadhar',
+                $aadharPhotoName
+            );
+        }
+
         //------------------------------------
         // STUDENT TABLE
         //------------------------------------
@@ -109,6 +148,10 @@ class DigitalShakti extends BaseController
 
             'Nationality' => $this->request->getPost('nationality'),
             'Address'     => $this->request->getPost('address'),
+
+            'Photo_URL' => $photoName,
+
+            'Aadhar_Photo_URL' => $aadharPhotoName,
 
             'Enrollment_Date' =>
             $this->request->getPost('enroll_date'),
@@ -301,6 +344,73 @@ class DigitalShakti extends BaseController
 
         $studentId = $student['Student_Id'];
 
+        $db = \Config\Database::connect();
+
+        $db->transStart();
+
+        $uploadPathPhoto  = FCPATH . 'uploads/students/photos/';
+        $uploadPathAadhar = FCPATH . 'uploads/students/aadhar/';
+
+        // Existing Student
+        $studentData = $this->studentModel
+            ->where('Student_Id', $studentId)
+            ->first();
+
+        $studentPhotoName = $studentData['Photo_URL'] ?? null;
+        $aadharPhotoName  = $studentData['Aadhar_Photo_URL'] ?? null;
+
+
+        $studentPhoto = $this->request->getFile('student_photo');
+
+        if ($studentPhoto && $studentPhoto->isValid() && !$studentPhoto->hasMoved()) {
+
+            if (!is_dir($uploadPathPhoto)) {
+                mkdir($uploadPathPhoto, 0777, true);
+            }
+
+            $newStudentPhoto = $studentPhoto->getRandomName();
+
+            $studentPhoto->move(
+                $uploadPathPhoto,
+                $newStudentPhoto
+            );
+
+            if (
+                !empty($studentPhotoName) &&
+                file_exists($uploadPathPhoto . $studentPhotoName)
+            ) {
+                unlink($uploadPathPhoto . $studentPhotoName);
+            }
+
+            $studentPhotoName = $newStudentPhoto;
+        }
+
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+
+        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+            if (!is_dir($uploadPathAadhar)) {
+                mkdir($uploadPathAadhar, 0777, true);
+            }
+
+            $newAadharPhoto = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                $uploadPathAadhar,
+                $newAadharPhoto
+            );
+
+            if (
+                !empty($aadharPhotoName) &&
+                file_exists($uploadPathAadhar . $aadharPhotoName)
+            ) {
+                unlink($uploadPathAadhar . $aadharPhotoName);
+            }
+
+            $aadharPhotoName = $newAadharPhoto;
+        }
+
         //-----------------------------------
         // Update Student Table
         //-----------------------------------
@@ -321,6 +431,11 @@ class DigitalShakti extends BaseController
                 'Pincode' => $this->request->getPost('pincode'),
                 'Nationality' => $this->request->getPost('nationality'),
                 'Address' => $this->request->getPost('address'),
+
+                'Photo_URL' => $studentPhotoName,
+
+                'Aadhar_Photo_URL' => $aadharPhotoName,
+
 
                 'Current_Education_level' =>
                 $this->request->getPost('current_edu'),
@@ -363,6 +478,7 @@ class DigitalShakti extends BaseController
 
                 'Sibling_Number' =>
                 $this->request->getPost('siblings')
+
             ])
             ->update();
 
@@ -408,6 +524,17 @@ class DigitalShakti extends BaseController
             ])
             ->update();
 
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update student');
+        }
+
+        // ADD THIS
         return redirect()
             ->to('/digitalshakti')
             ->with('success', 'Student Updated Successfully');
@@ -419,24 +546,42 @@ class DigitalShakti extends BaseController
             ->first();
 
         if (!$student) {
-            return redirect()
-                ->back()
+            return redirect()->back()
                 ->with('error', 'Student not found');
         }
 
         $studentId = $student['Student_Id'];
 
-        // Delete Digital Shakti record
+        $studentInfo = $this->studentModel
+            ->where('Student_Id', $studentId)
+            ->first();
+
+        if ($studentInfo) {
+
+            if (
+                !empty($studentInfo['Photo_URL']) &&
+                file_exists(FCPATH . 'uploads/students/photos/' . $studentInfo['Photo_URL'])
+            ) {
+                unlink(FCPATH . 'uploads/students/photos/' . $studentInfo['Photo_URL']);
+            }
+
+            if (
+                !empty($studentInfo['Aadhar_Photo_URL']) &&
+                file_exists(FCPATH . 'uploads/students/aadhar/' . $studentInfo['Aadhar_Photo_URL'])
+            ) {
+                unlink(FCPATH . 'uploads/students/aadhar/' . $studentInfo['Aadhar_Photo_URL']);
+            }
+        }
+
         $this->digitalModel->delete($id);
 
-        // Delete Student Program record
         $studentProgramModel = new StudentProgramModel();
 
         $studentProgramModel
             ->where('Student_Id', $studentId)
+            ->where('Program_Id', CorePrograms::DIGITAL_SHAKTI)
             ->delete();
 
-        // Delete Student record
         $this->studentModel
             ->where('Student_Id', $studentId)
             ->delete();

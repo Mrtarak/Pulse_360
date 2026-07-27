@@ -104,6 +104,45 @@ class DoosraMauka extends BaseController
 
         $studentModel = new StudentModel();
 
+        // --------------------------------
+        // Upload Student Photo
+        // --------------------------------
+
+        $photo = $this->request->getFile('photo');
+        $photoName = null;
+
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+
+            $photoName = $photo->getRandomName();
+
+            $photo->move(
+                FCPATH . 'uploads/students/photos',
+                $photoName
+            );
+        }
+
+
+        // --------------------------------
+        // Upload Aadhaar Photo
+        // --------------------------------
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+        $aadharPhotoName = null;
+
+        if (
+            $aadharPhoto &&
+            $aadharPhoto->isValid() &&
+            !$aadharPhoto->hasMoved()
+        ) {
+
+            $aadharPhotoName = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                FCPATH . 'uploads/students/aadhar',
+                $aadharPhotoName
+            );
+        }
+
         $studentModel->insert([
 
             'Student_Id' => $studentId,
@@ -126,6 +165,10 @@ class DoosraMauka extends BaseController
 
             'Nationality' => $this->request->getPost('nationality'),
             'Address'     => $this->request->getPost('address'),
+
+            'Photo_URL' => $photoName,
+
+            'Aadhar_Photo_URL' => $aadharPhotoName,
 
             'Enrollment_Date' =>
             $this->request->getPost('enroll_date'),
@@ -309,6 +352,8 @@ class DoosraMauka extends BaseController
         $doosraModel = new DoosraMaukaModel();
         $studentModel = new StudentModel();
         $studentProgramModel = new StudentProgramModel();
+        $uploadPathPhoto  = FCPATH . 'uploads/students/photos/';
+        $uploadPathAadhar = FCPATH . 'uploads/students/aadhar/';
 
         //----------------------------------
         // Get Student Record
@@ -324,6 +369,84 @@ class DoosraMauka extends BaseController
         }
 
         $studentId = $dmStudent['Student_Id'];
+
+        //----------------------------------
+        // Existing Student Data
+        //----------------------------------
+
+        $student = $studentModel
+            ->where('Student_Id', $studentId)
+            ->first();
+
+        if (!$student) {
+            return redirect()->back()
+                ->with('error', 'Student record not found');
+        }
+
+        $studentPhotoName = $student['Photo_URL'] ?? null;
+        $aadharPhotoName  = $student['Aadhar_Photo_URL'] ?? null;
+
+
+        //----------------------------------
+        // STUDENT PHOTO
+        //----------------------------------
+
+        $studentPhoto = $this->request->getFile('student_photo');
+
+        if ($studentPhoto && $studentPhoto->isValid() && !$studentPhoto->hasMoved()) {
+
+            if (!is_dir($uploadPathPhoto)) {
+                mkdir($uploadPathPhoto, 0777, true);
+            }
+
+            $newStudentPhoto = $studentPhoto->getRandomName();
+
+            $studentPhoto->move(
+                $uploadPathPhoto,
+                $newStudentPhoto
+            );
+
+            // Delete old photo
+            if (
+                !empty($studentPhotoName) &&
+                file_exists($uploadPathPhoto . $studentPhotoName)
+            ) {
+                unlink($uploadPathPhoto . $studentPhotoName);
+            }
+
+            $studentPhotoName = $newStudentPhoto;
+        }
+
+
+        //----------------------------------
+        // AADHAAR PHOTO
+        //----------------------------------
+
+        $aadharPhoto = $this->request->getFile('aadhar_photo');
+
+        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+            if (!is_dir($uploadPathAadhar)) {
+                mkdir($uploadPathAadhar, 0777, true);
+            }
+
+            $newAadharPhoto = $aadharPhoto->getRandomName();
+
+            $aadharPhoto->move(
+                $uploadPathAadhar,
+                $newAadharPhoto
+            );
+
+            // Delete old Aadhaar photo
+            if (
+                !empty($aadharPhotoName) &&
+                file_exists($uploadPathAadhar . $aadharPhotoName)
+            ) {
+                unlink($uploadPathAadhar . $aadharPhotoName);
+            }
+
+            $aadharPhotoName = $newAadharPhoto;
+        }
 
         //----------------------------------
         // STUDENT TABLE
@@ -351,6 +474,12 @@ class DoosraMauka extends BaseController
 
                 'Nationality' => $this->request->getPost('nationality'),
                 'Address' => $this->request->getPost('address'),
+
+                'Photo_URL' =>
+                $studentPhotoName,
+
+                'Aadhar_Photo_URL' =>
+                $aadharPhotoName,
 
                 'Current_Education_level' =>
                 $this->request->getPost('current_edu'),
@@ -469,6 +598,13 @@ class DoosraMauka extends BaseController
         //----------------------------------
 
         $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update student');
+        }
 
         return redirect()
             ->to('/ManageStudents/DoosraMauka')

@@ -110,7 +110,7 @@
                                 border-radius:5px;
                                 display:inline-block;
                                 min-width:80px;
-                                text-align:centser;
+                                text-align:center;
                             ">
                                 <?= esc($status) ?>
                               </span>
@@ -153,7 +153,19 @@
 
             info: true,
 
-            pageLength: 10
+            pageLength: 10,
+
+            columnDefs: [{
+              targets: 4,
+              render: function(data, type) {
+
+                if (type === 'filter' || type === 'sort') {
+                  return $('<div>').html(data).text().trim();
+                }
+
+                return data;
+              }
+            }]
 
           });
           $('#themeSearch').keyup(function() {
@@ -163,9 +175,11 @@
           });
           $('#statusFilter').change(function() {
 
+            let status = $(this).val();
+
             table
               .column(4)
-              .search($(this).val())
+              .search(status ? '^' + status + '$' : '', true, false)
               .draw();
 
           });
@@ -177,7 +191,7 @@
 
             table.search('');
 
-            table.column(4).search('');
+            table.columns().search('');
 
             table.draw();
 

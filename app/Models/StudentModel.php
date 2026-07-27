@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use CodeIgniter\Model;
@@ -41,12 +42,14 @@ class StudentModel extends Model
         'Mother_Occupation',
         'Family_Monthly_Income',
         'Sibling_Number',
+        'Photo_URL',
+        'Aadhar_Photo_URL',
         'Rec_Added_By',
         'Rec_Added_On',
         'Rec_Updated_By',
         'Rec_Last_Updated_On'
     ];
-public function getVijetaasStudents()
+    public function getVijetaasStudents()
     {
         return $this->select('student.*, sp.Program_Id, sp.Program_Status, sm.Mentor_Name')
             ->join('student_program sp', 'student.Student_Id = sp.Student_Id', 'left')
@@ -54,12 +57,12 @@ public function getVijetaasStudents()
             ->where('sp.Program_Id', 'VIJETAAS') // Your program ID for Vijetaas
             ->findAll();
     }
-public function getStudentById($id)
-{
-    return $this->select('student.*, sp.Program_Id, sp.Program_Status, sm.Mentor_Name')
-        ->join('student_program sp', 'student.Student_Id = sp.Student_Id', 'left')
-        ->join('student_mentor sm', 'student.Student_Id = sm.Student_Id AND sp.Program_Id = sm.Program_Id', 'left')
-        ->where('student.Student_Id', $id)
-        ->first();
-}
+    public function getStudentById($id)
+    {
+        return $this->select('student.*, sp.Program_Id, sp.Program_Status, sm.Mentor_Name')
+            ->join('student_program sp', 'student.Student_Id = sp.Student_Id', 'left')
+            ->join('student_mentor sm', 'student.Student_Id = sm.Student_Id AND sp.Program_Id = sm.Program_Id', 'left')
+            ->where('student.Student_Id', $id)
+            ->first();
+    }
 }

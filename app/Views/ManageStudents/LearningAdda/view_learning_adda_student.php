@@ -32,6 +32,86 @@
                 <div class="tab-pane fade show active" id="vpersonal">
                   <div class="row view-details">
 
+
+                    <div class="col-md-6 mb-3">
+
+                      <div class="card shadow-sm border-0">
+
+                        <div class="card-header bg-primary text-white text-center">
+                          <h5 class="mb-0">
+                            <i class="mdi mdi-account-circle"></i>
+                            Student Photo
+                          </h5>
+                        </div>
+
+                        <div class="card-body text-center">
+
+                          <?php if (!empty($student['Photo_URL'])) : ?>
+
+                            <a href="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>" target="_blank">
+
+                              <img src="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
+                                class="img-thumbnail shadow"
+                                style="width:250px;height:250px;object-fit:cover;border-radius:10px;"
+                                alt="Student Photo">
+
+                            </a>
+
+                          <?php else : ?>
+
+                            <div class="text-muted py-5">
+                              <i class="mdi mdi-image-off mdi-48px"></i>
+                              <p class="mt-2 mb-0">No Student Photo Available</p>
+                            </div>
+
+                          <?php endif; ?>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                      <div class="card shadow-sm border-0">
+
+                        <div class="card-header bg-success text-white text-center">
+                          <h5 class="mb-0">
+                            <i class="mdi mdi-card-account-details"></i>
+                            Aadhaar Photo
+                          </h5>
+                        </div>
+
+                        <div class="card-body text-center">
+
+                          <?php if (!empty($student['Aadhar_Photo_URL'])) : ?>
+
+                            <a href="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>" target="_blank">
+
+                              <img src="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
+                                class="img-thumbnail shadow"
+                                style="width:250px;height:250px;object-fit:cover;border-radius:10px;"
+                                alt="Aadhaar Photo">
+
+                            </a>
+
+                          <?php else : ?>
+
+                            <div class="text-muted py-5">
+                              <i class="mdi mdi-image-off mdi-48px"></i>
+                              <p class="mt-2 mb-0">No Aadhaar Photo Available</p>
+                            </div>
+
+                          <?php endif; ?>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
                     <div class="col-md-6 mb-2">
                       <strong>Full Name:</strong>
                       <?= esc($student['First_Name'] . ' ' . $student['Last_Name']) ?>
@@ -92,29 +172,6 @@
                       <?= esc($student['Address']) ?>
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Photo:</strong><br>
-
-                      <?php if (!empty($student['Photo_URL'])) : ?>
-                        <img src="<?= base_url($student['Photo_URL']) ?>"
-                          class="img-thumbnail"
-                          width="120">
-                      <?php else : ?>
-                        <span class="text-muted">No Photo</span>
-                      <?php endif; ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Aadhar Photo:</strong><br>
-
-                      <?php if (!empty($student['Aadhar_Photo_URL'])) : ?>
-                        <img src="<?= base_url($student['Aadhar_Photo_URL']) ?>"
-                          class="img-thumbnail"
-                          width="120">
-                      <?php else : ?>
-                        <span class="text-muted">No Aadhar Photo</span>
-                      <?php endif; ?>
-                    </div>
 
                     <div class="col-md-12 mb-2">
                       <strong>Remarks:</strong>

@@ -15,7 +15,9 @@
 
           <h4 class="card-title">Edit Digital Shakti Student</h4>
 
-          <form action="<?= site_url('digitalshakti/update/' . $student['DS_Stu_Id']) ?>" method="post">
+          <form action="<?= site_url('digitalshakti/update/' . $student['DS_Stu_Id']) ?>"
+            method="post"
+            enctype="multipart/form-data">
 
             <ul class="nav nav-tabs" id="studentTabs">
 
@@ -178,6 +180,116 @@
 
                     <textarea name="address"
                       class="form-control"><?= esc($student['Address']) ?></textarea>
+                  </div>
+
+                  <div class="col-12">
+                    <hr>
+                    <h5 class="mb-4">
+                      <i class="mdi mdi-image"></i>
+                      Student Documents
+                    </h5>
+                  </div>
+
+                  <div class="row mb-4">
+
+                    <!-- Student Photo -->
+                    <div class="col-md-6">
+                      <div class="card shadow-sm border-0">
+
+                        <div class="card-header bg-primary text-white text-center">
+                          <h5 class="mb-0">
+                            <i class="mdi mdi-account-circle"></i>
+                            Student Photo
+                          </h5>
+                        </div>
+
+                        <div class="card-body text-center">
+
+                          <?php if (!empty($student['Photo_URL'])) : ?>
+
+                            <a href="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
+                              target="_blank">
+
+                              <img src="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
+                                class="img-thumbnail shadow mb-3"
+                                style="width:250px;height:250px;object-fit:cover;border-radius:10px;">
+
+                            </a>
+
+                          <?php else : ?>
+
+                            <div class="text-muted py-5">
+                              <i class="mdi mdi-image-off mdi-48px"></i>
+                              <p class="mb-0 mt-2">
+                                No Student Photo Available
+                              </p>
+                            </div>
+
+                          <?php endif; ?>
+
+                          <input type="file"
+                            name="student_photo"
+                            class="form-control mt-3"
+                            accept="image/*">
+
+                          <small class="text-muted">
+                            Leave blank to keep existing photo.
+                          </small>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- Aadhaar Photo -->
+                    <div class="col-md-6">
+                      <div class="card shadow-sm border-0">
+
+                        <div class="card-header bg-success text-white text-center">
+                          <h5 class="mb-0">
+                            <i class="mdi mdi-card-account-details"></i>
+                            Aadhaar Photo
+                          </h5>
+                        </div>
+
+                        <div class="card-body text-center">
+
+                          <?php if (!empty($student['Aadhar_Photo_URL'])) : ?>
+
+                            <a href="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
+                              target="_blank">
+
+                              <img src="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
+                                class="img-thumbnail shadow mb-3"
+                                style="width:250px;height:250px;object-fit:cover;border-radius:10px;">
+
+                            </a>
+
+                          <?php else : ?>
+
+                            <div class="text-muted py-5">
+                              <i class="mdi mdi-image-off mdi-48px"></i>
+                              <p class="mb-0 mt-2">
+                                No Aadhaar Photo Available
+                              </p>
+                            </div>
+
+                          <?php endif; ?>
+
+                          <input type="file"
+                            name="aadhar_photo"
+                            class="form-control mt-3"
+                            accept="image/*">
+
+                          <small class="text-muted">
+                            Leave blank to keep existing Aadhaar photo.
+                          </small>
+
+                        </div>
+
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>

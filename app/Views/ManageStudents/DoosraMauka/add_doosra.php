@@ -227,6 +227,31 @@
                             required></textarea>
                         </div>
 
+
+                        <!-- Student Photo -->
+                        <div class="col-md-6 mb-3">
+
+                          <label>Student Photo</label>
+
+                          <input type="file"
+                            class="form-control"
+                            name="photo"
+                            accept="image/*">
+
+                        </div>
+
+                        <!-- Aadhaar Photo -->
+                        <div class="col-md-6 mb-3">
+
+                          <label>Aadhaar Photo</label>
+
+                          <input type="file"
+                            class="form-control"
+                            name="aadhar_photo"
+                            accept="image/*">
+
+                        </div>
+
                         <div class="col-md-12 mb-3">
                           <label>Remarks</label>
                           <textarea
@@ -395,7 +420,7 @@
                             Batch *
                           </label>
 
-                          <select class="form-control" name="batch_id"required>
+                          <select class="form-control" name="batch_id" required>
 
                             <option value="">
                               -- Select Batch --

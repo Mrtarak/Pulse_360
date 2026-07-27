@@ -162,6 +162,27 @@
                                                     class="form-control"></textarea>
                                             </div>
 
+
+                                            <div class="row">
+
+                                                <div class="col-md-4 mb-3">
+                                                    <label>Student Photo</label>
+                                                    <input type="file"
+                                                        name="photo"
+                                                        class="form-control"
+                                                        accept="image/*">
+                                                </div>
+
+                                                <div class="col-md-4 mb-3">
+                                                    <label>Aadhaar Photo</label>
+                                                    <input type="file"
+                                                        name="aadhar_photo"
+                                                        class="form-control"
+                                                        accept="image/*">
+                                                </div>
+
+                                            </div>
+
                                         </div>
 
                                         <button type="button"
