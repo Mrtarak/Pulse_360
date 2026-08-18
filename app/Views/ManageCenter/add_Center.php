@@ -70,7 +70,7 @@
                   </div>
 
                   <div class="col-md-6 form-group">
-                    <label>City <span class="text-danger">*</span></label>
+                    <label>District <span class="text-danger">*</span></label>
                     <input type="text" name="Center_City" class="form-control" value="<?= old('Center_City') ?>" placeholder="Enter City">
                   </div>
 

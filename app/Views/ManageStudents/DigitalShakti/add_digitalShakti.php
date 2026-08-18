@@ -171,6 +171,11 @@
                                                         name="photo"
                                                         class="form-control"
                                                         accept="image/*">
+
+                                                    <small class="text-muted">
+                                                        Maximum file size: <strong>2 MB</strong>. Allowed formats:
+                                                        <strong>JPG, JPEG, PNG</strong>.
+                                                    </small>
                                                 </div>
 
                                                 <div class="col-md-4 mb-3">
@@ -179,6 +184,11 @@
                                                         name="aadhar_photo"
                                                         class="form-control"
                                                         accept="image/*">
+
+                                                    <small class="text-muted">
+                                                        Maximum file size: <strong>2 MB</strong>. Allowed formats:
+                                                        <strong>JPG, JPEG, PNG</strong>.
+                                                    </small>
                                                 </div>
 
                                             </div>

@@ -19,28 +19,28 @@
             <div class="row">
 
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Batch ID:</strong>
-                <span><?= esc($batch['Batch_Id']) ?></span>
+                <strong style="width:200px;">Batch ID</strong>:
+                <span class="ms-2"><?= esc($batch['Batch_Id']) ?></span>
               </div>
 
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Batch Name:</strong>
-                <span><?= esc($batch['Batch_Name']) ?></span>
+                <strong style="width:200px;">Batch Name</strong>:
+                <span class="ms-2"><?= esc($batch['Batch_Name']) ?></span>
               </div>
 
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Program ID:</strong>
-                <span><?= esc($batch['Program_Id']) ?></span>
+                <strong style="width:200px;">Program ID</strong>:
+                <span class="ms-2"><?= esc($batch['Program_Id']) ?></span>
               </div>
 
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Center ID:</strong>
-                <span><?= esc($batch['Center_Id']) ?></span>
+                <strong style="width:200px;">Center ID</strong>:
+                <span class="ms-2"><?= esc($batch['Center_Id']) ?></span>
               </div>
 
               <!-- STATUS -->
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Status:</strong>
+                <strong style="width:200px;">Status</strong>:
                 <?php
                 $status = $batch['Batch_Status'];
                 $color = match ($status) {
@@ -50,32 +50,32 @@
                   default => '#6c757d',
                 };
                 ?>
-                <span style="background:<?= $color ?>;color:#fff;padding:4px 10px;border-radius:5px;">
+                <span class="ms-2" style="background:<?= $color ?>;color:#fff;padding:4px 10px;border-radius:5px;">
                   <?= esc($status) ?>
                 </span>
               </div>
 
               <!-- TIME -->
-              <tr>
-                <th>Duration</th>
-                <td><?= esc($batch['Duration_Hours']) ?> Hours</td>
-              </tr>
+              <div class="col-md-12 mb-2 d-flex">
+                <strong style="width:200px;">Duration</strong>:
+                <span class="ms-2"><?= esc($batch['Duration_Hours']) ?> Hours</span>
+              </div>
 
               <!-- DATES -->
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Start Date:</strong>
-                <span><?= esc($batch['Batch_Start_Date']) ?></span>
+                <strong style="width:200px;">Start Date</strong>:
+                <span class="ms-2"><?= esc($batch['Batch_Start_Date']) ?></span>
               </div>
 
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">End Date:</strong>
-                <span><?= esc($batch['Batch_Last_Date'] ?? '—') ?></span>
+                <strong style="width:200px;">End Date</strong>:
+                <span class="ms-2"><?= esc($batch['Batch_Last_Date'] ?? '—') ?></span>
               </div>
 
               <!-- REMARKS -->
               <div class="col-md-12 mb-2 d-flex">
-                <strong style="width:200px;">Remarks:</strong>
-                <span><?= esc($batch['Remarks'] ?? '—') ?></span>
+                <strong style="width:200px;">Remarks</strong>:
+                <span class="ms-2"><?= esc($batch['Remarks'] ?? '—') ?></span>
               </div>
 
             </div>

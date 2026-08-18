@@ -210,6 +210,11 @@
                           type="file"
                           name="photo"
                           class="form-control">
+
+                        <small class="text-muted">
+                          Maximum file size: <strong>2 MB</strong>. Allowed formats:
+                          <strong>JPG, JPEG, PNG</strong>.
+                        </small>
                       </div>
 
                       <div class="col-md-6 mb-3">
@@ -218,6 +223,11 @@
                           type="file"
                           name="aadhar_photo"
                           class="form-control">
+
+                        <small class="text-muted">
+                          Maximum file size: <strong>2 MB</strong>. Allowed formats:
+                          <strong>JPG, JPEG, PNG</strong>.
+                        </small>
                       </div>
 
                       <div class="col-md-12 mb-3">
@@ -785,5 +795,3 @@
   </div>
 
   <?= view('includes/footer'); ?>
-
-  

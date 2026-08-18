@@ -44,11 +44,11 @@
               <!-- City -->
               <div class="col-md-2">
                 <label class="form-label fw-bold">
-                  <i class="mdi mdi-city"></i> City
+                  <i class="mdi mdi-city"></i> District
                 </label>
 
                 <select id="cityFilter" class="form-select">
-                  <option value="">All Cities</option>
+                  <option value="">All District</option>
 
                   <?php
                   $cities = array_unique(array_column($center, 'Center_City'));
@@ -126,7 +126,7 @@
                     <th>#</th>
                     <th>Center Name</th>
                     <th>Inaugurated By</th>
-                    <th>City</th>
+                    <th>District</th>
                     <th>State</th>
                     <th>Capacity</th>
                     <th>Status</th>

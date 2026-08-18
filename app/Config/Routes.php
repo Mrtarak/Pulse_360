@@ -228,3 +228,13 @@ $routes->post(
     'Attendance::saveAttendance'
 );
 $routes->post('attendance/get-attendance-dates', 'Attendance::getAttendanceDates');
+
+
+// ==================== FEES ====================
+
+$routes->get('fees', 'Fees::index');
+
+$routes->post('finance/fees/get-centers', 'Fees::getCenters');
+$routes->post('finance/fees/get-batches', 'Fees::getBatches');
+$routes->post('finance/fees/get-students', 'Fees::getStudents');
+$routes->post('finance/fees/save', 'Fees::save');

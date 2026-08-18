@@ -26,28 +26,28 @@
                                 <div class="row view-details">
 
                                     <div class="col-md-12 mb-3">
-                                        <strong>Program Theme Name:</strong>
+                                        <strong>Program Theme Name</strong>:
                                         <?= esc($theme['Program_Theme_Name']) ?>
                                     </div>
 
                                     <div class="col-md-12 mb-3">
-                                        <strong>Description:</strong>
+                                        <strong>Description</strong>:
                                         <?= esc($theme['Theme_Description']) ?>
                                     </div>
 
                                     <div class="col-md-12 mb-3">
-                                        <strong>Suggested By:</strong>
+                                        <strong>Suggested By</strong>:
                                         <?= esc($theme['Theme_Suggested_By']) ?>
                                     </div>
 
                                     <div class="col-md-12 mb-3">
-                                        <strong>Theme Added On:</strong>
+                                        <strong>Theme Added On</strong>:
                                         <?= esc($theme['Theme_Added_On']) ?>
                                     </div>
 
                                     <div class="col-md-12 mb-2 d-flex">
                                         <div style="min-width: 200px;">
-                                            <strong>Status:</strong>
+                                            <strong>Status</strong>:
                                         </div>
 
                                         <?php

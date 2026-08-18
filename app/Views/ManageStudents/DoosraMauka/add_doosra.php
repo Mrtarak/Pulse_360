@@ -238,6 +238,11 @@
                             name="photo"
                             accept="image/*">
 
+                          <small class="text-muted">
+                            Maximum file size: <strong>2 MB</strong>. Allowed formats:
+                            <strong>JPG, JPEG, PNG</strong>.
+                          </small>
+
                         </div>
 
                         <!-- Aadhaar Photo -->
@@ -249,6 +254,11 @@
                             class="form-control"
                             name="aadhar_photo"
                             accept="image/*">
+
+                          <small class="text-muted">
+                            Maximum file size: <strong>2 MB</strong>. Allowed formats:
+                            <strong>JPG, JPEG, PNG</strong>.
+                          </small>
 
                         </div>
 

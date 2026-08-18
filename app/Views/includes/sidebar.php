@@ -192,14 +192,35 @@
       </a>
     </li>-->
 
-    <!-- FINANCE 
+    <!-- FINANCE -->
     <li class="nav-item nav-category">Manage Finance</li>
 
-    <li class="nav-item"><a class="nav-link" href="<?= site_url('finance/fees') ?>"><i class="mdi mdi-cash-multiple menu-icon"></i> Fees</a></li>
-    <li class="nav-item"><a class="nav-link" href="<?= site_url('finance/donations') ?>"><i class="mdi mdi-currency-inr menu-icon"></i> Donations</a></li>
-    <li class="nav-item"><a class="nav-link" href="<?= site_url('finance/assets') ?>"><i class="mdi mdi-package-variant menu-icon"></i> Assets</a></li>
-    <li class="nav-item"><a class="nav-link" href="<?= site_url('finance/expenses') ?>"><i class="mdi mdi-cash-minus menu-icon"></i> Expenses</a></li>
-    -->
+    <li class="nav-item">
+      <a class="nav-link" href="<?= site_url('fees') ?>">
+        <i class="mdi mdi-cash-multiple menu-icon"></i>
+        <span class="menu-title">Fees</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="<?= site_url('finance/donations') ?>">
+        <i class="mdi mdi-currency-inr menu-icon"></i>
+        <span class="menu-title">Donations</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="<?= site_url('finance/assets') ?>">
+        <i class="mdi mdi-package-variant menu-icon"></i>
+        <span class="menu-title">Assets</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="<?= site_url('finance/expenses') ?>">
+        <i class="mdi mdi-cash-minus menu-icon"></i>
+        <span class="menu-title">Expenses</span>
+      </a>
+    </li>
     <!-- EVENTS 
     <li class="nav-item nav-category">Others</li>
 

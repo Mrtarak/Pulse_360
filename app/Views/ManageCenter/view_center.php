@@ -55,7 +55,7 @@
                             </div>
 
                             <div class="col-md-12 mb-2 d-flex">
-                                <div style="min-width: 200px;"><strong>City</strong> :</div>
+                                <div style="min-width: 200px;"><strong>District</strong> :</div>
                                 <div class="ms-3"><?= esc($center['Center_City']) ?></div>
                             </div>
 
