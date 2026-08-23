@@ -114,7 +114,11 @@
 
     <!-- Manage Students -->
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-toggle="collapse" href="#programsSubmenu" aria-expanded="false">
+      <a class="nav-link collapsed"
+        data-bs-toggle="collapse"
+        href="#programsSubmenu"
+        aria-expanded="false">
+
         <i class="mdi mdi-book-multiple menu-icon"></i>
         <span class="menu-title">Manage Students</span>
         <i class="menu-arrow"></i>
@@ -123,9 +127,14 @@
       <div class="collapse" id="programsSubmenu">
         <ul class="nav flex-column sub-menu">
 
-          <!-- Vijetaas -->
+
+          <!-- ================= Vijetaas ================= -->
           <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-toggle="collapse" href="#vijetaasSubmenu" aria-expanded="false">
+            <a class="nav-link collapsed"
+              data-bs-toggle="collapse"
+              href="#vijetaasSubmenu"
+              aria-expanded="false">
+
               Vijetaas
               <i class="menu-arrow"></i>
             </a>
@@ -134,35 +143,126 @@
               <ul class="nav flex-column sub-menu">
 
                 <li class="nav-item">
-                  <a class="nav-link" href="<?= site_url('students/vijetaas') ?>">All Vijetaas</a>
+                  <a class="nav-link"
+                    href="<?= site_url('students/vijetaas') ?>">
+                    All Vijetaas
+                  </a>
                 </li>
 
-                <!-- <li class="nav-item">
-                  <a class="nav-link" href="<?= site_url('students/vijetaas/results') ?>">Results</a>
-                </li> -->
+                <!-- Future Assessment
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Assessment
+                            </a>
+                        </li>
+                        -->
 
               </ul>
             </div>
           </li>
 
-          <!-- Other Programs -->
+
+          <!-- ================= Learning Adda ================= -->
           <li class="nav-item">
-            <a class="nav-link" href="<?= base_url('index.php/ManageStudents/DoosraMauka'); ?>">
-              Doosra Mauka Participants
+            <a class="nav-link collapsed"
+              data-bs-toggle="collapse"
+              href="#learningAddaSubmenu"
+              aria-expanded="false">
+
+              Learning Adda
+              <i class="menu-arrow"></i>
             </a>
+
+            <div class="collapse" id="learningAddaSubmenu">
+              <ul class="nav flex-column sub-menu">
+
+                <!-- All Students / Enrollment -->
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="<?= site_url('students/learning_adda') ?>">
+                    All Students
+                  </a>
+                </li>
+
+                <!-- Assessment - Add URL later -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    Assessment
+                  </a>
+                </li>
+
+              </ul>
+            </div>
           </li>
 
+
+          <!-- ================= Digital Shakti ================= -->
           <li class="nav-item">
-            <a class="nav-link" href="<?= site_url('students/learning_adda') ?>">
-              Learning Adda Students
+            <a class="nav-link collapsed"
+              data-bs-toggle="collapse"
+              href="#digitalShaktiSubmenu"
+              aria-expanded="false">
+
+              Digital Shakti
+              <i class="menu-arrow"></i>
             </a>
+
+            <div class="collapse" id="digitalShaktiSubmenu">
+              <ul class="nav flex-column sub-menu">
+
+                <!-- All Students / Enrollment -->
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="<?= site_url('digitalshakti') ?>">
+                    All Students
+                  </a>
+                </li>
+
+                <!-- Assessment - Add URL later -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    Assessment
+                  </a>
+                </li>
+
+              </ul>
+            </div>
           </li>
 
+
+          <!-- ================= Doosra Mauka ================= -->
           <li class="nav-item">
-            <a class="nav-link" href="<?= site_url('digitalshakti') ?>">
-              Digital Shakti Students
+            <a class="nav-link collapsed"
+              data-bs-toggle="collapse"
+              href="#doosraMaukaSubmenu"
+              aria-expanded="false">
+
+              Doosra Mauka
+              <i class="menu-arrow"></i>
             </a>
+
+            <div class="collapse" id="doosraMaukaSubmenu">
+              <ul class="nav flex-column sub-menu">
+
+                <!-- All Participants / Enrollment -->
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="<?= base_url('index.php/ManageStudents/DoosraMauka'); ?>">
+                    All Participants
+                  </a>
+                </li>
+
+                <!-- Assessment - Add URL later -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    Assessment
+                  </a>
+                </li>
+
+              </ul>
+            </div>
           </li>
+
 
         </ul>
       </div>
@@ -230,6 +330,144 @@
         <span class="menu-title">All Events</span>
       </a>
     </li>-->
+
+    <!-- STATIC PAGES -->
+    <li class="nav-item nav-category">STATIC PAGES</li>
+
+    <li class="nav-item">
+
+      <a class="nav-link collapsed"
+        data-bs-toggle="collapse"
+        href="#staticPagesSubmenu"
+        aria-expanded="false">
+
+        <i class="mdi mdi-file-document-multiple menu-icon"></i>
+
+        <span class="menu-title">Static Pages</span>
+
+        <i class="menu-arrow"></i>
+
+      </a>
+
+      <div class="collapse" id="staticPagesSubmenu">
+
+        <ul class="nav flex-column sub-menu">
+
+          <!-- LA Assessment -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/LA_Assessment.html') ?>">
+              LA Assessment
+            </a>
+          </li>
+
+          <!-- LA Assessment Add -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/LA_Assessment_Add.html') ?>">
+              LA Assessment Add
+            </a>
+          </li>
+
+          <!-- LA Assessment View -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/LA_Assessment_View.html') ?>">
+              LA Assessment View
+            </a>
+          </li>
+
+
+          <!-- DM Assessment -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/DM_Assessment.html') ?>">
+              DM Assessment
+            </a>
+          </li>
+
+          <!-- DM Assessment Add -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/DM_Assessment_Add.html') ?>">
+              DM Assessment Add
+            </a>
+          </li>
+
+          <!-- DM Assessment View -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/DM_Assessment_View.html') ?>">
+              DM Assessment View
+            </a>
+          </li>
+
+
+          <!-- SS Assessment -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/SS_Assessment.html') ?>">
+              SS Assessment
+            </a>
+          </li>
+
+          <!-- SS Assessment Add -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/SS_Assessment_Add.html') ?>">
+              SS Assessment Add
+            </a>
+          </li>
+
+          <!-- SS Assessment View -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/SS_Assessment_View.html') ?>">
+              SS Assessment View
+            </a>
+          </li>
+
+
+          <!-- DS Assessment -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/DS_Assessment.html') ?>">
+              DS Assessment
+            </a>
+          </li>
+
+
+          <!-- DM Income Generation -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/DM_Income_Generation.html') ?>">
+              DM Income Generation
+            </a>
+          </li>
+
+
+          <!-- Daily Session Update -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/Daily_Session_Update.html') ?>">
+              Daily Session Update
+            </a>
+          </li>
+
+
+          <!-- LA PTM -->
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= base_url('static-pages/LA_PTM.html') ?>">
+              LA PTM
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+    </li>
 
   </ul>
 </nav>

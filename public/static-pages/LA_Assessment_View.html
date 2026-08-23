@@ -1,0 +1,436 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Student Assessment View</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        body {
+            background: #f4f6f9
+        }
+
+        .card {
+            border: 0;
+            border-radius: 10px
+        }
+
+        .card-header {
+            background: #4B49AC;
+            color: white;
+            font-size: 18px;
+            font-weight: 600
+        }
+
+        .photo {
+            width: 120px;
+            height: 150px;
+            object-fit: cover;
+            border: 1px solid #adb5bd;
+            padding: 3px;
+            border-radius: 4px
+        }
+
+        .name {
+            font-size: 23px;
+            font-weight: 700
+        }
+
+        .title {
+            color: #4B49AC;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 18px
+        }
+
+        .nav-link {
+            color: #4B49AC;
+            font-weight: 600
+        }
+
+        .nav-link.active {
+            background: #4B49AC !important;
+            color: #fff !important
+        }
+
+        .subject-row {
+            border: 1px solid #e1e5ea;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fff
+        }
+
+        .subject-row small,
+        .sel small {
+            color: #6c757d;
+            font-weight: 500
+        }
+
+        .level {
+            padding: 6px 11px;
+            border-radius: 5px;
+            font-weight: 700;
+            display: inline-block
+        }
+
+        .level-below {
+            background: #f8d7da;
+            color: #842029
+        }
+
+        .level-same {
+            background: #cfe2ff;
+            color: #084298
+        }
+
+        .level-above {
+            background: #d1e7dd;
+            color: #0f5132
+        }
+
+        .remark {
+            background: #f8f9fa;
+            border: 1px solid #e6e8ec;
+            border-radius: 6px;
+            padding: 9px;
+            margin-top: 4px;
+            min-height: 40px
+        }
+
+        .na {
+            color: #777;
+            font-style: italic
+        }
+
+        .sel {
+            border: 1px solid #e1e5ea;
+            border-radius: 8px;
+            padding: 15px;
+            height: 100%
+        }
+
+        .rating {
+            font-size: 22px;
+            color: #4B49AC;
+            font-weight: 700;
+            margin: 7px 0
+        }
+
+        .legend span {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 13px
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            border-radius: 2px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header"><i class="fas fa-user-graduate me-2"></i>Learning Adda - Student Assessment View
+            </div>
+        </div>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="title">Personal Details</div>
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center"><img src="rahul_das_passport_photo.png" class="photo"
+                            alt="Student photo"></div>
+                    <div class="col-md-10">
+                        <div class="name">Rahul Das</div>
+                        <div class="row mt-3 g-3">
+                            <div class="col-md-3"><small>PROGRAM</small><br><b>Learning Adda</b></div>
+                            <div class="col-md-3"><small>CENTER</small><br><b>Center A</b></div>
+                            <div class="col-md-3"><small>BATCH</small><br><b>Batch 01</b></div>
+                            <div class="col-md-3"><small>ACTUAL CLASS</small><br><b>Class 5</b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-3">
+            <div class="card-body legend"><b>Colour Code:</b>
+                <span><i class="dot" style="background:#dc3545"></i>Below class level</span><span><i class="dot"
+                        style="background:#0d6efd"></i>Same level</span><span><i class="dot"
+                        style="background:#198754"></i>Above class level</span>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab"
+                            data-bs-target="#b">Baseline</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                            data-bs-target="#m">Midline</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                            data-bs-target="#e">Endline</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active p-3" id="b">
+                        <div class="d-flex justify-content-between">
+                            <h5>Baseline Assessment</h5><span class="badge bg-success">Completed</span>
+                        </div>
+                        <p><b>Date:</b> 15/06/2026 &nbsp; <b>Actual Class:</b> Class 5</p>
+                        <div class="title">Education Result</div>
+                        <div class="subject-row"><b>English</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>English Level</small><br><span
+                                        class="level level-below">Class 4</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-same">B+</span></div>
+                                <div class="col-md-5"><small>English Remark</small>
+                                    <div class="remark">Needs more reading practice.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Math</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Math Level</small><br><span class="level level-same">Class
+                                        5</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-above">A</span></div>
+                                <div class="col-md-5"><small>Math Remark</small>
+                                    <div class="remark">Good understanding of number concepts.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Hindi</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Hindi Level</small><br><span class="level level-same">Class
+                                        5</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-same">B</span></div>
+                                <div class="col-md-5"><small>Hindi Remark</small>
+                                    <div class="remark">Written expression needs practice.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Marathi</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Marathi Level</small><br><span
+                                        class="level level-below">Class 3</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-below">C+</span></div>
+                                <div class="col-md-5"><small>Marathi Remark</small>
+                                    <div class="remark">Requires guided reading support.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Digital Shakti</b>
+                            <div class="row mt-2">
+                                <div class="col-md-3"><small>Grade</small><br><span class="level level-same">B+</span>
+                                </div>
+                                <div class="col-md-9"><small>Remarks on Digital Shakti Assessments</small>
+                                    <div class="remark">Good understanding of basic computer operations.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="title mt-4">SEL</div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="sel"><b>Ethics</b>
+                                    <div class="rating">3</div><small>Does the child choose to do the right thing, even
+                                        when no one is watching?</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sel"><b>Empathy</b>
+                                    <div class="rating">3</div><small>Does the child understand and care about how
+                                        others feel?</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sel"><b>Eagerness</b>
+                                    <div class="rating">4</div><small>Does the child show curiosity and enthusiasm to
+                                        learn and participate?</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3"><small>Remarks on SEL Assessments</small>
+                            <div class="remark">Good participation and positive interaction with peers.</div>
+                        </div>
+                        <div class="mt-3"><small>Assist By</small><b> Teacher</b></div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="m">
+                        <div class="d-flex justify-content-between">
+                            <h5>Midline Assessment</h5><span class="badge bg-success">Completed</span>
+                        </div>
+                        <p><b>Date:</b> 20/08/2026 &nbsp; <b>Actual Class:</b> Class 5</p>
+                        <div class="title">Education Result</div>
+                        <div class="subject-row"><b>English</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>English Level</small><br><span
+                                        class="level level-same">Class 5</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-above">A</span></div>
+                                <div class="col-md-5"><small>English Remark</small>
+                                    <div class="remark">Strong improvement in reading.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Math</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Math Level</small><br><span class="level level-above">Class
+                                        6</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-above">A+</span></div>
+                                <div class="col-md-5"><small>Math Remark</small>
+                                    <div class="remark">Very good problem-solving ability.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Hindi</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Hindi Level</small><br><span class="level level-same">Class
+                                        5</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-above">A</span></div>
+                                <div class="col-md-5"><small>Hindi Remark</small>
+                                    <div class="remark">Good improvement in writing.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Marathi</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Marathi Level</small><br><span
+                                        class="level level-below">Class 4</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span
+                                        class="level level-same">B+</span></div>
+                                <div class="col-md-5"><small>Marathi Remark</small>
+                                    <div class="remark">Improving steadily.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Digital Shakti</b>
+                            <div class="row mt-2">
+                                <div class="col-md-3"><small>Grade</small><br><span class="level level-above">A</span>
+                                </div>
+                                <div class="col-md-9"><small>Remarks on Digital Shakti Assessments</small>
+                                    <div class="remark">Improved computer skills and participation.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="title mt-4">SEL</div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="sel"><b>Ethics</b>
+                                    <div class="rating">4</div><small>Does the child choose to do the right thing, even
+                                        when no one is watching?</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sel"><b>Empathy</b>
+                                    <div class="rating">4</div><small>Does the child understand and care about how
+                                        others feel?</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sel"><b>Eagerness</b>
+                                    <div class="rating">4</div><small>Does the child show curiosity and enthusiasm to
+                                        learn and participate?</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3"><small>Remarks on SEL Assessments</small>
+                            <div class="remark">Excellent improvement in participation and empathy.</div>
+                        </div>
+                        <div class="mt-3"><small>Assist By</small><b> Teacher</b></div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="e">
+                        <div class="d-flex justify-content-between">
+                            <h5>Endline Assessment</h5><span class="badge bg-secondary">Not Completed</span>
+                        </div>
+                        <p><b>Date:</b> <span class="na">N/A</span> &nbsp; <b>Actual Class:</b> <span
+                                class="na">N/A</span></p>
+                        <div class="title">Education Result</div>
+                        <div class="subject-row"><b>English</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>English Level</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-5"><small>English Remark</small>
+                                    <div class="remark na">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Math</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Math Level</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-5"><small>Math Remark</small>
+                                    <div class="remark na">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Hindi</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Hindi Level</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-5"><small>Hindi Remark</small>
+                                    <div class="remark na">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Marathi</b>
+                            <div class="row mt-2">
+                                <div class="col-md-4"><small>Marathi Level</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-3"><small>BPF Grade</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-5"><small>Marathi Remark</small>
+                                    <div class="remark na">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subject-row"><b>Digital Shakti</b>
+                            <div class="row mt-2">
+                                <div class="col-md-3"><small>Grade</small><br><span class="na">N/A</span></div>
+                                <div class="col-md-9"><small>Remarks on Digital Shakti Assessments</small>
+                                    <div class="remark na">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="title mt-4">SEL</div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="sel"><b>Ethics</b>
+                                    <div class="rating na">N/A</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sel"><b>Empathy</b>
+                                    <div class="rating na">N/A</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sel"><b>Eagerness</b>
+                                    <div class="rating na">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="remark na mt-3">Remarks on SEL Assessments: N/A</div>
+                        <div class="mt-3 na">Assist By: N/A</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body text-end"><button class="btn btn-primary me-2" onclick="alert('Static demo: Edit')"><i
+                        class="fas fa-pen me-2"></i>Edit</button><button class="btn btn-danger"
+                    onclick="if(confirm('Delete this assessment record?')) alert('Static demo: Deleted')"><i
+                        class="fas fa-trash me-2"></i>Delete</button></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

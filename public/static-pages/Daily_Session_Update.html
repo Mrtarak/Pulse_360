@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Session Report</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        .card {
+            border: 0;
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background: #4B49AC;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            color: #4B49AC;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .readonly {
+            background: #f8f9fa;
+        }
+
+        .choice-box {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 14px;
+            background: #fff;
+            height: 100%;
+            transition: 0.2s;
+        }
+
+        .choice-box:hover {
+            background: #f8f9ff;
+            border-color: #4B49AC;
+        }
+
+        .choice-box .form-check {
+            margin-bottom: 0;
+        }
+
+        .activity-grid,
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .btn-save {
+            padding: 10px 35px;
+        }
+
+        .btn-reset {
+            padding: 10px 30px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        @media (max-width: 992px) {
+
+            .activity-grid,
+            .challenge-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+
+            .activity-grid,
+            .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid py-4">
+
+        <!-- FILTER CARD -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <i class="fas fa-calendar-day me-2"></i>
+                Daily Session Report
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Program <span class="required">*</span></label>
+                        <select class="form-select" id="program">
+                            <option value="">Select Program</option>
+                            <option>Doosra Mauka</option>
+                            <option>Digital Shakti</option>
+                            <option>Learning Adda</option>
+                            <option>School Syihog</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Center <span class="required">*</span></label>
+                        <select class="form-select" id="center">
+                            <option value="">Select Center</option>
+                            <option>Center A</option>
+                            <option>Center B</option>
+                            <option>Center C</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Batch <span class="required">*</span></label>
+                        <select class="form-select" id="batch">
+                            <option value="">Select Batch</option>
+                            <option>Batch 01</option>
+                            <option>Batch 02</option>
+                            <option>Batch 03</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Date <span class="required">*</span></label>
+                        <input type="date" class="form-control" id="reportDate">
+                    </div>
+
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="button" class="btn btn-primary px-4" id="loadReport">
+                        <i class="fas fa-search me-2"></i>
+                        Load Report Form
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- REPORT FORM -->
+        <div class="card shadow-sm" id="reportFormCard">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="fas fa-clipboard-list me-2"></i>
+                    Daily Session Report Form
+                </span>
+
+                <span class="badge bg-light text-dark" id="selectedDateText">
+                    Select Date
+                </span>
+            </div>
+
+            <div class="card-body">
+
+                <!-- SESSION DETAILS -->
+                <div class="section-title">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                    Session Details
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">
+                            Teacher Name <span class="required">*</span>
+                            <small class="text-muted">(Mention Sub-teacher if any)</small>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Enter teacher name">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Session Start Time</label>
+                        <input type="time" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Session End Time</label>
+                        <input type="time" class="form-control">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Total Number of Students Present</label>
+                        <input type="number" min="0" class="form-control" placeholder="Enter number">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Total Number of Students Absent</label>
+                        <input type="number" min="0" class="form-control" placeholder="Enter number">
+                    </div>
+
+                </div>
+
+                <!-- UPDATES -->
+                <div class="section-title mt-4">
+                    <i class="fas fa-check-double me-2"></i>
+                    Daily Updates
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Attendance updated?</label>
+                        <select class="form-select">
+                            <option value="">Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Nutrition updated?</label>
+                        <select class="form-select">
+                            <option value="">Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Fees updated?</label>
+                        <select class="form-select">
+                            <option value="">Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- ACTIVITIES -->
+                <div class="section-title mt-4">
+                    <i class="fas fa-list-check me-2"></i>
+                    Activities Conducted <span class="required">*</span>
+                    <small class="text-muted">(Tick all that apply)</small>
+                </div>
+
+                <div class="activity-grid">
+
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="music"><label
+                                class="form-check-label" for="music">Music</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="dance"><label
+                                class="form-check-label" for="dance">Dance</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="yoga"><label
+                                class="form-check-label" for="yoga">Yoga</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="circle"><label
+                                class="form-check-label" for="circle">Circle Time</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="story"><label
+                                class="form-check-label" for="story">Story Session</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="computer"><label
+                                class="form-check-label" for="computer">Computer</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="worksheets"><label
+                                class="form-check-label" for="worksheets">Worksheets</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="english"><label
+                                class="form-check-label" for="english">English</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="hindi"><label
+                                class="form-check-label" for="hindi">Hindi</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="maths"><label
+                                class="form-check-label" for="maths">Maths</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="marathi"><label
+                                class="form-check-label" for="marathi">Marathi</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="evs"><label
+                                class="form-check-label" for="evs">EVS</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="gk"><label
+                                class="form-check-label" for="gk">GK</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="science"><label
+                                class="form-check-label" for="science">Science Experiment</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="reading"><label
+                                class="form-check-label" for="reading">Reading Practice</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="group"><label
+                                class="form-check-label" for="group">Group Activity</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="indoor"><label
+                                class="form-check-label" for="indoor">Indoor Games</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="outdoor"><label
+                                class="form-check-label" for="outdoor">Outdoor Activity</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="ajab"><label
+                                class="form-check-label" for="ajab">Ajab Gajab Pitara</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="aisa"><label
+                                class="form-check-label" for="aisa">Aisa Kyon</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="assessment"><label
+                                class="form-check-label" for="assessment">Assessment</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="competition"><label
+                                class="form-check-label" for="competition">Competition</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="celebration"><label
+                                class="form-check-label" for="celebration">Celebration</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="volunteer"><label
+                                class="form-check-label" for="volunteer">Volunteer Session</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="visits"><label
+                                class="form-check-label" for="visits">Visits</label></div>
+                    </div>
+
+                    <div class="choice-box">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="activityOther">
+                            <label class="form-check-label" for="activityOther">Other</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-3" id="activityOtherBox" style="display:none;">
+                    <label class="form-label">Specify Other Activity</label>
+                    <input type="text" class="form-control" placeholder="Enter other activity">
+                </div>
+
+                <div class="mt-4">
+                    <label class="form-label">Any remarks or observations on activities conducted</label>
+                    <textarea class="form-control" rows="3" placeholder="Enter remarks or observations"></textarea>
+                </div>
+
+                <!-- CHILDREN / POSITIVE MOMENT -->
+                <div class="section-title mt-4">
+                    <i class="fas fa-child me-2"></i>
+                    Children & Class Observations
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Any particular remarks on Children?</label>
+                    <textarea class="form-control" rows="3" placeholder="Enter remarks on children"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tell us one positive moment from today's class</label>
+                    <textarea class="form-control" rows="3" placeholder="Share one positive moment"></textarea>
+                </div>
+
+                <!-- CHALLENGES -->
+                <div class="section-title mt-4">
+                    <i class="fas fa-triangle-exclamation me-2"></i>
+                    Challenges Faced <span class="required">*</span>
+                    <small class="text-muted">(Choose all that apply)</small>
+                </div>
+
+                <div class="challenge-grid">
+
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                id="lowAttendance"><label class="form-check-label" for="lowAttendance">Low
+                                Attendance</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox"
+                                id="teacherAbsent"><label class="form-check-label" for="teacherAbsent">Teacher
+                                Absent</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="materials"><label
+                                class="form-check-label" for="materials">Lack of Materials</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="electricity"><label
+                                class="form-check-label" for="electricity">Electricity</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="internet"><label
+                                class="form-check-label" for="internet">Internet</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="behaviour"><label
+                                class="form-check-label" for="behaviour">Behaviour Issues</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="time"><label
+                                class="form-check-label" for="time">Time Shortage</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="weather"><label
+                                class="form-check-label" for="weather">Weather</label></div>
+                    </div>
+                    <div class="choice-box">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="challengeOther">
+                            <label class="form-check-label" for="challengeOther">Other</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-3" id="challengeOtherBox" style="display:none;">
+                    <label class="form-label">Specify Other Challenge</label>
+                    <input type="text" class="form-control" placeholder="Enter other challenge">
+                </div>
+
+                <div class="mt-4">
+                    <label class="form-label">Explain briefly about the challenges you are facing</label>
+                    <textarea class="form-control" rows="4" placeholder="Explain the challenges"></textarea>
+                </div>
+
+                <div class="mt-3">
+                    <label class="form-label">What help do you need?</label>
+                    <textarea class="form-control" rows="4" placeholder="Mention the help/support required"></textarea>
+                </div>
+
+            </div>
+
+            <div class="card-footer bg-white">
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary btn-reset" id="resetForm">
+                        <i class="fas fa-rotate-left me-2"></i>
+                        Reset
+                    </button>
+
+                    <button type="button" class="btn btn-success btn-save" id="saveReport">
+                        <i class="fas fa-save me-2"></i>
+                        Save Daily Session Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const reportDate = document.getElementById("reportDate");
+            const selectedDateText = document.getElementById("selectedDateText");
+
+            document.getElementById("loadReport").addEventListener("click", function () {
+                const program = document.getElementById("program").value;
+                const center = document.getElementById("center").value;
+                const batch = document.getElementById("batch").value;
+                const date = reportDate.value;
+
+                if (!program || !center || !batch || !date) {
+                    alert("Please select Program, Center, Batch and Date.");
+                    return;
+                }
+
+                const formattedDate = new Date(date + "T00:00:00").toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                });
+
+                selectedDateText.textContent = formattedDate;
+            });
+
+            reportDate.addEventListener("change", function () {
+                if (this.value) {
+                    const formattedDate = new Date(this.value + "T00:00:00").toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric"
+                    });
+                    selectedDateText.textContent = formattedDate;
+                } else {
+                    selectedDateText.textContent = "Select Date";
+                }
+            });
+
+            document.getElementById("activityOther").addEventListener("change", function () {
+                document.getElementById("activityOtherBox").style.display = this.checked ? "block" : "none";
+            });
+
+            document.getElementById("challengeOther").addEventListener("change", function () {
+                document.getElementById("challengeOtherBox").style.display = this.checked ? "block" : "none";
+            });
+
+            document.getElementById("resetForm").addEventListener("click", function () {
+                if (confirm("Are you sure you want to reset the form?")) {
+                    document.querySelectorAll("input:not([type='date']), textarea, select").forEach(function (element) {
+                        if (element.tagName === "SELECT") {
+                            element.selectedIndex = 0;
+                        } else if (element.type === "checkbox" || element.type === "radio") {
+                            element.checked = false;
+                        } else {
+                            element.value = "";
+                        }
+                    });
+
+                    reportDate.value = "";
+                    selectedDateText.textContent = "Select Date";
+                    document.getElementById("activityOtherBox").style.display = "none";
+                    document.getElementById("challengeOtherBox").style.display = "none";
+                }
+            });
+
+            document.getElementById("saveReport").addEventListener("click", function () {
+                alert("Static demo: Daily Session Report submitted successfully.");
+            });
+
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

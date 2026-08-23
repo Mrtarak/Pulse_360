@@ -369,8 +369,8 @@
 
                       <div class="col-md-6 mb-3">
                         <label>School Medium</label>
-                        <select class="form-control"
-                          name="school_medium">
+
+                        <select class="form-control" name="school_medium">
 
                           <option value="English"
                             <?= $student['School_Medium'] == 'English' ? 'selected' : '' ?>>
@@ -385,6 +385,16 @@
                           <option value="Hindi"
                             <?= $student['School_Medium'] == 'Hindi' ? 'selected' : '' ?>>
                             Hindi
+                          </option>
+
+                          <option value="Marathi"
+                            <?= $student['School_Medium'] == 'Marathi' ? 'selected' : '' ?>>
+                            Marathi
+                          </option>
+
+                          <option value="Urdu"
+                            <?= $student['School_Medium'] == 'Urdu' ? 'selected' : '' ?>>
+                            Urdu
                           </option>
 
                         </select>

@@ -80,12 +80,11 @@
                       </div>
 
                       <div class="col-md-4 mb-3">
-                        <label>Last Name *</label>
+                        <label>Last Name</label>
                         <input
                           type="text"
                           name="last_name"
-                          class="form-control"
-                          required>
+                          class="form-control">
                       </div>
 
                       <div class="col-md-4 mb-3">
@@ -133,21 +132,19 @@
                       </div>
 
                       <div class="col-md-4 mb-3">
-                        <label>Phone *</label>
+                        <label>Phone</label>
                         <input
                           type="text"
                           name="phone"
-                          class="form-control"
-                          required>
+                          class="form-control">
                       </div>
 
                       <div class="col-md-4 mb-3">
-                        <label>Email *</label>
+                        <label>Email</label>
                         <input
                           type="email"
                           name="email"
-                          class="form-control"
-                          required>
+                          class="form-control">
                       </div>
 
                       <div class="col-md-4 mb-3">
@@ -362,12 +359,20 @@
                             English
                           </option>
 
+                          <option value="Marathi">
+                            Marathi
+                          </option>
+
                           <option value="Hindi">
                             Hindi
                           </option>
 
                           <option value="Bengali">
                             Bengali
+                          </option>
+
+                          <option value="Urdu">
+                            Urdu
                           </option>
 
                         </select>
@@ -617,28 +622,26 @@
                       <div class="col-md-6 mb-3">
 
                         <label>
-                          Father's Name *
+                          Father's Name
                         </label>
 
                         <input
                           type="text"
                           name="father_name"
-                          class="form-control"
-                          required>
+                          class="form-control">
 
                       </div>
 
                       <div class="col-md-6 mb-3">
 
                         <label>
-                          Father's Contact *
+                          Father's Contact
                         </label>
 
                         <input
                           type="text"
                           name="father_contact"
-                          class="form-control"
-                          required>
+                          class="form-control">
 
                       </div>
 
@@ -671,28 +674,26 @@
                       <div class="col-md-6 mb-3">
 
                         <label>
-                          Mother's Name *
+                          Mother's Name
                         </label>
 
                         <input
                           type="text"
                           name="mother_name"
-                          class="form-control"
-                          required>
+                          class="form-control">
 
                       </div>
 
                       <div class="col-md-6 mb-3">
 
                         <label>
-                          Mother's Contact *
+                          Mother's Contact
                         </label>
 
                         <input
                           type="text"
                           name="mother_contact"
-                          class="form-control"
-                          required>
+                          class="form-control">
 
                       </div>
 
