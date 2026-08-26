@@ -24,6 +24,7 @@ class FeesModel extends Model
         'To_Date',
         'Previous_Pending_Amount',
         'Due_Amount',
+        'Late_Fine',
         'Paid_Amount',
         'Paid_Date',
         'Pending_Amount',

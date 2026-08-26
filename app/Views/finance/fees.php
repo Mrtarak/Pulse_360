@@ -218,34 +218,13 @@
 
                                                 </label>
 
-                                                <select
-                                                    class="form-select"
-                                                    id="frequency_months">
-
-                                                    <option value="">
-                                                        Select Frequency
-                                                    </option>
-
-                                                    <option value="1">
-                                                        Monthly
-                                                    </option>
-
-                                                    <option value="2">
-                                                        Every 2 Months
-                                                    </option>
-
-                                                    <option value="3">
-                                                        Every 3 Months
-                                                    </option>
-
-                                                    <option value="6">
-                                                        Every 6 Months
-                                                    </option>
-
-                                                    <option value="12">
-                                                        Yearly
-                                                    </option>
-
+                                                <select id="frequencyMonths" name="frequency_months" class="form-select">
+                                                    <option value="">Select Frequency</option>
+                                                    <option value="1">1 Month</option>
+                                                    <option value="3">3 Months</option>
+                                                    <option value="6">6 Months</option>
+                                                    <option value="12">1 Year</option>
+                                                    <option value="0">Full Course</option>
                                                 </select>
 
                                             </div>
@@ -397,25 +376,11 @@
                                                                 #
                                                             </th>
 
-                                                            <th>
-                                                                Student ID
-                                                            </th>
 
                                                             <th>
                                                                 Student Name
                                                             </th>
 
-                                                            <th>
-                                                                Frequency
-                                                            </th>
-
-                                                            <th>
-                                                                From Date
-                                                            </th>
-
-                                                            <th>
-                                                                To Date
-                                                            </th>
 
                                                             <th>
                                                                 Fees Paid on
@@ -428,6 +393,8 @@
                                                             <th>
                                                                 Due Amount
                                                             </th>
+
+                                                            <th>Late Fine</th>
 
                                                             <th>
                                                                 Total Due
@@ -455,7 +422,7 @@
                                                         <tr>
 
                                                             <td
-                                                                colspan="13"
+                                                                colspan="10"
                                                                 class="text-center text-muted">
 
                                                                 Select all required
@@ -717,9 +684,35 @@
             ==========================================
             */
 
-            $('#frequency_months').on('change', function() {
+            $('#frequencyMonths').on('change', function() {
 
-                calculateToDate();
+                let frequency = $(this).val();
+
+                /*
+                 * FULL COURSE
+                 * To Date should be manually selectable
+                 */
+                if (frequency === '0') {
+
+                    $('#to_date')
+                        .prop('readonly', false)
+                        .removeClass('date-display')
+                        .val('');
+
+                } else {
+
+                    /*
+                     * NORMAL FREQUENCY
+                     * To Date should be automatic and readonly
+                     */
+                    $('#to_date')
+                        .prop('readonly', true)
+                        .addClass('date-display');
+
+                    calculateToDate();
+                }
+
+                hideStudentSection();
 
                 checkFeeSelection();
 
@@ -734,9 +727,59 @@
 
             $('#from_date').on('change', function() {
 
-                calculateToDate();
+                let frequency = $('#frequencyMonths').val();
+
+
+                /*
+                 * For normal frequencies,
+                 * recalculate To Date automatically
+                 */
+                if (frequency !== '0') {
+
+                    calculateToDate();
+
+                }
+
+
+                /*
+                 * For Full Course, clear the manually selected
+                 * To Date when From Date changes
+                 */
+                if (frequency === '0') {
+
+                    $('#to_date').val('');
+
+                }
+
+
+                hideStudentSection();
 
                 checkFeeSelection();
+
+            });
+
+
+            /*
+            ==========================================
+            TO DATE CHANGE
+            FULL COURSE ONLY
+            ==========================================
+            */
+
+            $('#to_date').on('change', function() {
+
+                let frequency = $('#frequencyMonths').val();
+
+
+                /*
+                 * Only manually selected for Full Course
+                 */
+                if (frequency === '0') {
+
+                    hideStudentSection();
+
+                    checkFeeSelection();
+                }
 
             });
 
@@ -749,12 +792,25 @@
 
             function calculateToDate() {
 
-                let frequency = parseInt(
-                    $('#frequency_months').val()
-                );
-
+                let frequency = $('#frequencyMonths').val();
 
                 let fromDateValue = $('#from_date').val();
+
+
+                /*
+                 * FULL COURSE
+                 * Do not calculate To Date automatically
+                 */
+                if (frequency === '0') {
+
+                    return;
+                }
+
+
+                /*
+                 * Normal frequency validation
+                 */
+                frequency = parseInt(frequency);
 
 
                 if (!frequency || !fromDateValue) {
@@ -762,7 +818,6 @@
                     $('#to_date').val('');
 
                     return;
-
                 }
 
 
@@ -774,7 +829,6 @@
                 /*
                  * Add frequency months
                  */
-
                 let toDate = new Date(fromDate);
 
                 toDate.setMonth(
@@ -785,7 +839,6 @@
                 /*
                  * Subtract one day
                  */
-
                 toDate.setDate(
                     toDate.getDate() - 1
                 );
@@ -806,6 +859,11 @@
                     year + '-' + month + '-' + day
                 );
 
+
+                /*
+                 * Keep automatic date readonly
+                 */
+                $('#to_date').prop('readonly', true);
             }
 
 
@@ -823,17 +881,29 @@
 
                 let batchId = $('#batch_id').val();
 
-                let frequency = $('#frequency_months').val();
+                let frequency = $('#frequencyMonths').val();
 
                 let fromDate = $('#from_date').val();
 
+                let toDate = $('#to_date').val();
 
+
+                /*
+                 * All fields including To Date are required
+                 *
+                 * Normal frequency:
+                 * To Date is calculated automatically
+                 *
+                 * Full Course:
+                 * To Date is selected manually
+                 */
                 if (
                     programId &&
                     centerId &&
                     batchId &&
-                    frequency &&
-                    fromDate
+                    frequency !== '' &&
+                    fromDate &&
+                    toDate
                 ) {
 
                     loadStudents();
@@ -861,7 +931,7 @@
 
                 let batchId = $('#batch_id').val();
 
-                let frequency = $('#frequency_months').val();
+                let frequency = $('#frequencyMonths').val();
 
                 let fromDate = $('#from_date').val();
 
@@ -872,7 +942,7 @@
                     !programId ||
                     !centerId ||
                     !batchId ||
-                    !frequency ||
+                    frequency === '' ||
                     !fromDate ||
                     !toDate
                 ) {
@@ -889,7 +959,7 @@
 
                     '<tr>' +
 
-                    '<td colspan="13" class="text-center">' +
+                    '<td colspan="10" class="text-center">' +
 
                     '<div class="spinner-border text-primary"></div>' +
 
@@ -944,7 +1014,7 @@
 
                                 '<tr>' +
 
-                                '<td colspan="13" class="text-center text-danger">' +
+                                '<td colspan="10" class="text-center text-danger">' +
 
                                 'No active students found for this batch.' +
 
@@ -977,8 +1047,10 @@
                             let paidAmount =
                                 parseFloat(student.paid_amount) || 0;
 
+                            let lateFine = parseFloat(student.late_fine) || 0;
+
                             let totalDue =
-                                dueAmount + previousPending;
+                                dueAmount + previousPending + lateFine;
 
                             let pendingAmount =
                                 parseFloat(student.pending_amount);
@@ -1013,18 +1085,6 @@
                             html += '</td>';
 
 
-                            /*
-                             * Student ID
-                             */
-
-                            html += '<td>';
-
-                            html += escapeHtml(
-                                student.Student_Id
-                            );
-
-                            html += '</td>';
-
 
                             /*
                              * Student Name
@@ -1044,40 +1104,6 @@
 
                             html += '</td>';
 
-
-                            /*
-                             * Frequency
-                             */
-
-                            html += '<td>';
-
-                            html += getFrequencyText(
-                                frequency
-                            );
-
-                            html += '</td>';
-
-
-                            /*
-                             * From Date
-                             */
-
-                            html += '<td>';
-
-                            html += fromDate;
-
-                            html += '</td>';
-
-
-                            /*
-                             * To Date
-                             */
-
-                            html += '<td>';
-
-                            html += toDate;
-
-                            html += '</td>';
 
 
                             /*
@@ -1181,6 +1207,21 @@
                                 ) +
                                 '">';
 
+                            html += '</td>';
+
+
+                            /*
+                             * Late Fine
+                             */
+
+
+
+                            html += '<td>';
+                            html += '<input type="number" ';
+                            html += 'class="form-control student-fee-input late-fine editable-amount" ';
+                            html += 'name="students[' + index + '][late_fine]" ';
+                            html += 'value="' + lateFine.toFixed(2) + '" ';
+                            html += 'min="0" step="0.01">';
                             html += '</td>';
 
 
@@ -1342,7 +1383,7 @@
 
                             '<tr>' +
 
-                            '<td colspan="13" class="text-center text-danger">' +
+                            '<td colspan="10" class="text-center text-danger">' +
 
                             'Error loading students.' +
 
@@ -1367,7 +1408,7 @@
 
             $(document).on(
                 'input',
-                '.due-amount, .paid-amount',
+                '.due-amount, .late-fine, .paid-amount',
                 function() {
 
                     let row = $(this).closest('tr');
@@ -1495,24 +1536,66 @@
                     row.find('.previous-pending-amount').val()
                 ) || 0;
 
-
-                let due = parseFloat(
+                let dueAmount = parseFloat(
                     row.find('.due-amount').val()
                 ) || 0;
 
+                let lateFine = parseFloat(
+                    row.find('.late-fine').val()
+                ) || 0;
 
-                let paid = parseFloat(
+                let paidAmount = parseFloat(
                     row.find('.paid-amount').val()
                 ) || 0;
 
 
                 /*
-                 * Total Due
+                 * ======================================
+                 * TOTAL DUE
+                 *
+                 * Previous Pending
+                 * + Due Amount
+                 * + Late Fine
+                 * ======================================
                  */
 
                 let totalDue =
-                    previousPending + due;
+                    previousPending +
+                    dueAmount +
+                    lateFine;
 
+
+                /*
+                 * Prevent Paid Amount from being
+                 * greater than Total Due
+                 */
+
+                if (paidAmount > totalDue) {
+
+                    paidAmount = totalDue;
+
+                    row.find('.paid-amount').val(
+                        paidAmount.toFixed(2)
+                    );
+                }
+
+
+                /*
+                 * PENDING AMOUNT
+                 */
+
+                let pendingAmount =
+                    totalDue - paidAmount;
+
+                if (pendingAmount < 0) {
+
+                    pendingAmount = 0;
+                }
+
+
+                /*
+                 * UPDATE TOTAL DUE BOX
+                 */
 
                 row.find('.total-due-amount').val(
                     totalDue.toFixed(2)
@@ -1520,37 +1603,17 @@
 
 
                 /*
-                 * Prevent paid amount from
-                 * being greater than Total Due
+                 * UPDATE PENDING AMOUNT BOX
                  */
 
-                if (paid > totalDue) {
-
-                    paid = totalDue;
-
-                    row.find('.paid-amount').val(
-                        paid.toFixed(2)
-                    );
-                }
+                row.find('.pending-amount').val(
+                    pendingAmount.toFixed(2)
+                );
 
 
                 /*
-                 * Pending Amount
+                 * UPDATE ORANGE HIGHLIGHT
                  */
-
-                let pending =
-                    totalDue - paid;
-
-
-                if (pending < 0) {
-
-                    pending = 0;
-                }
-
-
-                row.find('.pending-amount').val(
-                    pending.toFixed(2)
-                );
 
                 updatePendingHighlight(row);
             }
@@ -1595,8 +1658,9 @@
                     !programId ||
                     !centerId ||
                     !batchId ||
-                    !frequency ||
-                    !fromDate
+                    frequency === '' ||
+                    !fromDate ||
+                    !toDate
                 ) {
 
                     alert(
@@ -1619,6 +1683,10 @@
 
                     let paid = parseFloat(
                         $(this).find('.paid-amount').val()
+                    ) || 0;
+
+                    let lateFine = parseFloat(
+                        $(this).find('.late-fine').val()
                     ) || 0;
 
                     let paidDate = $(this)
@@ -1667,8 +1735,9 @@
 
 
                     let totalDue =
-                        due + previousPending;
-
+                        due +
+                        previousPending +
+                        lateFine;
 
                     if (paid < 0 || paid > totalDue) {
 
@@ -1780,7 +1849,7 @@
 
                                 '<tr>' +
 
-                                '<td colspan="13" class="text-center text-success">' +
+                                '<td colspan="10" class="text-center text-success">' +
 
                                 'Fee records saved successfully.' +
 
@@ -1934,7 +2003,7 @@
 
                     '<tr>' +
 
-                    '<td colspan="13" class="text-center text-muted">' +
+                    '<td colspan="10" class="text-center text-muted">' +
 
                     'Select Program, Center, Batch, Frequency and From Date.'
 

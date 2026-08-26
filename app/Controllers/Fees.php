@@ -173,7 +173,7 @@ class Fees extends BaseController
             ]);
         }
 
-        
+
 
         try {
 
@@ -227,6 +227,7 @@ class Fees extends BaseController
                 $student['existing_fees_id']        = null;
 
                 $student['due_amount']              = 0;
+                $student['late_fine']               = 0;
                 $student['previous_pending_amount'] = 0;
                 $student['paid_amount']             = 0;
                 $student['paid_date']               = null;
@@ -273,6 +274,9 @@ class Fees extends BaseController
 
                     $student['due_amount'] =
                         (float) $existingFee['Due_Amount'];
+
+                    $student['late_fine'] =
+                        (float) ($existingFee['Late_Fine'] ?? 0);
 
                     $student['previous_pending_amount'] =
                         (float) ($existingFee['Previous_Pending_Amount'] ?? 0);
@@ -380,7 +384,7 @@ class Fees extends BaseController
         $programId       = $this->request->getPost('program_id');
         $centerId        = $this->request->getPost('center_id');
         $batchId         = $this->request->getPost('batch_id');
-        $frequencyMonths = (int) $this->request->getPost('frequency_months');
+        $frequencyMonths = $this->request->getPost('frequency_months');
         $fromDate        = $this->request->getPost('from_date');
         $toDate          = $this->request->getPost('to_date');
 
@@ -397,7 +401,8 @@ class Fees extends BaseController
             !$programId ||
             !$centerId ||
             !$batchId ||
-            !$frequencyMonths ||
+            $frequencyMonths === null ||
+            $frequencyMonths === '' ||
             !$fromDate ||
             !$toDate
         ) {
@@ -407,6 +412,8 @@ class Fees extends BaseController
                 'message' => 'Please select Program, Center, Batch, Frequency and dates.'
             ]);
         }
+
+        $frequencyMonths = (int) $frequencyMonths;
 
 
         if (empty($students) || !is_array($students)) {
@@ -461,6 +468,11 @@ class Fees extends BaseController
             $dueAmount = isset($student['due_amount'])
                 ? (float) $student['due_amount']
                 : 0;
+
+
+
+
+            $lateFine = (float) ($student['late_fine'] ?? 0);
 
 
             /*
@@ -529,8 +541,7 @@ class Fees extends BaseController
          * PREVIOUS PENDING + CURRENT DUE
          */
 
-            $totalDueAmount =
-                $previousPendingAmount + $dueAmount;
+            $totalDueAmount = $previousPendingAmount + $dueAmount + $lateFine;
 
 
             if ($paidAmount < 0) {
@@ -696,6 +707,8 @@ class Fees extends BaseController
                     'Due_Amount' =>
                     $dueAmount,
 
+                    'Late_Fine'       => $lateFine,
+
                     'Paid_Amount' =>
                     $paidAmount,
 
@@ -845,6 +858,8 @@ class Fees extends BaseController
 
                 'Due_Amount' =>
                 $dueAmount,
+
+                'Late_Fine'      => $lateFine,
 
                 'Paid_Amount' =>
                 $paidAmount,
