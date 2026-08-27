@@ -186,7 +186,8 @@
 
                 <!-- Assessment - Add URL later -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link"
+                    href="<?= site_url('assessment/learning-adda') ?>">
                     Assessment
                   </a>
                 </li>

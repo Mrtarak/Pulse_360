@@ -238,3 +238,52 @@ $routes->post('finance/fees/get-centers', 'Fees::getCenters');
 $routes->post('finance/fees/get-batches', 'Fees::getBatches');
 $routes->post('finance/fees/get-students', 'Fees::getStudents');
 $routes->post('finance/fees/save', 'Fees::save');
+
+
+
+// ==================== LEARNING ADDA ASSESSMENT ====================
+
+$routes->group('assessment/learning-adda', function ($routes) {
+
+    $routes->get('/', 'Assessment\LearningAdda::index');
+
+    $routes->post(
+        'get-batches',
+        'Assessment\LearningAdda::getBatches'
+    );
+
+    $routes->post(
+        'get-students',
+        'Assessment\LearningAdda::getStudents'
+    );
+
+    // Add Assessment
+    $routes->get(
+        'add',
+        'Assessment\LearningAdda::add'
+    );
+
+    // Save Assessment
+    $routes->post(
+        'save',
+        'Assessment\LearningAdda::save'
+    );
+
+    // View Assessment
+    $routes->get(
+        'view/(:segment)',
+        'Assessment\LearningAdda::view/$1'
+    );
+
+    // Edit Assessment
+    $routes->get(
+        'edit/(:segment)/(:segment)',
+        'Assessment\LearningAdda::edit/$1/$2'
+    );
+
+    // Update Assessment
+    $routes->post(
+        'update',
+        'Assessment\LearningAdda::update'
+    );
+});
