@@ -342,3 +342,33 @@ $routes->group('assessment/doosra-mauka', function ($routes) {
         'Assessment\DoosraMauka::update'
     );
 });
+
+
+// ==================== DIGITAL SHAKTI ASSESSMENT ====================
+
+$routes->group('assessment/digital-shakti', function ($routes) {
+
+    // Digital Shakti Assessment Page
+    $routes->get(
+        '/',
+        'Assessment\DigitalShakti::index'
+    );
+
+    // Get Batches based on Center
+    $routes->post(
+        'get-batches',
+        'Assessment\DigitalShakti::getBatches'
+    );
+
+    // Get Students + Existing Assessment Data
+    $routes->post(
+        'get-students',
+        'Assessment\DigitalShakti::getStudents'
+    );
+
+    // Save / Update all Student Assessments
+    $routes->post(
+        'save',
+        'Assessment\DigitalShakti::save'
+    );
+});

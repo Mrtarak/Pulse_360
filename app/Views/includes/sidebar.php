@@ -135,7 +135,7 @@
               href="#vijetaasSubmenu"
               aria-expanded="false">
 
-              Vijetaas
+              Project Vijetaas
               <i class="menu-arrow"></i>
             </a>
 
@@ -145,7 +145,7 @@
                 <li class="nav-item">
                   <a class="nav-link"
                     href="<?= site_url('students/vijetaas') ?>">
-                    All Vijetaas
+                    All Students
                   </a>
                 </li>
 
@@ -219,9 +219,10 @@
                   </a>
                 </li>
 
-                <!-- Assessment - Add URL later -->
+                <!-- Assessment -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link"
+                    href="<?= site_url('assessment/digital-shakti') ?>">
                     Assessment
                   </a>
                 </li>
@@ -271,18 +272,10 @@
 
     <!-- Attendance -->
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-toggle="collapse" href="#attendanceSubmenu" aria-expanded="false">
+      <a class="nav-link" href="<?= site_url('attendance/class') ?>">
         <i class="mdi mdi-calendar-check menu-icon"></i>
         <span class="menu-title">Manage Attendance</span>
-        <i class="menu-arrow"></i>
       </a>
-
-      <div class="collapse" id="attendanceSubmenu">
-        <ul class="nav flex-column sub-menu">
-          <li class="nav-item"><a class="nav-link" href="<?= site_url('attendance/class') ?>">Class</a></li>
-          <!--<li class="nav-item"><a class="nav-link" href="<?= site_url('attendance/event') ?>">Event</a></li> -->
-        </ul>
-      </div>
     </li>
 
     <!-- Results 
@@ -293,35 +286,84 @@
       </a>
     </li>-->
 
+
+    <!-- ================= Manage Activities ================= -->
+    <li class="nav-item">
+
+      <a class="nav-link collapsed"
+        data-bs-toggle="collapse"
+        href="#activitiesSubmenu"
+        aria-expanded="false">
+
+        <i class="mdi mdi-calendar-star menu-icon"></i>
+
+        <span class="menu-title">Manage Activities</span>
+
+        <i class="menu-arrow"></i>
+
+      </a>
+
+
+      <div class="collapse" id="activitiesSubmenu">
+
+        <ul class="nav flex-column sub-menu">
+
+
+          <!-- PTM -->
+          <li class="nav-item">
+
+            <a class="nav-link"
+              href="<?= site_url('activities/ptm') ?>">
+
+              PTM
+
+            </a>
+
+          </li>
+
+
+          <!-- Home Visit -->
+          <li class="nav-item">
+
+            <a class="nav-link"
+              href="<?= site_url('activities/home-visit') ?>">
+
+              Home Visit
+
+            </a>
+
+          </li>
+
+
+        </ul>
+
+      </div>
+
+    </li>
+
     <!-- FINANCE -->
-    <li class="nav-item nav-category">Manage Finance</li>
+    <li class="nav-item nav-category"> Finance</li>
 
     <li class="nav-item">
       <a class="nav-link" href="<?= site_url('fees') ?>">
         <i class="mdi mdi-cash-multiple menu-icon"></i>
-        <span class="menu-title">Fees</span>
+        <span class="menu-title">Manage Fees</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="<?= site_url('finance/donations') ?>">
         <i class="mdi mdi-currency-inr menu-icon"></i>
-        <span class="menu-title">Donations</span>
+        <span class="menu-title">Manage Income</span>
       </a>
     </li>
 
     <li class="nav-item">
       <a class="nav-link" href="<?= site_url('finance/assets') ?>">
         <i class="mdi mdi-package-variant menu-icon"></i>
-        <span class="menu-title">Assets</span>
+        <span class="menu-title">Manage Assets</span>
       </a>
     </li>
 
-    <li class="nav-item">
-      <a class="nav-link" href="<?= site_url('finance/expenses') ?>">
-        <i class="mdi mdi-cash-minus menu-icon"></i>
-        <span class="menu-title">Expenses</span>
-      </a>
-    </li>
     <!-- EVENTS 
     <li class="nav-item nav-category">Others</li>
 
