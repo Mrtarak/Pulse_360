@@ -7,6 +7,7 @@ use CodeIgniter\Model;
 class StudentAssessmentModel extends Model
 {
     protected $table = 'student_assessment';
+
     protected $primaryKey = 'Student_Assessment_Id';
 
     public $useAutoIncrement = false;
@@ -14,13 +15,21 @@ class StudentAssessmentModel extends Model
     protected $returnType = 'array';
 
     protected $allowedFields = [
+
         'Student_Assessment_Id',
+
         'Student_Id',
         'Program_Id',
         'Center_Id',
         'Batch_Id',
+
         'Assessment_Type',
         'Assessment_Date',
+
+
+        /* =========================================
+         * LEARNING ADDA FIELDS
+         * ========================================= */
 
         'English_Level',
         'English_Grade',
@@ -38,27 +47,50 @@ class StudentAssessmentModel extends Model
         'Marathi_Grade',
         'Marathi_Remark',
 
+
+        /* =========================================
+         * DIGITAL SHAKTI
+         * ========================================= */
+
         'Digital_Shakti_Grade',
         'Digital_Shakti_Remark',
 
+
+        /* =========================================
+         * DOOSRA MAUKA
+         * ========================================= */
+
         'Tailoring_Grade',
-        'Tailoring_Grade_Remark',
+        'Tailoring_Remark',
 
         'Literacy_Grade',
-        'Literacy_Grade_Remark',
+        'Literacy_Remark',
 
         'Numeracy_Grade',
-        'Numeracy_Grade_Remark',
+        'Numeracy_Remark',
+
+
+        /* =========================================
+         * SEL
+         * ========================================= */
 
         'Ethics',
         'Empathy',
         'Excellence',
         'Eagerness',
+
         'SEL_Remarks',
 
+
+        /* =========================================
+         * RECORD INFORMATION
+         * ========================================= */
+
         'Assessed_By',
+
         'Rec_Added_By',
         'Rec_Added_On',
+
         'Rec_Updated_By',
         'Rec_Last_Updated_On'
     ];

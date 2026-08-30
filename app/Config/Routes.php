@@ -287,3 +287,58 @@ $routes->group('assessment/learning-adda', function ($routes) {
         'Assessment\LearningAdda::update'
     );
 });
+
+
+
+// ==================== DOOSRA MAUKA ASSESSMENT ====================
+
+$routes->group('assessment/doosra-mauka', function ($routes) {
+
+    // Assessment Index
+    $routes->get(
+        '/',
+        'Assessment\DoosraMauka::index'
+    );
+
+    // Get Batches
+    $routes->post(
+        'get-batches',
+        'Assessment\DoosraMauka::getBatches'
+    );
+
+    // Get Students
+    $routes->post(
+        'get-students',
+        'Assessment\DoosraMauka::getStudents'
+    );
+
+    // Add Assessment
+    $routes->get(
+        'add',
+        'Assessment\DoosraMauka::add'
+    );
+
+    // Save Assessment
+    $routes->post(
+        'save',
+        'Assessment\DoosraMauka::save'
+    );
+
+    // View Assessment
+    $routes->get(
+        'view/(:segment)',
+        'Assessment\DoosraMauka::view/$1'
+    );
+
+    // Edit Assessment
+    $routes->get(
+        'edit/(:segment)/(:segment)',
+        'Assessment\DoosraMauka::edit/$1/$2'
+    );
+
+    // Update Assessment
+    $routes->post(
+        'update',
+        'Assessment\DoosraMauka::update'
+    );
+});

@@ -26,10 +26,9 @@
                             <!-- ========================================= -->
 
                             <form
-                                action="<?= site_url('assessment/learning-adda/save') ?>"
+                                action="<?= site_url('assessment/doosra-mauka/save') ?>"
                                 method="post"
                                 id="assessmentForm">
-
 
                                 <?= csrf_field(); ?>
 
@@ -46,7 +45,7 @@
                                 <input
                                     type="hidden"
                                     name="program_id"
-                                    value="<?= esc($student['Program_Id']) ?>">
+                                    value="<?= esc($programId) ?>">
 
                                 <input
                                     type="hidden"
@@ -76,10 +75,9 @@
 
                                             <i class="mdi mdi-school me-2"></i>
 
-                                            Learning Adda Assessment Result
+                                            Doosra Mauka Assessment Result
 
                                         </span>
-
 
                                         <span class="badge bg-light text-dark">
 
@@ -92,9 +90,9 @@
                                 </div>
 
 
-
                                 <!-- ========================================= -->
                                 <!-- PERSONAL DETAILS -->
+                                <!-- SAME UI AS LEARNING ADDA -->
                                 <!-- ========================================= -->
 
                                 <div class="card shadow-sm mb-4">
@@ -113,9 +111,9 @@
                                         <div class="row align-items-center">
 
 
+                                            <!-- ================================= -->
                                             <!-- STUDENT PHOTO -->
-
-                                            <!-- STUDENT PHOTO -->
+                                            <!-- ================================= -->
 
                                             <div class="col-md-3 text-center mb-3">
 
@@ -140,13 +138,16 @@
                                             </div>
 
 
-
+                                            <!-- ================================= -->
                                             <!-- STUDENT INFORMATION -->
+                                            <!-- ================================= -->
 
                                             <div class="col-md-9">
 
                                                 <div class="row">
 
+
+                                                    <!-- STUDENT NAME -->
 
                                                     <div class="col-md-6 mb-3">
 
@@ -170,6 +171,8 @@
                                                     </div>
 
 
+                                                    <!-- STUDENT ID -->
+
                                                     <div class="col-md-6 mb-3">
 
                                                         <label class="form-label">
@@ -186,6 +189,8 @@
 
                                                     </div>
 
+
+                                                    <!-- CENTER -->
 
                                                     <div class="col-md-6 mb-3">
 
@@ -204,6 +209,8 @@
                                                     </div>
 
 
+                                                    <!-- BATCH -->
+
                                                     <div class="col-md-6 mb-3">
 
                                                         <label class="form-label">
@@ -220,6 +227,7 @@
 
                                                     </div>
 
+
                                                 </div>
 
                                             </div>
@@ -231,9 +239,8 @@
                                 </div>
 
 
-
                                 <!-- ========================================= -->
-                                <!-- EDUCATION RESULT -->
+                                <!-- ASSESSMENT DETAILS -->
                                 <!-- ========================================= -->
 
                                 <div class="card shadow-sm mb-4">
@@ -244,7 +251,7 @@
 
                                             <i class="mdi mdi-book-open-page-variant me-2"></i>
 
-                                            Education Result
+                                            Assessment Details
 
                                         </div>
 
@@ -268,116 +275,81 @@
                                                     type="date"
                                                     name="assessment_date"
                                                     class="form-control"
-                                                    value="<?= esc($today) ?>"
+                                                    value="<?= esc(old('assessment_date', $today)) ?>"
                                                     max="<?= esc($today) ?>"
                                                     required>
 
                                             </div>
 
 
-
-                                            <!-- STUDENT CLASS -->
+                                            <!-- ASSESSMENT TYPE -->
 
                                             <div class="col-md-4 mb-3">
 
                                                 <label class="form-label">
 
-                                                    Grade (Class)
+                                                    Assessment Type
 
                                                 </label>
 
                                                 <input
                                                     type="text"
                                                     class="form-control readonly"
-                                                    value="<?= !empty($student['Student_Class'])
-                                                                ? 'Class ' . esc($student['Student_Class'])
-                                                                : '' ?>"
+                                                    value="<?= esc($assessmentType) ?>"
                                                     readonly>
 
                                             </div>
 
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ========================================= -->
+                                <!-- SKILL ASSESSMENT -->
+                                <!-- ========================================= -->
+
+                                <div class="card shadow-sm mb-4">
+
+                                    <div class="card-body">
+
+                                        <div class="section-heading">
+
+                                            <i class="mdi mdi-school-outline me-2"></i>
+
+                                            Skill Assessment
+
                                         </div>
 
 
-
-                                        <!-- ========================================= -->
-                                        <!-- ENGLISH -->
-                                        <!-- ========================================= -->
+                                        <!-- ================================= -->
+                                        <!-- TAILORING -->
+                                        <!-- ================================= -->
 
                                         <div class="subject-row">
 
                                             <div class="subject-title">
 
-                                                English
+                                                Tailoring
 
                                             </div>
 
 
                                             <div class="row">
 
-
-                                                <div class="col-md-4 mb-3">
-
-                                                    <label class="form-label">
-
-                                                        English Level
-
-                                                    </label>
-
-                                                    <select
-                                                        name="english_level"
-                                                        class="form-select">
-
-                                                        <option value="">
-                                                            Select Level
-                                                        </option>
-
-                                                        <?php
-                                                        $levels = [
-                                                            'KG',
-                                                            'Class 1',
-                                                            'Class 2',
-                                                            'Class 3',
-                                                            'Class 4',
-                                                            'Class 5',
-                                                            'Class 6',
-                                                            'Class 7',
-                                                            'Class 8',
-                                                            'Class 9',
-                                                            'Class 10',
-                                                            'Class 11',
-                                                            'Class 12',
-                                                            'N/A'
-                                                        ];
-                                                        ?>
-
-                                                        <?php foreach ($levels as $level): ?>
-
-                                                            <option
-                                                                value="<?= esc($level) ?>">
-
-                                                                <?= esc($level) ?>
-
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-
                                                 <div class="col-md-3 mb-3">
 
                                                     <label class="form-label">
 
-                                                        English Grade
+                                                        Tailoring Grade
 
                                                     </label>
 
                                                     <select
-                                                        name="english_grade"
+                                                        name="tailoring_grade"
                                                         class="form-select">
 
                                                         <option value="">
@@ -387,333 +359,11 @@
                                                         <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
 
                                                             <option
-                                                                value="<?= esc($grade) ?>">
+                                                                value="<?= esc($grade) ?>"
+                                                                <?= old('tailoring_grade') === $grade ? 'selected' : '' ?>>
 
                                                                 <?= esc($grade) ?>
 
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-
-                                                <div class="col-md-5 mb-3">
-
-                                                    <label class="form-label">
-
-                                                        English Remark
-
-                                                    </label>
-
-                                                    <textarea
-                                                        name="english_remark"
-                                                        class="form-control"
-                                                        rows="2"
-                                                        placeholder="Enter English remark"></textarea>
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-
-
-                                        <!-- ========================================= -->
-                                        <!-- MATH -->
-                                        <!-- ========================================= -->
-
-                                        <div class="subject-row">
-
-                                            <div class="subject-title">
-
-                                                Math
-
-                                            </div>
-
-
-                                            <div class="row">
-
-
-                                                <div class="col-md-4 mb-3">
-
-                                                    <label class="form-label">
-                                                        Math Level
-                                                    </label>
-
-                                                    <select
-                                                        name="math_level"
-                                                        class="form-select">
-
-                                                        <option value="">
-                                                            Select Level
-                                                        </option>
-
-                                                        <?php foreach ($levels as $level): ?>
-
-                                                            <option value="<?= esc($level) ?>">
-                                                                <?= esc($level) ?>
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-3 mb-3">
-
-                                                    <label class="form-label">
-                                                        Math Grade
-                                                    </label>
-
-                                                    <select
-                                                        name="math_grade"
-                                                        class="form-select">
-
-                                                        <option value="">
-                                                            Select Grade
-                                                        </option>
-
-                                                        <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
-
-                                                            <option value="<?= esc($grade) ?>">
-                                                                <?= esc($grade) ?>
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-5 mb-3">
-
-                                                    <label class="form-label">
-                                                        Math Remark
-                                                    </label>
-
-                                                    <textarea
-                                                        name="math_remark"
-                                                        class="form-control"
-                                                        rows="2"
-                                                        placeholder="Enter Math remark"></textarea>
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-
-
-                                        <!-- ========================================= -->
-                                        <!-- HINDI -->
-                                        <!-- ========================================= -->
-
-                                        <div class="subject-row">
-
-                                            <div class="subject-title">
-                                                Hindi
-                                            </div>
-
-                                            <div class="row">
-
-                                                <div class="col-md-4 mb-3">
-
-                                                    <label class="form-label">
-                                                        Hindi Level
-                                                    </label>
-
-                                                    <select
-                                                        name="hindi_level"
-                                                        class="form-select">
-
-                                                        <option value="">Select Level</option>
-
-                                                        <?php foreach ($levels as $level): ?>
-
-                                                            <option value="<?= esc($level) ?>">
-                                                                <?= esc($level) ?>
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-3 mb-3">
-
-                                                    <label class="form-label">
-                                                        Hindi Grade
-                                                    </label>
-
-                                                    <select
-                                                        name="hindi_grade"
-                                                        class="form-select">
-
-                                                        <option value="">Select Grade</option>
-
-                                                        <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
-
-                                                            <option value="<?= esc($grade) ?>">
-                                                                <?= esc($grade) ?>
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-5 mb-3">
-
-                                                    <label class="form-label">
-                                                        Hindi Remark
-                                                    </label>
-
-                                                    <textarea
-                                                        name="hindi_remark"
-                                                        class="form-control"
-                                                        rows="2"
-                                                        placeholder="Enter Hindi remark"></textarea>
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-
-
-                                        <!-- ========================================= -->
-                                        <!-- MARATHI -->
-                                        <!-- ========================================= -->
-
-                                        <div class="subject-row">
-
-                                            <div class="subject-title">
-                                                Marathi
-                                            </div>
-
-                                            <div class="row">
-
-                                                <div class="col-md-4 mb-3">
-
-                                                    <label class="form-label">
-                                                        Marathi Level
-                                                    </label>
-
-                                                    <select
-                                                        name="marathi_level"
-                                                        class="form-select">
-
-                                                        <option value="">Select Level</option>
-
-                                                        <?php foreach ($levels as $level): ?>
-
-                                                            <option value="<?= esc($level) ?>">
-                                                                <?= esc($level) ?>
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-3 mb-3">
-
-                                                    <label class="form-label">
-                                                        Marathi Grade
-                                                    </label>
-
-                                                    <select
-                                                        name="marathi_grade"
-                                                        class="form-select">
-
-                                                        <option value="">Select Grade</option>
-
-                                                        <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
-
-                                                            <option value="<?= esc($grade) ?>">
-                                                                <?= esc($grade) ?>
-                                                            </option>
-
-                                                        <?php endforeach; ?>
-
-                                                    </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-5 mb-3">
-
-                                                    <label class="form-label">
-                                                        Marathi Remark
-                                                    </label>
-
-                                                    <textarea
-                                                        name="marathi_remark"
-                                                        class="form-control"
-                                                        rows="2"
-                                                        placeholder="Enter Marathi remark"></textarea>
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-
-
-                                        <!-- ========================================= -->
-                                        <!-- DIGITAL SHAKTI -->
-                                        <!-- ========================================= -->
-
-                                        <div class="subject-row">
-
-                                            <div class="subject-title">
-
-                                                Digital Shakti
-
-                                                <span class="info-badge ms-2">
-                                                    Computer
-                                                </span>
-
-                                            </div>
-
-
-                                            <div class="row">
-
-                                                <div class="col-md-3 mb-3">
-
-                                                    <label class="form-label">
-                                                        Digital Shakti Grade
-                                                    </label>
-
-                                                    <select
-                                                        name="digital_shakti_grade"
-                                                        class="form-select">
-
-                                                        <option value="">
-                                                            Select Grade
-                                                        </option>
-
-                                                        <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
-
-                                                            <option value="<?= esc($grade) ?>">
-                                                                <?= esc($grade) ?>
                                                             </option>
 
                                                         <?php endforeach; ?>
@@ -727,15 +377,16 @@
 
                                                     <label class="form-label">
 
-                                                        Remarks on Digital Shakti Assessments
+                                                        Tailoring Remark
 
                                                     </label>
 
                                                     <textarea
-                                                        name="digital_shakti_remark"
+                                                        name="tailoring_remark"
                                                         class="form-control"
                                                         rows="2"
-                                                        placeholder="Enter Digital Shakti assessment remarks"></textarea>
+                                                        maxlength="500"
+                                                        placeholder="Enter Tailoring remark"><?= esc(old('tailoring_remark')) ?></textarea>
 
                                                 </div>
 
@@ -743,14 +394,155 @@
 
                                         </div>
 
+
+                                        <!-- ================================= -->
+                                        <!-- LITERACY -->
+                                        <!-- ================================= -->
+
+                                        <div class="subject-row">
+
+                                            <div class="subject-title">
+
+                                                Literacy
+
+                                            </div>
+
+
+                                            <div class="row">
+
+                                                <div class="col-md-3 mb-3">
+
+                                                    <label class="form-label">
+
+                                                        Literacy Grade
+
+                                                    </label>
+
+                                                    <select
+                                                        name="literacy_grade"
+                                                        class="form-select">
+
+                                                        <option value="">
+                                                            Select Grade
+                                                        </option>
+
+                                                        <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
+
+                                                            <option
+                                                                value="<?= esc($grade) ?>"
+                                                                <?= old('literacy_grade') === $grade ? 'selected' : '' ?>>
+
+                                                                <?= esc($grade) ?>
+
+                                                            </option>
+
+                                                        <?php endforeach; ?>
+
+                                                    </select>
+
+                                                </div>
+
+
+                                                <div class="col-md-9 mb-3">
+
+                                                    <label class="form-label">
+
+                                                        Literacy Remark
+
+                                                    </label>
+
+                                                    <textarea
+                                                        name="literacy_remark"
+                                                        class="form-control"
+                                                        rows="2"
+                                                        maxlength="500"
+                                                        placeholder="Enter Literacy remark"><?= esc(old('literacy_remark')) ?></textarea>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- ================================= -->
+                                        <!-- NUMERACY -->
+                                        <!-- ================================= -->
+
+                                        <div class="subject-row">
+
+                                            <div class="subject-title">
+
+                                                Numeracy
+
+                                            </div>
+
+
+                                            <div class="row">
+
+                                                <div class="col-md-3 mb-3">
+
+                                                    <label class="form-label">
+
+                                                        Numeracy Grade
+
+                                                    </label>
+
+                                                    <select
+                                                        name="numeracy_grade"
+                                                        class="form-select">
+
+                                                        <option value="">
+                                                            Select Grade
+                                                        </option>
+
+                                                        <?php foreach (['A+', 'A', 'B+', 'B', 'C+', 'C', 'D'] as $grade): ?>
+
+                                                            <option
+                                                                value="<?= esc($grade) ?>"
+                                                                <?= old('numeracy_grade') === $grade ? 'selected' : '' ?>>
+
+                                                                <?= esc($grade) ?>
+
+                                                            </option>
+
+                                                        <?php endforeach; ?>
+
+                                                    </select>
+
+                                                </div>
+
+
+                                                <div class="col-md-9 mb-3">
+
+                                                    <label class="form-label">
+
+                                                        Numeracy Remark
+
+                                                    </label>
+
+                                                    <textarea
+                                                        name="numeracy_remark"
+                                                        class="form-control"
+                                                        rows="2"
+                                                        maxlength="500"
+                                                        placeholder="Enter Numeracy remark"><?= esc(old('numeracy_remark')) ?></textarea>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
                                     </div>
 
                                 </div>
 
 
-
                                 <!-- ========================================= -->
                                 <!-- SEL -->
+                                <!-- EXACT SAME AS LEARNING ADDA -->
                                 <!-- ========================================= -->
 
                                 <div class="card shadow-sm mb-4">
@@ -765,55 +557,102 @@
 
                                         </div>
 
+
+                                        <!-- ================================= -->
+                                        <!-- RATING GUIDE -->
+                                        <!-- ================================= -->
+
                                         <div class="alert alert-light border mb-4">
 
                                             <strong>
+
                                                 <i class="mdi mdi-information-outline me-1"></i>
+
                                                 Rating Guide:
+
                                             </strong>
 
+
                                             <span class="ms-2">
+
                                                 <strong>1</strong> = Needs Improvement
+
                                             </span>
 
+
                                             <span class="ms-3">
+
                                                 <strong>2</strong> = Average
+
                                             </span>
 
+
                                             <span class="ms-3">
+
                                                 <strong>3</strong> = Good
+
                                             </span>
 
+
                                             <span class="ms-3">
+
                                                 <strong>4</strong> = Outstanding
+
                                             </span>
 
                                         </div>
 
 
+                                        <?php
+
+                                        $selFields = [
+
+                                            'ethics' => [
+
+                                                'title' => 'Ethics',
+
+                                                'question' =>
+                                                'Does the child choose to do the right thing, even when no one is watching?'
+
+                                            ],
+
+                                            'empathy' => [
+
+                                                'title' => 'Empathy',
+
+                                                'question' =>
+                                                'Does the child understand and care about how others feel?'
+
+                                            ],
+
+                                            'excellence' => [
+
+                                                'title' => 'Excellence',
+
+                                                'question' =>
+                                                'Does the participant always try to do their best and improve?'
+
+                                            ],
+
+                                            'eagerness' => [
+
+                                                'title' => 'Eagerness',
+
+                                                'question' =>
+                                                'Does the child show curiosity and enthusiasm to learn and participate?'
+
+                                            ]
+
+                                        ];
+
+                                        ?>
+
+
+                                        <!-- ================================= -->
+                                        <!-- SEL RATINGS -->
+                                        <!-- ================================= -->
+
                                         <div class="row">
-
-                                            <?php
-                                            $selFields = [
-                                                'ethics' => [
-                                                    'title' => 'Ethics',
-                                                    'question' => 'Does the child choose to do the right thing, even when no one is watching?'
-                                                ],
-                                                'empathy' => [
-                                                    'title' => 'Empathy',
-                                                    'question' => 'Does the child understand and care about how others feel?'
-                                                ],
-                                                'excellence' => [
-                                                    'title' => 'Excellence',
-                                                    'question' => 'Does the participant always try to do their best and improve?'
-                                                ],
-                                                'eagerness' => [
-                                                    'title' => 'Eagerness',
-                                                    'question' => 'Does the child show curiosity and enthusiasm to learn and participate?'
-                                                ]
-                                            ];
-                                            ?>
-
 
                                             <?php foreach ($selFields as $field => $details): ?>
 
@@ -841,21 +680,17 @@
                                                             Select Rating
                                                         </option>
 
-                                                        <option value="1">
-                                                            1
-                                                        </option>
+                                                        <?php for ($rating = 1; $rating <= 4; $rating++): ?>
 
-                                                        <option value="2">
-                                                            2
-                                                        </option>
+                                                            <option
+                                                                value="<?= $rating ?>"
+                                                                <?= old($field) == $rating ? 'selected' : '' ?>>
 
-                                                        <option value="3">
-                                                            3
-                                                        </option>
+                                                                <?= $rating ?>
 
-                                                        <option value="4">
-                                                            4
-                                                        </option>
+                                                            </option>
+
+                                                        <?php endfor; ?>
 
                                                     </select>
 
@@ -866,8 +701,9 @@
                                         </div>
 
 
-
+                                        <!-- ================================= -->
                                         <!-- SEL REMARKS -->
+                                        <!-- ================================= -->
 
                                         <div class="mb-3">
 
@@ -881,13 +717,15 @@
                                                 name="sel_remarks"
                                                 class="form-control"
                                                 rows="4"
-                                                placeholder="Enter remarks on SEL assessments"></textarea>
+                                                maxlength="500"
+                                                placeholder="Enter remarks on SEL assessments"><?= esc(old('sel_remarks')) ?></textarea>
 
                                         </div>
 
 
-
+                                        <!-- ================================= -->
                                         <!-- ASSESSED BY -->
+                                        <!-- ================================= -->
 
                                         <div class="mb-3">
 
@@ -901,14 +739,16 @@
                                                 type="text"
                                                 name="assessed_by"
                                                 class="form-control"
-                                                placeholder="Enter assessor details">
+                                                maxlength="100"
+                                                placeholder="Enter assessor details"
+                                                value="<?= esc(old('assessed_by')) ?>">
 
                                         </div>
+
 
                                     </div>
 
                                 </div>
-
 
 
                                 <!-- ========================================= -->
@@ -920,7 +760,7 @@
                                     <div class="card-footer bg-white d-flex justify-content-end">
 
                                         <a
-                                            href="<?= site_url('assessment/learning-adda') ?>"
+                                            href="<?= site_url('assessment/doosra-mauka') ?>"
                                             class="btn btn-light me-2">
 
                                             <i class="mdi mdi-arrow-left me-2"></i>
