@@ -196,6 +196,40 @@
             </div>
           </li>
 
+          <!-- ================= School Sahyog ================= -->
+          <li class="nav-item">
+            <a class="nav-link collapsed"
+              data-bs-toggle="collapse"
+              href="#schoolSahyogSubmenu"
+              aria-expanded="false">
+
+              School Sahyog
+              <i class="menu-arrow"></i>
+            </a>
+
+            <div class="collapse" id="schoolSahyogSubmenu">
+              <ul class="nav flex-column sub-menu">
+
+                <!-- All Students / Enrollment -->
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="<?= site_url('students/school_sahyog') ?>">
+                    All Students
+                  </a>
+                </li>
+
+                <!-- Assessment - Add later if required -->
+                <li class="nav-item">
+                  <a class="nav-link"
+                    href="<?= site_url('assessment/school-sahyog') ?>">
+                    Assessment
+                  </a>
+                </li>
+
+              </ul>
+            </div>
+          </li>
+
 
           <!-- ================= Digital Shakti ================= -->
           <li class="nav-item">

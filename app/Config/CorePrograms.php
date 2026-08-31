@@ -12,13 +12,16 @@ class CorePrograms
 
     public const VIJEETAS = 'PRG_VJ';
 
+    public const SCHOOL_SAHYOG = 'PRG_SS';
+
     public static function all()
     {
         return [
             self::DIGITAL_SHAKTI,
             self::DOOSRA_MAUKA,
             self::LEARNING_ADDA,
-            self::VIJEETAS
+            self::VIJEETAS,
+            self::SCHOOL_SAHYOG
         ];
     }
 }

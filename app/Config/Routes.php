@@ -203,6 +203,46 @@ $routes->group('ManageStudents', function ($routes) {
 });
 
 
+// =====================================================
+// SCHOOL SAHYOG STUDENTS
+// =====================================================
+
+$routes->get(
+    'students/school_sahyog',
+    'ManageStudents\SchoolSahyog::index'
+);
+
+$routes->get(
+    'students/school_sahyog/add',
+    'ManageStudents\SchoolSahyog::add'
+);
+
+$routes->post(
+    'students/school_sahyog/store',
+    'ManageStudents\SchoolSahyog::store'
+);
+
+$routes->get(
+    'students/school_sahyog/view/(:segment)',
+    'ManageStudents\SchoolSahyog::view/$1'
+);
+
+$routes->get(
+    'students/school_sahyog/edit/(:segment)',
+    'ManageStudents\SchoolSahyog::edit/$1'
+);
+
+$routes->post(
+    'students/school_sahyog/update/(:segment)',
+    'ManageStudents\SchoolSahyog::update/$1'
+);
+
+$routes->get(
+    'students/school_sahyog/delete/(:segment)',
+    'ManageStudents\SchoolSahyog::delete/$1'
+);
+
+
 // Attendance
 $routes->get(
     'attendance/class',
