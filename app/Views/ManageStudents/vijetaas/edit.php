@@ -15,7 +15,7 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
-                            <h4 class="card-title">
+                            <h4 class="card-title"> <i class="mdi mdi-account-group menu-icon"></i>
                                 Edit Vijetaas Student
                             </h4>
 

@@ -22,7 +22,7 @@
 
                 <?= view('includes/breadcrumb'); ?>
 
-                <h4 class="card-title mb-3 text-primary">
+                <h4 class="card-title mb-3 text-primary"><i class="mdi mdi-account-convert-outline menu-icon"></i>
                   Add Doosra Mauka Student
                 </h4>
 

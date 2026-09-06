@@ -1,6 +1,6 @@
 <?= view('includes/header'); ?>
-
 <?= view('includes/navbar'); ?>
+
 
 <div class="container-fluid page-body-wrapper">
 
@@ -23,14 +23,14 @@
                     <?php
 
                     /* =====================================================
-                   STUDENT INFORMATION
-                ===================================================== */
+                       STUDENT INFORMATION
+                    ===================================================== */
 
                     $studentName = $student['Student_Name'] ?? 'N/A';
 
                     $programName =
                         $student['Program_Name'] ??
-                        'Doosra Mauka';
+                        'School Sahyog';
 
                     $centerName =
                         $student['Center_Name'] ??
@@ -40,10 +40,14 @@
                         $student['Batch_Name'] ??
                         'N/A';
 
+                    $studentClass = !empty($student['Student_Class'])
+                        ? 'Class ' . $student['Student_Class']
+                        : 'N/A';
+
 
                     /* =====================================================
-                   STUDENT PHOTO
-                ===================================================== */
+                       STUDENT PHOTO
+                    ===================================================== */
 
                     $photoUrl = '';
 
@@ -55,55 +59,12 @@
                         );
                     }
 
-
-                /* =====================================================
-                   GRADE COLOUR FUNCTION
-                ===================================================== */
-
-                    /**
-                     * Return CSS class according to assessment grade.
-                     *
-                     * A / A+ = Green
-                     * B / B+ = Blue
-                     * C / C+ = Yellow
-                     * D      = Red
-                     */
-                    function getAssessmentGradeClass($grade)
-                    {
-                        if (empty($grade)) {
-                            return '';
-                        }
-
-                        $grade = strtoupper(trim($grade));
-
-                        switch ($grade) {
-
-                            case 'A':
-                            case 'A+':
-                                return 'grade-excellent';
-
-                            case 'B':
-                            case 'B+':
-                                return 'grade-good';
-
-                            case 'C':
-                            case 'C+':
-                                return 'grade-needs-improvement';
-
-                            case 'D':
-                                return 'grade-bad';
-
-                            default:
-                                return '';
-                        }
-                    }
-
                     ?>
 
 
                     <!-- =========================================
-                     HEADER
-                ========================================== -->
+                         HEADER
+                    ========================================== -->
 
                     <div class="card shadow-sm mb-4">
 
@@ -111,7 +72,7 @@
 
                             <i class="mdi mdi-account-school me-2"></i>
 
-                            Doosra Mauka - Student Assessment View
+                            School Sahyog - Student Assessment View
 
                         </div>
 
@@ -120,8 +81,8 @@
 
 
                     <!-- =========================================
-                     PERSONAL DETAILS
-                ========================================== -->
+                         PERSONAL DETAILS
+                    ========================================== -->
 
                     <div class="card shadow-sm mb-4">
 
@@ -181,7 +142,7 @@
 
                                         <!-- PROGRAM -->
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
 
                                             <small>
                                                 PROGRAM
@@ -201,7 +162,7 @@
 
                                         <!-- CENTER -->
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
 
                                             <small>
                                                 CENTER
@@ -221,7 +182,7 @@
 
                                         <!-- BATCH -->
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
 
                                             <small>
                                                 BATCH
@@ -232,6 +193,26 @@
                                             <b>
 
                                                 <?= esc($batchName) ?>
+
+                                            </b>
+
+                                        </div>
+
+
+
+                                        <!-- CLASS -->
+
+                                        <div class="col-md-3">
+
+                                            <small>
+                                                CLASS
+                                            </small>
+
+                                            <br>
+
+                                            <b>
+
+                                                <?= esc($studentClass) ?>
 
                                             </b>
 
@@ -251,59 +232,48 @@
 
 
                     <!-- =========================================
-                     COLOUR CODE
-                ========================================== -->
+                         COLOUR CODE
+                    ========================================== -->
 
                     <div class="card shadow-sm mb-3">
 
                         <div class="card-body legend">
 
 
-                            <b class="me-2">
+                            <b>
                                 Colour Code:
                             </b>
 
 
-                            <!-- RED -->
-
                             <span>
 
-                                <i class="dot dot-bad"></i>
+                                <i
+                                    class="dot dot-below">
+                                </i>
 
-                                BAD
+                                Below class level
 
                             </span>
 
 
-                            <!-- YELLOW -->
-
                             <span>
 
-                                <i class="dot dot-needs-improvement"></i>
+                                <i
+                                    class="dot dot-same">
+                                </i>
 
-                                Needs Improvement
+                                Same level
 
                             </span>
 
 
-                            <!-- BLUE -->
-
                             <span>
 
-                                <i class="dot dot-good"></i>
+                                <i
+                                    class="dot dot-above">
+                                </i>
 
-                                GOOD
-
-                            </span>
-
-
-                            <!-- GREEN -->
-
-                            <span>
-
-                                <i class="dot dot-excellent"></i>
-
-                                EXCELENT
+                                Above class level
 
                             </span>
 
@@ -315,8 +285,8 @@
 
 
                     <!-- =========================================
-                     ASSESSMENT TABS
-                ========================================== -->
+                         ASSESSMENT TABS
+                    ========================================== -->
 
                     <div class="card shadow-sm mb-4">
 
@@ -324,8 +294,8 @@
 
 
                             <!-- =========================
-                             TAB NAVIGATION
-                        ========================== -->
+                                 TAB NAVIGATION
+                            ========================== -->
 
                             <ul class="nav nav-tabs">
 
@@ -335,6 +305,8 @@
                                 $assessmentTypes = [
 
                                     'Baseline',
+
+                                    'Midline',
 
                                     'Endline'
 
@@ -354,7 +326,6 @@
                                         $tabAssessment['Student_Assessment_Id'] ?? '';
 
                                     ?>
-
 
                                     <li class="nav-item">
 
@@ -379,8 +350,8 @@
 
 
                             <!-- =========================
-                             TAB CONTENT
-                        ========================== -->
+                                 TAB CONTENT
+                            ========================== -->
 
                             <div class="tab-content">
 
@@ -410,8 +381,8 @@
 
 
                                             <!-- =========================================
-                                             COMPLETED HEADER
-                                        ========================================== -->
+                                                 COMPLETED HEADER
+                                            ========================================== -->
 
                                             <div
                                                 class="d-flex justify-content-between align-items-center mb-3">
@@ -438,8 +409,8 @@
 
 
                                             <!-- =========================================
-                                             DATE
-                                        ========================================== -->
+                                                 DATE + CLASS
+                                            ========================================== -->
 
                                             <p class="mb-4">
 
@@ -458,36 +429,273 @@
                                                     : 'N/A'
                                                 ?>
 
+
+                                                <span class="ms-3">
+
+                                                    <b>
+                                                        Class:
+                                                    </b>
+
+                                                    <?= esc($studentClass) ?>
+
+                                                </span>
+
+
                                             </p>
 
 
 
                                             <!-- =========================================
-                                             DOOSRA MAUKA RESULT
-                                        ========================================== -->
+                                                 EDUCATION RESULT
+                                            ========================================== -->
 
                                             <div class="title">
 
                                                 <i class="mdi mdi-book-open-page-variant me-2"></i>
 
-                                                Doosra Mauka Result
+                                                Education Result
 
                                             </div>
 
 
 
+                                            <?php
+
+                                            $subjects = [
+
+                                                [
+                                                    'name' => 'English',
+                                                    'level' => 'English_Level',
+                                                    'grade' => 'English_Grade',
+                                                    'remark' => 'English_Remark'
+                                                ],
+
+                                                [
+                                                    'name' => 'Math',
+                                                    'level' => 'Math_Level',
+                                                    'grade' => 'Math_Grade',
+                                                    'remark' => 'Math_Remark'
+                                                ],
+
+                                                [
+                                                    'name' => 'Hindi',
+                                                    'level' => 'Hindi_Level',
+                                                    'grade' => 'Hindi_Grade',
+                                                    'remark' => 'Hindi_Remark'
+                                                ],
+
+                                                [
+                                                    'name' => 'Marathi',
+                                                    'level' => 'Marathi_Level',
+                                                    'grade' => 'Marathi_Grade',
+                                                    'remark' => 'Marathi_Remark'
+                                                ]
+
+                                            ];
+
+                                            ?>
+
+
                                             <!-- =========================================
-                                             TAILORING
-                                        ========================================== -->
+                                                 SUBJECTS
+                                            ========================================== -->
+
+                                            <?php foreach (
+                                                $subjects as $subject
+                                            ): ?>
+
+
+                                                <?php
+
+                                                $level =
+                                                    $assessment[$subject['level']] ?? '';
+
+                                                $grade =
+                                                    $assessment[$subject['grade']] ?? '';
+
+                                                $remark =
+                                                    $assessment[$subject['remark']] ?? '';
+
+
+                                                /*
+                                                 * Determine level colour.
+                                                 */
+
+                                                $levelClass =
+                                                    getAssessmentLevelClass(
+                                                        $level,
+                                                        $studentClass
+                                                    );
+
+                                                ?>
+
+
+                                                <div class="subject-row">
+
+
+                                                    <b>
+
+                                                        <?= esc(
+                                                            $subject['name']
+                                                        ) ?>
+
+                                                    </b>
+
+
+                                                    <div class="row mt-2">
+
+
+                                                        <!-- LEVEL -->
+
+                                                        <div class="col-md-4 mb-3 mb-md-0">
+
+
+                                                            <small>
+
+                                                                <?= esc(
+                                                                    $subject['name']
+                                                                ) ?>
+
+                                                                Level
+
+                                                            </small>
+
+                                                            <br>
+
+
+                                                            <?php if (
+                                                                !empty($level)
+                                                            ): ?>
+
+
+                                                                <span
+                                                                    class="level <?= esc($levelClass) ?>">
+
+                                                                    <?= esc($level) ?>
+
+                                                                </span>
+
+
+                                                            <?php else: ?>
+
+                                                                <span class="na">
+
+                                                                    N/A
+
+                                                                </span>
+
+                                                            <?php endif; ?>
+
+
+                                                        </div>
+
+
+
+                                                        <!-- GRADE -->
+
+                                                        <div class="col-md-3 mb-3 mb-md-0">
+
+
+                                                            <small>
+
+                                                                <?= esc(
+                                                                    $subject['name']
+                                                                ) ?>
+
+                                                                Grade
+
+                                                            </small>
+
+                                                            <br>
+
+
+                                                            <?php if (
+                                                                !empty($grade)
+                                                            ): ?>
+
+
+                                                                <span class="grade-badge">
+
+                                                                    <?= esc($grade) ?>
+
+                                                                </span>
+
+
+                                                            <?php else: ?>
+
+                                                                <span class="na">
+
+                                                                    N/A
+
+                                                                </span>
+
+                                                            <?php endif; ?>
+
+
+                                                        </div>
+
+
+
+                                                        <!-- REMARK -->
+
+                                                        <div class="col-md-5">
+
+
+                                                            <small>
+
+                                                                <?= esc(
+                                                                    $subject['name']
+                                                                ) ?>
+
+                                                                Remark
+
+                                                            </small>
+
+
+                                                            <div
+                                                                class="remark <?= empty($remark) ? 'na' : '' ?>">
+
+
+                                                                <?= !empty($remark)
+                                                                    ? esc($remark)
+                                                                    : 'N/A'
+                                                                ?>
+
+
+                                                            </div>
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                </div>
+
+
+                                            <?php endforeach; ?>
+
+
+
+                                            <!-- =========================================
+                                                 DIGITAL SHAKTI
+                                            ========================================== -->
 
                                             <div class="subject-row">
 
 
                                                 <div class="subject-title">
 
-                                                    <i class="mdi mdi-content-cut me-2"></i>
+                                                    <i class="mdi mdi-laptop me-2"></i>
 
-                                                    Tailoring
+                                                    Digital Shakti
+
+                                                    <span class="info-badge ms-2">
+
+                                                        Computer
+
+                                                    </span>
 
                                                 </div>
 
@@ -499,102 +707,6 @@
 
                                                     <div class="col-md-3 mb-3 mb-md-0">
 
-                                                        <small>
-
-                                                            Grade
-
-                                                        </small>
-
-                                                        <br>
-
-
-                                                        <?php if (
-                                                            !empty($assessment['Tailoring_Grade'])
-                                                        ): ?>
-
-                                                            <span
-                                                                class="grade-badge <?= esc(
-                                                                                        getAssessmentGradeClass(
-                                                                                            $assessment['Tailoring_Grade']
-                                                                                        )
-                                                                                    ) ?>">
-
-                                                                <?= esc(
-                                                                    $assessment['Tailoring_Grade']
-                                                                ) ?>
-
-                                                            </span>
-
-                                                        <?php else: ?>
-
-                                                            <span class="na">
-
-                                                                N/A
-
-                                                            </span>
-
-                                                        <?php endif; ?>
-
-                                                    </div>
-
-
-
-                                                    <!-- REMARK -->
-
-                                                    <div class="col-md-9">
-
-                                                        <small>
-
-                                                            Tailoring Remark
-
-                                                        </small>
-
-
-                                                        <div
-                                                            class="remark <?= empty($assessment['Tailoring_Remark']) ? 'na' : '' ?>">
-
-
-                                                            <?= !empty($assessment['Tailoring_Remark'])
-                                                                ? esc(
-                                                                    $assessment['Tailoring_Remark']
-                                                                )
-                                                                : 'N/A'
-                                                            ?>
-
-
-                                                        </div>
-
-                                                    </div>
-
-
-                                                </div>
-
-                                            </div>
-
-
-
-                                            <!-- =========================================
-                                             LITERACY
-                                        ========================================== -->
-
-                                            <div class="subject-row">
-
-
-                                                <div class="subject-title">
-
-                                                    <i class="mdi mdi-book-open-variant me-2"></i>
-
-                                                    Literacy
-
-                                                </div>
-
-
-                                                <div class="row mt-2">
-
-
-                                                    <!-- GRADE -->
-
-                                                    <div class="col-md-3 mb-3 mb-md-0">
 
                                                         <small>
 
@@ -606,21 +718,21 @@
 
 
                                                         <?php if (
-                                                            !empty($assessment['Literacy_Grade'])
+                                                            !empty($assessment['Digital_Shakti_Grade'])
                                                         ): ?>
 
+
                                                             <span
-                                                                class="grade-badge <?= esc(
-                                                                                        getAssessmentGradeClass(
-                                                                                            $assessment['Literacy_Grade']
-                                                                                        )
-                                                                                    ) ?>">
+                                                                class="grade-badge">
+
 
                                                                 <?= esc(
-                                                                    $assessment['Literacy_Grade']
+                                                                    $assessment['Digital_Shakti_Grade']
                                                                 ) ?>
 
+
                                                             </span>
+
 
                                                         <?php else: ?>
 
@@ -632,102 +744,6 @@
 
                                                         <?php endif; ?>
 
-                                                    </div>
-
-
-
-                                                    <!-- REMARK -->
-
-                                                    <div class="col-md-9">
-
-                                                        <small>
-
-                                                            Literacy Remark
-
-                                                        </small>
-
-
-                                                        <div
-                                                            class="remark <?= empty($assessment['Literacy_Remark']) ? 'na' : '' ?>">
-
-
-                                                            <?= !empty($assessment['Literacy_Remark'])
-                                                                ? esc(
-                                                                    $assessment['Literacy_Remark']
-                                                                )
-                                                                : 'N/A'
-                                                            ?>
-
-
-                                                        </div>
-
-                                                    </div>
-
-
-                                                </div>
-
-                                            </div>
-
-
-
-                                            <!-- =========================================
-                                             NUMERACY
-                                        ========================================== -->
-
-                                            <div class="subject-row">
-
-
-                                                <div class="subject-title">
-
-                                                    <i class="mdi mdi-numeric me-2"></i>
-
-                                                    Numeracy
-
-                                                </div>
-
-
-                                                <div class="row mt-2">
-
-
-                                                    <!-- GRADE -->
-
-                                                    <div class="col-md-3 mb-3 mb-md-0">
-
-                                                        <small>
-
-                                                            Grade
-
-                                                        </small>
-
-                                                        <br>
-
-
-                                                        <?php if (
-                                                            !empty($assessment['Numeracy_Grade'])
-                                                        ): ?>
-
-                                                            <span
-                                                                class="grade-badge <?= esc(
-                                                                                        getAssessmentGradeClass(
-                                                                                            $assessment['Numeracy_Grade']
-                                                                                        )
-                                                                                    ) ?>">
-
-                                                                <?= esc(
-                                                                    $assessment['Numeracy_Grade']
-                                                                ) ?>
-
-                                                            </span>
-
-                                                        <?php else: ?>
-
-                                                            <span class="na">
-
-                                                                N/A
-
-                                                            </span>
-
-                                                        <?php endif; ?>
 
                                                     </div>
 
@@ -737,20 +753,22 @@
 
                                                     <div class="col-md-9">
 
+
                                                         <small>
 
-                                                            Numeracy Remark
+                                                            Remarks on Digital Shakti
+                                                            Assessments
 
                                                         </small>
 
 
                                                         <div
-                                                            class="remark <?= empty($assessment['Numeracy_Remark']) ? 'na' : '' ?>">
+                                                            class="remark <?= empty($assessment['Digital_Shakti_Remark']) ? 'na' : '' ?>">
 
 
-                                                            <?= !empty($assessment['Numeracy_Remark'])
+                                                            <?= !empty($assessment['Digital_Shakti_Remark'])
                                                                 ? esc(
-                                                                    $assessment['Numeracy_Remark']
+                                                                    $assessment['Digital_Shakti_Remark']
                                                                 )
                                                                 : 'N/A'
                                                             ?>
@@ -758,18 +776,20 @@
 
                                                         </div>
 
+
                                                     </div>
 
 
                                                 </div>
+
 
                                             </div>
 
 
 
                                             <!-- =========================================
-                                             SEL
-                                        ========================================== -->
+                                                 SEL
+                                            ========================================== -->
 
                                             <div class="title mt-4">
 
@@ -789,36 +809,28 @@
 
                                                     [
                                                         'field' => 'Ethics',
-
                                                         'title' => 'Ethics',
-
                                                         'question' =>
                                                         'Does the child choose to do the right thing, even when no one is watching?'
                                                     ],
 
                                                     [
                                                         'field' => 'Empathy',
-
                                                         'title' => 'Empathy',
-
                                                         'question' =>
                                                         'Does the child understand and care about how others feel?'
                                                     ],
 
                                                     [
                                                         'field' => 'Excellence',
-
                                                         'title' => 'Excellence',
-
                                                         'question' =>
                                                         'Does the participant always try to do their best and improve?'
                                                     ],
 
                                                     [
                                                         'field' => 'Eagerness',
-
                                                         'title' => 'Eagerness',
-
                                                         'question' =>
                                                         'Does the child show curiosity and enthusiasm to learn and participate?'
                                                     ]
@@ -882,14 +894,10 @@
 
 
                                                                 <?php if (
-                                                                    $rating !== '' &&
-                                                                    $rating !== null
+                                                                    !empty($rating)
                                                                 ): ?>
 
-
-                                                                    <?= esc(
-                                                                        $rating
-                                                                    ) ?>
+                                                                    <?= esc($rating) ?>
 
                                                                     →
 
@@ -900,9 +908,7 @@
 
                                                                 <?php else: ?>
 
-
                                                                     N/A
-
 
                                                                 <?php endif; ?>
 
@@ -933,8 +939,8 @@
 
 
                                             <!-- =========================================
-                                             SEL REMARK
-                                        ========================================== -->
+                                                 SEL REMARK
+                                            ========================================== -->
 
                                             <div class="mt-3">
 
@@ -966,8 +972,8 @@
 
 
                                             <!-- =========================================
-                                             ASSESSED BY
-                                        ========================================== -->
+                                                 ASSESSED BY
+                                            ========================================== -->
 
                                             <div class="mt-3">
 
@@ -990,6 +996,7 @@
                                                         : 'N/A'
                                                     ?>
 
+
                                                 </b>
 
 
@@ -1000,8 +1007,8 @@
 
 
                                             <!-- =========================================
-                                             NOT COMPLETED
-                                        ========================================== -->
+                                                 NOT COMPLETED
+                                            ========================================== -->
 
                                             <div
                                                 class="d-flex justify-content-between align-items-center mb-3">
@@ -1075,8 +1082,8 @@
 
 
                     <!-- =========================================
-                     ACTION BUTTONS
-                ========================================== -->
+                         ACTION BUTTONS
+                    ========================================== -->
 
                     <div class="card shadow-sm">
 
@@ -1085,7 +1092,7 @@
 
                             <a
                                 href="<?= site_url(
-                                            'assessment/doosra-mauka'
+                                            'assessment/school-sahyog'
                                         ) ?>"
                                 class="btn btn-secondary me-2">
 
@@ -1122,9 +1129,128 @@
         </div>
 
     </div>
-    ```
 
 </div>
+
+
+
+<!-- =====================================================
+     LEVEL COMPARISON FUNCTION
+====================================================== -->
+
+<?php
+
+/**
+ * Compare assessment level with student's actual class.
+ *
+ * Returns:
+ * level-below
+ * level-same
+ * level-above
+ */
+function getAssessmentLevelClass(
+    $assessmentLevel,
+    $studentClass
+) {
+
+    if (
+        empty($assessmentLevel) ||
+        empty($studentClass) ||
+        $assessmentLevel === 'N/A'
+    ) {
+
+        return '';
+    }
+
+
+    /*
+     * Extract number from values such as:
+     *
+     * Class 5 -> 5
+     * Class 10 -> 10
+     */
+
+    preg_match(
+        '/\d+/',
+        $assessmentLevel,
+        $assessmentMatch
+    );
+
+    preg_match(
+        '/\d+/',
+        $studentClass,
+        $studentMatch
+    );
+
+
+    /*
+     * Handle KG separately.
+     */
+
+    $assessmentValue = null;
+
+    $studentValue = null;
+
+
+    if (
+        strtolower(trim($assessmentLevel)) === 'kg'
+    ) {
+
+        $assessmentValue = 0;
+    } elseif (!empty($assessmentMatch[0])) {
+
+        $assessmentValue =
+            (int) $assessmentMatch[0];
+    }
+
+
+    if (
+        strtolower(trim($studentClass)) === 'kg'
+    ) {
+
+        $studentValue = 0;
+    } elseif (!empty($studentMatch[0])) {
+
+        $studentValue =
+            (int) $studentMatch[0];
+    }
+
+
+    /*
+     * Unable to compare.
+     */
+
+    if (
+        $assessmentValue === null ||
+        $studentValue === null
+    ) {
+
+        return '';
+    }
+
+
+    /*
+     * Compare.
+     */
+
+    if ($assessmentValue < $studentValue) {
+
+        return 'level-below';
+    }
+
+
+    if ($assessmentValue == $studentValue) {
+
+        return 'level-same';
+    }
+
+
+    return 'level-above';
+}
+
+?>
+
+
 
 <!-- =====================================================
      PAGE CSS
@@ -1132,264 +1258,350 @@
 
 <style>
     .card {
+
         border: 0;
+
         border-radius: 10px;
+
     }
 
 
     .card-header {
+
         background: #4B49AC;
+
         color: #fff;
+
         font-size: 18px;
+
         font-weight: 600;
+
     }
 
 
     /* ================= PHOTO ================= */
 
     .photo {
+
         width: 120px;
+
         height: 150px;
+
         object-fit: cover;
+
         border: 1px solid #adb5bd;
+
         padding: 3px;
+
         border-radius: 6px;
+
         background: #fff;
+
     }
 
 
     .photo-placeholder {
+
         width: 120px;
+
         height: 150px;
+
         margin: auto;
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         border: 1px solid #adb5bd;
+
         border-radius: 6px;
+
         background: #f8f9fa;
+
         color: #6c757d;
+
     }
 
 
     /* ================= NAME ================= */
 
     .student-name {
+
         font-size: 23px;
+
         font-weight: 700;
+
     }
 
 
     /* ================= TITLE ================= */
 
     .title {
+
         color: #4B49AC;
+
         font-size: 17px;
+
         font-weight: 600;
+
         border-bottom: 1px solid #ddd;
+
         padding-bottom: 10px;
+
         margin-bottom: 18px;
+
     }
 
 
     /* ================= TABS ================= */
 
     .nav-link {
+
         color: #4B49AC;
+
         font-weight: 600;
+
     }
 
 
     .nav-link.active {
+
         background: #4B49AC !important;
+
         color: #fff !important;
+
     }
 
 
     /* ================= SUBJECT ================= */
 
     .subject-row {
+
         border: 1px solid #e1e5ea;
+
         border-radius: 8px;
+
         padding: 15px;
+
         margin-bottom: 12px;
+
         background: #fff;
-    }
 
-
-    .subject-title {
-        font-weight: 700;
-        font-size: 16px;
-        color: #343a40;
     }
 
 
     .subject-row small,
     .sel small {
+
         color: #6c757d;
+
         font-weight: 500;
+
+    }
+
+
+    /* ================= LEVEL ================= */
+
+    .level {
+
+        padding: 6px 11px;
+
+        border-radius: 5px;
+
+        font-weight: 700;
+
+        display: inline-block;
+
+    }
+
+
+    .level-below {
+
+        background: #f8d7da;
+
+        color: #842029;
+
+    }
+
+
+    .level-same {
+
+        background: #cfe2ff;
+
+        color: #084298;
+
+    }
+
+
+    .level-above {
+
+        background: #d1e7dd;
+
+        color: #0f5132;
+
     }
 
 
     /* ================= GRADE ================= */
 
     .grade-badge {
+
         padding: 6px 11px;
+
         border-radius: 5px;
+
+        background: #eef2ff;
+
+        color: #4B49AC;
+
         font-weight: 700;
+
         display: inline-block;
-    }
 
-
-    /* A / A+ */
-
-    .grade-excellent {
-        background: #d1e7dd;
-        color: #0f5132;
-    }
-
-
-    /* B / B+ */
-
-    .grade-good {
-        background: #cfe2ff;
-        color: #084298;
-    }
-
-
-    /* C / C+ */
-
-    .grade-needs-improvement {
-        background: #fff3cd;
-        color: #664d03;
-    }
-
-
-    /* D */
-
-    .grade-bad {
-        background: #f8d7da;
-        color: #842029;
     }
 
 
     /* ================= REMARK ================= */
 
     .remark {
+
         background: #f8f9fa;
+
         border: 1px solid #e6e8ec;
+
         border-radius: 6px;
+
         padding: 9px;
+
         margin-top: 4px;
+
         min-height: 40px;
+
         white-space: pre-line;
+
     }
 
 
     /* ================= N/A ================= */
 
     .na {
+
         color: #777;
+
         font-style: italic;
+
     }
 
 
     /* ================= SEL ================= */
 
     .sel {
+
         border: 1px solid #e1e5ea;
+
         border-radius: 8px;
+
         padding: 15px;
+
         height: 100%;
+
     }
 
 
     .rating {
+
         font-size: 18px;
+
         color: #4B49AC;
+
         font-weight: 700;
+
         margin: 7px 0;
+
     }
 
 
     /* ================= LEGEND ================= */
 
     .legend span {
-        display: inline-flex;
-        align-items: center;
-        margin-right: 18px;
-        font-size: 13px;
-    }
 
+        display: inline-block;
 
-    .legend b {
+        margin-right: 15px;
+
         font-size: 13px;
+
     }
 
 
     .dot {
+
         display: inline-block;
+
         width: 12px;
+
         height: 12px;
-        margin-right: 6px;
+
+        margin-right: 5px;
+
         border-radius: 2px;
-        flex-shrink: 0;
+
     }
 
 
-    /* RED */
+    .dot-below {
 
-    .dot-bad {
         background: #dc3545;
+
     }
 
 
-    /* YELLOW */
+    .dot-same {
 
-    .dot-needs-improvement {
-        background: #ffc107;
-    }
-
-
-    /* BLUE */
-
-    .dot-good {
         background: #0d6efd;
+
     }
 
 
-    /* GREEN */
+    .dot-above {
 
-    .dot-excellent {
         background: #198754;
+
     }
 
 
     /* ================= EMPTY ASSESSMENT ================= */
 
     .empty-icon {
+
         font-size: 55px;
+
         color: #adb5bd;
+
     }
 </style>
 
-<!-- =====================================================
-     EDIT BUTTON LOGIC
-====================================================== -->
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
 
         const editButton =
             document.getElementById('editAssessmentBtn');
 
 
         if (!editButton) {
+
             return;
+
         }
 
 
         editButton.addEventListener('click', function(event) {
+
 
             event.preventDefault();
 
@@ -1411,12 +1623,13 @@
                 );
 
                 return;
+
             }
 
 
             /*
-             * Get Assessment ID
-             * from active tab.
+             * Get the Assessment ID
+             * stored in the active tab.
              */
 
             const assessmentId =
@@ -1426,7 +1639,8 @@
 
 
             /*
-             * Get assessment type.
+             * Get the assessment type
+             * from the tab target.
              */
 
             const target =
@@ -1445,8 +1659,8 @@
 
 
             /*
-             * If assessment does not exist,
-             * don't open edit page.
+             * If this assessment does not exist,
+             * do not open the edit page.
              */
 
             if (!assessmentId) {
@@ -1457,15 +1671,16 @@
                 );
 
                 return;
+
             }
 
 
             /*
-             * Open Doosra Mauka Edit page.
+             * Open the correct assessment.
              */
 
             window.location.href =
-                "<?= site_url('assessment/doosra-mauka/edit') ?>/" +
+                "<?= site_url('assessment/school-sahyog/edit') ?>/" +
                 encodeURIComponent(assessmentId) +
                 "/" +
                 encodeURIComponent(assessmentType);
@@ -1474,5 +1689,6 @@
 
     });
 </script>
+
 
 <?= view('includes/footer'); ?>

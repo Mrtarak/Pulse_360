@@ -16,6 +16,10 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
+                            <h4 class="card-title mb-4">
+                                <i class="mdi mdi-laptop menu-icon"></i> Add Digital Shakti Student
+                            </h4>
+
                             <form action="<?= base_url('digitalshakti/save') ?>"
                                 method="post"
                                 enctype="multipart/form-data">

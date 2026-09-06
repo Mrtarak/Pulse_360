@@ -27,7 +27,7 @@
 
                             <!-- Page Header -->
                             <h4 class="card-title mb-4">
-                                <i class="mdi mdi-school me-2"></i>
+                                <i class="mdi mdi-school-outline menu-icon"></i>
                                 School Sahyog Student Details
                             </h4>
 

@@ -330,6 +330,60 @@ $routes->group('assessment/learning-adda', function ($routes) {
 
 
 
+// ==================== SCHOOL SAHYOG ASSESSMENT ====================
+
+$routes->group('assessment/school-sahyog', function ($routes) {
+
+    // Assessment List
+    $routes->get(
+        '/',
+        'Assessment\SchoolSahyog::index'
+    );
+
+    // Get Batches
+    $routes->post(
+        'get-batches',
+        'Assessment\SchoolSahyog::getBatches'
+    );
+
+    // Get Students
+    $routes->post(
+        'get-students',
+        'Assessment\SchoolSahyog::getStudents'
+    );
+
+    // Add Assessment
+    $routes->get(
+        'add',
+        'Assessment\SchoolSahyog::add'
+    );
+
+    // Save Assessment
+    $routes->post(
+        'save',
+        'Assessment\SchoolSahyog::save'
+    );
+
+    // View Assessment
+    $routes->get(
+        'view/(:segment)',
+        'Assessment\SchoolSahyog::view/$1'
+    );
+
+    // Edit Assessment
+    $routes->get(
+        'edit/(:segment)/(:segment)',
+        'Assessment\SchoolSahyog::edit/$1/$2'
+    );
+
+    // Update Assessment
+    $routes->post(
+        'update',
+        'Assessment\SchoolSahyog::update'
+    );
+});
+
+
 // ==================== DOOSRA MAUKA ASSESSMENT ====================
 
 $routes->group('assessment/doosra-mauka', function ($routes) {

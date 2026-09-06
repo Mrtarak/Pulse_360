@@ -18,7 +18,7 @@
                 <?= view('includes/breadcrumb'); ?>
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h4 class="card-title mb-0">
+                  <h4 class="card-title mb-0"><i class="mdi mdi-account-convert-outline menu-icon"></i>
                     Doosra Mauka Participants
                   </h4>
 

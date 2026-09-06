@@ -20,7 +20,7 @@
               <?= view('includes/breadcrumb'); ?>
 
               <h4 class="card-title mb-4 text-primary">
-                <i class="mdi mdi-account-edit me-2"></i>
+                <i class="mdi mdi-account-convert-outline menu-icon"></i>
                 Edit Doosra Mauka Student
               </h4>
 

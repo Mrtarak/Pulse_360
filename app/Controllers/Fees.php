@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\FeesModel;
 use App\Models\FeePaymentModel;
-use Config\CorePrograms;
+use App\Models\ProgramModel;
 
 class Fees extends BaseController
 {
@@ -19,32 +19,144 @@ class Fees extends BaseController
         $this->db              = \Config\Database::connect();
     }
 
+
     /**
      * ==========================================
      * FEES MAIN PAGE
      * ==========================================
+     *
+     * Program comes from sidebar:
+     *
+     * fees?program_id=PRG_VJ
+     * fees?program_id=PRG_LA
+     * fees?program_id=PRG_SS
+     * fees?program_id=PRG_DS
+     * fees?program_id=PRG_DM
+     *
+     * Program is therefore fixed on this page.
      */
     public function index()
     {
+        $programId = $this->request->getGet('program_id');
+
         /*
-         * Load ALL programs from program_m.
-         *
-         * Do NOT use CorePrograms::all() here because
-         * the Fees dropdown should show every program.
+         * Program is required because Fees is now
+         * opened from a program-specific sidebar.
          */
-        $programs = $this->db
-            ->table('program_m')
-            ->select('Program_Id, Program_Name')
-            ->orderBy('Program_Name', 'ASC')
-            ->get()
-            ->getResultArray();
+        if (empty($programId)) {
+            return redirect()
+                ->to(site_url('/'))
+                ->with('error', 'Please select a program first.');
+        }
+
+
+        /*
+         * ==========================================
+         * VALIDATE PROGRAM
+         * ==========================================
+         */
+
+        $programModel = new ProgramModel();
+
+        $program = $programModel
+            ->where('Program_Id', $programId)
+            ->first();
+
+
+        if (!$program) {
+            return redirect()
+                ->to(site_url('/'))
+                ->with('error', 'Invalid program selected.');
+        }
+
+
+        /*
+         * ==========================================
+         * SEND FIXED PROGRAM TO VIEW
+         * ==========================================
+         */
 
         $data = [
-            'title'    => 'Manage Fees',
-            'programs' => $programs
+            'title'      => 'Manage Fees',
+            'program'    => $program,
+            'program_id' => $programId
         ];
 
+
         return view('finance/fees', $data);
+    }
+
+
+    /**
+     * ==========================================
+     * VALIDATE PROGRAM
+     * ==========================================
+     *
+     * Used internally before processing
+     * program-specific requests.
+     */
+    private function isValidProgram($programId)
+    {
+        if (empty($programId)) {
+            return false;
+        }
+
+        return $this->db
+            ->table('program_m')
+            ->where('Program_Id', $programId)
+            ->countAllResults() > 0;
+    }
+
+
+    /**
+     * ==========================================
+     * VALIDATE PROGRAM + CENTER
+     * ==========================================
+     *
+     * Makes sure the selected center actually
+     * belongs to the selected program.
+     */
+    private function isValidProgramCenter($programId, $centerId)
+    {
+        if (empty($programId) || empty($centerId)) {
+            return false;
+        }
+
+
+        return $this->db
+            ->table('program_center_rel')
+            ->where('Program_Id', $programId)
+            ->where('Center_Id', $centerId)
+            ->countAllResults() > 0;
+    }
+
+
+    /**
+     * ==========================================
+     * VALIDATE PROGRAM + CENTER + BATCH
+     * ==========================================
+     *
+     * Makes sure the batch belongs to both
+     * the selected program and center.
+     */
+    private function getValidBatch($programId, $centerId, $batchId)
+    {
+        if (
+            empty($programId) ||
+            empty($centerId) ||
+            empty($batchId)
+        ) {
+            return null;
+        }
+
+
+        return $this->db
+            ->table('batch_m')
+            ->where('Batch_Id', $batchId)
+            ->where('Program_Id', $programId)
+            ->where('Center_Id', $centerId)
+            ->get()
+            ->getRowArray();
     }
 
 
@@ -53,10 +165,20 @@ class Fees extends BaseController
      * GET CENTERS
      * Program -> Center
      * ==========================================
+     *
+     * Only centers belonging to the fixed
+     * program will be returned.
      */
     public function getCenters()
     {
         $programId = $this->request->getPost('program_id');
+
+
+        /*
+         * ==========================================
+         * BASIC VALIDATION
+         * ==========================================
+         */
 
         if (!$programId) {
             return $this->response->setJSON([
@@ -66,7 +188,29 @@ class Fees extends BaseController
             ]);
         }
 
+
+        /*
+         * ==========================================
+         * VALIDATE PROGRAM
+         * ==========================================
+         */
+
+        if (!$this->isValidProgram($programId)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid program.',
+                'data'    => []
+            ]);
+        }
+
+
         try {
+
+            /*
+             * ==========================================
+             * GET ONLY CENTERS FOR THIS PROGRAM
+             * ==========================================
+             */
 
             $centers = $this->db
                 ->table('program_center_rel pcr')
@@ -80,17 +224,18 @@ class Fees extends BaseController
                 ->get()
                 ->getResultArray();
 
+
             return $this->response->setJSON([
-                'status'  => true,
-                'message' => 'Centers loaded successfully.',
-                'data'    => $centers
+                'status'    => true,
+                'message'   => 'Centers loaded successfully.',
+                'program_id' => $programId,
+                'data'      => $centers
             ]);
         } catch (\Throwable $e) {
 
             return $this->response->setJSON([
                 'status'  => false,
                 'message' => 'Error loading centers.',
-                'error'   => $e->getMessage(),
                 'data'    => []
             ]);
         }
@@ -102,11 +247,21 @@ class Fees extends BaseController
      * GET BATCHES
      * Program + Center -> Batch
      * ==========================================
+     *
+     * Only batches belonging to the selected
+     * program + center are returned.
      */
     public function getBatches()
     {
         $programId = $this->request->getPost('program_id');
         $centerId  = $this->request->getPost('center_id');
+
+
+        /*
+         * ==========================================
+         * BASIC VALIDATION
+         * ==========================================
+         */
 
         if (!$programId || !$centerId) {
             return $this->response->setJSON([
@@ -116,7 +271,44 @@ class Fees extends BaseController
             ]);
         }
 
+
+        /*
+         * ==========================================
+         * VALIDATE PROGRAM
+         * ==========================================
+         */
+
+        if (!$this->isValidProgram($programId)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid program.',
+                'data'    => []
+            ]);
+        }
+
+
+        /*
+         * ==========================================
+         * VALIDATE CENTER FOR PROGRAM
+         * ==========================================
+         */
+
+        if (!$this->isValidProgramCenter($programId, $centerId)) {
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid center for selected program.',
+                'data'    => []
+            ]);
+        }
+
+
         try {
+
+            /*
+             * ==========================================
+             * GET BATCHES
+             * ==========================================
+             */
 
             $batches = $this->db
                 ->table('batch_m')
@@ -127,17 +319,19 @@ class Fees extends BaseController
                 ->get()
                 ->getResultArray();
 
+
             return $this->response->setJSON([
-                'status'  => true,
-                'message' => 'Batches loaded successfully.',
-                'data'    => $batches
+                'status'     => true,
+                'message'    => 'Batches loaded successfully.',
+                'program_id' => $programId,
+                'center_id'  => $centerId,
+                'data'       => $batches
             ]);
         } catch (\Throwable $e) {
 
             return $this->response->setJSON([
                 'status'  => false,
                 'message' => 'Error loading batches.',
-                'error'   => $e->getMessage(),
                 'data'    => []
             ]);
         }
@@ -158,6 +352,13 @@ class Fees extends BaseController
         $fromDate  = $this->request->getPost('from_date');
         $toDate    = $this->request->getPost('to_date');
 
+
+        /*
+         * ==========================================
+         * BASIC VALIDATION
+         * ==========================================
+         */
+
         if (
             !$programId ||
             !$centerId ||
@@ -174,27 +375,81 @@ class Fees extends BaseController
         }
 
 
+        /*
+         * ==========================================
+         * VALIDATE PROGRAM
+         * ==========================================
+         */
+
+        if (!$this->isValidProgram($programId)) {
+
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid program.',
+                'data'    => []
+            ]);
+        }
+
+
+        /*
+         * ==========================================
+         * VALIDATE CENTER
+         * ==========================================
+         */
+
+        if (!$this->isValidProgramCenter($programId, $centerId)) {
+
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid center for selected program.',
+                'data'    => []
+            ]);
+        }
+
+
+        /*
+         * ==========================================
+         * VALIDATE BATCH
+         * ==========================================
+         */
+
+        $batch = $this->getValidBatch(
+            $programId,
+            $centerId,
+            $batchId
+        );
+
+
+        if (!$batch) {
+
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid batch for selected program and center.',
+                'data'    => []
+            ]);
+        }
+
 
         try {
 
             /*
-         * ==========================================
-         * GET ACTIVE STUDENTS
-         * ==========================================
-         */
+             * ==========================================
+             * GET ACTIVE STUDENTS
+             * ==========================================
+             */
 
             $students = $this->db
                 ->table('student_program sp')
                 ->select('
-                sp.Student_Program_Id,
-                sp.Student_Id,
-                sp.Program_Id,
-                sp.Center_Id,
-                sp.Batch_Id,
-                s.First_Name,
-                s.Last_Name,
-                s.Phone_No
-            ')
+                    sp.Student_Program_Id,
+                    sp.Student_Id,
+                    sp.Program_Id,
+                    sp.Center_Id,
+                    sp.Batch_Id,
+                    s.First_Name,
+                    s.Last_Name,
+                    s.Phone_No
+                ')
                 ->join(
                     'student s',
                     's.Student_Id = sp.Student_Id'
@@ -209,10 +464,10 @@ class Fees extends BaseController
 
 
             /*
-         * ==========================================
-         * ADD FEE DETAILS FOR EVERY STUDENT
-         * ==========================================
-         */
+             * ==========================================
+             * ADD FEE DETAILS FOR EVERY STUDENT
+             * ==========================================
+             */
 
             foreach ($students as &$student) {
 
@@ -220,33 +475,33 @@ class Fees extends BaseController
 
 
                 /*
-             * DEFAULT VALUES
-             */
+                 * DEFAULT VALUES
+                 */
 
-                $student['existing_fee']            = false;
-                $student['existing_fees_id']        = null;
+                $student['existing_fee']             = false;
+                $student['existing_fees_id']         = null;
 
-                $student['due_amount']              = 0;
-                $student['late_fine']               = 0;
+                $student['due_amount']               = 0;
+                $student['late_fine']                = 0;
                 $student['previous_pending_amount'] = 0;
-                $student['paid_amount']             = 0;
-                $student['paid_date']               = null;
-                $student['pending_amount']          = 0;
-                $student['remarks']                 = '';
+                $student['paid_amount']              = 0;
+                $student['paid_date']                = null;
+                $student['pending_amount']           = 0;
+                $student['remarks']                  = '';
 
 
                 /*
-             * ==========================================
-             * CHECK EXACT CURRENT FEE PERIOD
-             *
-             * Same Student
-             * Same Program
-             * Same Center
-             * Same Batch
-             * Same From Date
-             * Same To Date
-             * ==========================================
-             */
+                 * ==========================================
+                 * CHECK EXACT CURRENT FEE PERIOD
+                 *
+                 * Same Student
+                 * Same Program
+                 * Same Center
+                 * Same Batch
+                 * Same From Date
+                 * Same To Date
+                 * ==========================================
+                 */
 
                 $existingFee = $this->db
                     ->table('fees')
@@ -261,16 +516,19 @@ class Fees extends BaseController
 
 
                 /*
-             * ==========================================
-             * IF CURRENT PERIOD RECORD EXISTS
-             * RETURN ITS DATA
-             * ==========================================
-             */
+                 * ==========================================
+                 * IF CURRENT PERIOD RECORD EXISTS
+                 * RETURN ITS DATA
+                 * ==========================================
+                 */
 
                 if ($existingFee) {
 
-                    $student['existing_fee']            = true;
-                    $student['existing_fees_id']        = $existingFee['Fees_Id'];
+                    $student['existing_fee'] =
+                        true;
+
+                    $student['existing_fees_id'] =
+                        $existingFee['Fees_Id'];
 
                     $student['due_amount'] =
                         (float) $existingFee['Due_Amount'];
@@ -279,7 +537,10 @@ class Fees extends BaseController
                         (float) ($existingFee['Late_Fine'] ?? 0);
 
                     $student['previous_pending_amount'] =
-                        (float) ($existingFee['Previous_Pending_Amount'] ?? 0);
+                        (float) (
+                            $existingFee['Previous_Pending_Amount']
+                            ?? 0
+                        );
 
                     $student['paid_amount'] =
                         (float) $existingFee['Paid_Amount'];
@@ -298,21 +559,21 @@ class Fees extends BaseController
 
 
                 /*
-             * ==========================================
-             * NO CURRENT RECORD
-             *
-             * GET LATEST PREVIOUS FEE RECORD
-             * BEFORE SELECTED PERIOD
-             * ==========================================
-             */
+                 * ==========================================
+                 * NO CURRENT RECORD
+                 *
+                 * GET LATEST PREVIOUS FEE RECORD
+                 * BEFORE SELECTED PERIOD
+                 * ==========================================
+                 */
 
                 $previousFee = $this->db
                     ->table('fees')
                     ->select('
-                    Fees_Id,
-                    To_Date,
-                    Pending_Amount
-                ')
+                        Fees_Id,
+                        To_Date,
+                        Pending_Amount
+                    ')
                     ->where('Student_Id', $studentId)
                     ->where('Program_Id', $programId)
                     ->where('Center_Id', $centerId)
@@ -325,15 +586,16 @@ class Fees extends BaseController
 
 
                 /*
-             * ==========================================
-             * CARRY FORWARD PREVIOUS PENDING
-             * ==========================================
-             */
+                 * ==========================================
+                 * CARRY FORWARD PREVIOUS PENDING
+                 * ==========================================
+                 */
 
                 if ($previousFee) {
 
                     $previousPending =
                         (float) $previousFee['Pending_Amount'];
+
 
                     if ($previousPending > 0) {
 
@@ -356,7 +618,6 @@ class Fees extends BaseController
             return $this->response->setJSON([
                 'status'  => false,
                 'message' => 'Error loading students and fee details.',
-                'error'   => $e->getMessage(),
                 'data'    => []
             ]);
         }
@@ -366,17 +627,6 @@ class Fees extends BaseController
     /**
      * ==========================================
      * SAVE FEES
-     *
-     * Receives:
-     *
-     * students[0][student_id]
-     * students[0][due_amount]
-     * students[0][paid_amount]
-     * students[0][paid_date]
-     * students[0][remark]
-     *
-     * students[1][student_id]
-     * ...
      * ==========================================
      */
     public function save()
@@ -392,10 +642,10 @@ class Fees extends BaseController
 
 
         /*
-     * ======================================
-     * BASIC VALIDATION
-     * ======================================
-     */
+         * ======================================
+         * BASIC VALIDATION
+         * ======================================
+         */
 
         if (
             !$programId ||
@@ -413,8 +663,67 @@ class Fees extends BaseController
             ]);
         }
 
+
         $frequencyMonths = (int) $frequencyMonths;
 
+
+        /*
+         * ======================================
+         * VALIDATE PROGRAM
+         * ======================================
+         */
+
+        if (!$this->isValidProgram($programId)) {
+
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid program selected.'
+            ]);
+        }
+
+
+        /*
+         * ======================================
+         * VALIDATE PROGRAM + CENTER
+         * ======================================
+         */
+
+        if (!$this->isValidProgramCenter($programId, $centerId)) {
+
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid center for selected program.'
+            ]);
+        }
+
+
+        /*
+         * ======================================
+         * VALIDATE PROGRAM + CENTER + BATCH
+         * ======================================
+         */
+
+        $batch = $this->getValidBatch(
+            $programId,
+            $centerId,
+            $batchId
+        );
+
+
+        if (!$batch) {
+
+            return $this->response->setJSON([
+                'status'  => false,
+                'message' => 'Invalid Program, Center or Batch combination.'
+            ]);
+        }
+
+
+        /*
+         * ======================================
+         * VALIDATE STUDENT DATA
+         * ======================================
+         */
 
         if (empty($students) || !is_array($students)) {
 
@@ -426,10 +735,10 @@ class Fees extends BaseController
 
 
         /*
-     * ======================================
-     * DATABASE TRANSACTION
-     * ======================================
-     */
+         * ======================================
+         * DATABASE TRANSACTION
+         * ======================================
+         */
 
         $this->db->transStart();
 
@@ -439,18 +748,18 @@ class Fees extends BaseController
 
 
         /*
-     * ======================================
-     * PROCESS EVERY STUDENT
-     * ======================================
-     */
+         * ======================================
+         * PROCESS EVERY STUDENT
+         * ======================================
+         */
 
         foreach ($students as $student) {
 
             /*
-         * ----------------------------------
-         * STUDENT ID
-         * ----------------------------------
-         */
+             * ----------------------------------
+             * STUDENT ID
+             * ----------------------------------
+             */
 
             $studentId = $student['student_id'] ?? null;
 
@@ -460,26 +769,48 @@ class Fees extends BaseController
 
 
             /*
-         * ----------------------------------
-         * CURRENT DUE AMOUNT
-         * ----------------------------------
-         */
+             * ==========================================
+             * IMPORTANT SECURITY CHECK
+             *
+             * Student must belong to the selected
+             * Program + Center + Batch.
+             * ==========================================
+             */
+
+            $studentValid = $this->db
+                ->table('student_program')
+                ->where('Student_Id', $studentId)
+                ->where('Program_Id', $programId)
+                ->where('Center_Id', $centerId)
+                ->where('Batch_Id', $batchId)
+                ->where('Student_Status', 'Active')
+                ->countAllResults();
+
+
+            if (!$studentValid) {
+                continue;
+            }
+
+
+            /*
+             * ----------------------------------
+             * CURRENT DUE AMOUNT
+             * ----------------------------------
+             */
 
             $dueAmount = isset($student['due_amount'])
                 ? (float) $student['due_amount']
                 : 0;
 
 
-
-
             $lateFine = (float) ($student['late_fine'] ?? 0);
 
 
             /*
-         * ----------------------------------
-         * PREVIOUS PENDING AMOUNT
-         * ----------------------------------
-         */
+             * ----------------------------------
+             * PREVIOUS PENDING AMOUNT
+             * ----------------------------------
+             */
 
             $previousPendingAmount =
                 isset($student['previous_pending_amount'])
@@ -488,10 +819,10 @@ class Fees extends BaseController
 
 
             /*
-         * ----------------------------------
-         * PAID AMOUNT
-         * ----------------------------------
-         */
+             * ----------------------------------
+             * PAID AMOUNT
+             * ----------------------------------
+             */
 
             $paidAmount = isset($student['paid_amount'])
                 ? (float) $student['paid_amount']
@@ -499,10 +830,10 @@ class Fees extends BaseController
 
 
             /*
-         * ----------------------------------
-         * PAID DATE
-         * ----------------------------------
-         */
+             * ----------------------------------
+             * PAID DATE
+             * ----------------------------------
+             */
 
             $paidDate = !empty($student['paid_date'])
                 ? $student['paid_date']
@@ -510,10 +841,10 @@ class Fees extends BaseController
 
 
             /*
-         * ----------------------------------
-         * REMARK
-         * ----------------------------------
-         */
+             * ----------------------------------
+             * REMARK
+             * ----------------------------------
+             */
 
             $remark = isset($student['remark'])
                 ? trim($student['remark'])
@@ -521,10 +852,10 @@ class Fees extends BaseController
 
 
             /*
-         * ======================================
-         * VALIDATE AMOUNTS
-         * ======================================
-         */
+             * ======================================
+             * VALIDATE AMOUNTS
+             * ======================================
+             */
 
             if ($dueAmount <= 0) {
                 continue;
@@ -537,11 +868,19 @@ class Fees extends BaseController
 
 
             /*
-         * TOTAL DUE =
-         * PREVIOUS PENDING + CURRENT DUE
-         */
+             * ======================================
+             * TOTAL DUE
+             *
+             * Previous Pending
+             * + Current Due
+             * + Late Fine
+             * ======================================
+             */
 
-            $totalDueAmount = $previousPendingAmount + $dueAmount + $lateFine;
+            $totalDueAmount =
+                $previousPendingAmount
+                + $dueAmount
+                + $lateFine;
 
 
             if ($paidAmount < 0) {
@@ -550,8 +889,8 @@ class Fees extends BaseController
 
 
             /*
-         * Paid cannot exceed total due
-         */
+             * Paid cannot exceed total due
+             */
 
             if ($paidAmount > $totalDueAmount) {
                 $paidAmount = $totalDueAmount;
@@ -559,10 +898,10 @@ class Fees extends BaseController
 
 
             /*
-         * ======================================
-         * CALCULATE PENDING
-         * ======================================
-         */
+             * ======================================
+             * CALCULATE PENDING
+             * ======================================
+             */
 
             $pendingAmount =
                 $totalDueAmount - $paidAmount;
@@ -574,10 +913,10 @@ class Fees extends BaseController
 
 
             /*
-         * ======================================
-         * CHECK EXACT EXISTING FEE RECORD
-         * ======================================
-         */
+             * ======================================
+             * CHECK EXACT EXISTING FEE RECORD
+             * ======================================
+             */
 
             $existingFee = $this->db
                 ->table('fees')
@@ -592,14 +931,10 @@ class Fees extends BaseController
 
 
             /*
-            * ======================================
-            * CHECK FOR OVERLAPPING FEE PERIOD
-            *
-            * New From Date <= Existing To Date
-            * AND
-            * New To Date >= Existing From Date
-            * ======================================
-            */
+             * ======================================
+             * CHECK FOR OVERLAPPING FEE PERIOD
+             * ======================================
+             */
 
             if (!$existingFee) {
 
@@ -620,9 +955,10 @@ class Fees extends BaseController
 
 
                 /*
-                * If another fee period overlaps,
-                * do not allow a new record.
-                */
+                 * ======================================
+                 * OVERLAPPING PERIOD FOUND
+                 * ======================================
+                 */
 
                 if ($overlappingFee) {
 
@@ -633,20 +969,26 @@ class Fees extends BaseController
                         'message' =>
                         'Fee period already exists or overlaps for this student. '
                             . 'Existing period: '
-                            . date('d-m-Y', strtotime($overlappingFee['From_Date']))
+                            . date(
+                                'd-m-Y',
+                                strtotime($overlappingFee['From_Date'])
+                            )
                             . ' to '
-                            . date('d-m-Y', strtotime($overlappingFee['To_Date']))
+                            . date(
+                                'd-m-Y',
+                                strtotime($overlappingFee['To_Date'])
+                            )
                     ]);
                 }
             }
 
 
             /*
-            * ======================================
-            * CASE 1: EXISTING FEE RECORD
-            * UPDATE RECORD
-            * ======================================
-            */
+             * ======================================
+             * CASE 1: EXISTING FEE RECORD
+             * UPDATE RECORD
+             * ======================================
+             */
 
             if ($existingFee) {
 
@@ -655,26 +997,19 @@ class Fees extends BaseController
 
 
                 /*
-             * Additional payment means:
-             *
-             * New Paid Amount - Old Paid Amount
-             */
+                 * Additional payment
+                 *
+                 * New Paid Amount - Old Paid Amount
+                 */
 
                 $additionalPayment =
                     $paidAmount - $oldPaidAmount;
 
 
                 /*
-             * Do not allow negative additional
-             * payment through this screen.
-             *
-             * Example:
-             * Old = 4000
-             * New = 3000
-             *
-             * Payment history cannot simply be
-             * deleted automatically.
-             */
+                 * Do not allow paid amount to
+                 * decrease.
+                 */
 
                 if ($additionalPayment < 0) {
 
@@ -693,8 +1028,10 @@ class Fees extends BaseController
 
 
                 /*
-             * UPDATE MAIN FEES RECORD
-             */
+                 * ==================================
+                 * UPDATE MAIN FEES RECORD
+                 * ==================================
+                 */
 
                 $updateData = [
 
@@ -707,7 +1044,8 @@ class Fees extends BaseController
                     'Due_Amount' =>
                     $dueAmount,
 
-                    'Late_Fine'       => $lateFine,
+                    'Late_Fine' =>
+                    $lateFine,
 
                     'Paid_Amount' =>
                     $paidAmount,
@@ -749,10 +1087,10 @@ class Fees extends BaseController
 
 
                 /*
-             * ==================================
-             * SAVE ONLY ADDITIONAL PAYMENT
-             * ==================================
-             */
+                 * ==================================
+                 * SAVE ONLY ADDITIONAL PAYMENT
+                 * ==================================
+                 */
 
                 if ($additionalPayment > 0) {
 
@@ -816,11 +1154,10 @@ class Fees extends BaseController
 
 
             /*
-         * ======================================
-         * CASE 2: NEW FEE RECORD
-         * INSERT RECORD
-         * ======================================
-         */
+             * ======================================
+             * CASE 2: NEW FEE RECORD
+             * ======================================
+             */
 
             $feesId =
                 'FEE' .
@@ -859,7 +1196,8 @@ class Fees extends BaseController
                 'Due_Amount' =>
                 $dueAmount,
 
-                'Late_Fine'      => $lateFine,
+                'Late_Fine' =>
+                $lateFine,
 
                 'Paid_Amount' =>
                 $paidAmount,
@@ -898,10 +1236,10 @@ class Fees extends BaseController
 
 
             /*
-         * ==================================
-         * SAVE INITIAL PAYMENT
-         * ==================================
-         */
+             * ==================================
+             * SAVE INITIAL PAYMENT
+             * ==================================
+             */
 
             if ($paidAmount > 0) {
 
@@ -963,10 +1301,10 @@ class Fees extends BaseController
 
 
         /*
-     * ======================================
-     * COMPLETE TRANSACTION
-     * ======================================
-     */
+         * ======================================
+         * COMPLETE TRANSACTION
+         * ======================================
+         */
 
         $this->db->transComplete();
 
@@ -982,16 +1320,24 @@ class Fees extends BaseController
 
 
         /*
-     * ======================================
-     * SUCCESS MESSAGE
-     * ======================================
-     */
+         * ======================================
+         * SUCCESS MESSAGE
+         * ======================================
+         */
 
         return $this->response->setJSON([
-            'status'         => true,
-            'message'        => 'Fee records processed successfully.',
-            'saved_count'    => $savedCount,
-            'updated_count'  => $updatedCount,
+            'status' =>
+            true,
+
+            'message' =>
+            'Fee records processed successfully.',
+
+            'saved_count' =>
+            $savedCount,
+
+            'updated_count' =>
+            $updatedCount,
+
             'total_processed' =>
             $savedCount + $updatedCount
         ]);

@@ -14,7 +14,7 @@
             <div class="card-body">
               <?= view('includes/breadcrumb'); ?>
 
-              <h4 class="card-title mb-3 text-primary">Edit Learning Adda Student</h4>
+              <h4 class="card-title mb-3 text-primary"><i class="mdi mdi-book-open-page-variant me-2"></i>Edit Learning Adda Student</h4>
               <form method="post"
                 action="<?= base_url('students/learning_adda/update/' . $student['LA_Stu_Id']) ?>"
                 enctype="multipart/form-data">

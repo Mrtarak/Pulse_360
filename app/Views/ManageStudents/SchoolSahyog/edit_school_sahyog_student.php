@@ -24,7 +24,7 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
-                            <h4 class="card-title mb-3 text-primary">
+                            <h4 class="card-title mb-3 text-primary"> <i class="mdi mdi-school-outline menu-icon"></i>
                                 Edit School Sahyog Student
                             </h4>
 

@@ -102,6 +102,7 @@
                         <div class="card">
 
                             <div class="card-body">
+                                <?= view('includes/breadcrumb'); ?>
 
 
                                 <!-- ================================= -->
@@ -135,26 +136,11 @@
 
                                                 </label>
 
-                                                <select
-                                                    class="form-select"
-                                                    id="program_id">
-
-                                                    <option value="">
-                                                        Select Program
-                                                    </option>
-
-                                                    <?php foreach ($programs as $program): ?>
-
-                                                        <option
-                                                            value="<?= esc($program['Program_Id']); ?>">
-
-                                                            <?= esc($program['Program_Name']); ?>
-
-                                                        </option>
-
-                                                    <?php endforeach; ?>
-
-                                                </select>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="<?= esc($program['Program_Name']); ?>"
+                                                    readonly>
 
                                             </div>
 
@@ -329,7 +315,8 @@
                                             <input
                                                 type="hidden"
                                                 name="program_id"
-                                                id="hidden_program_id">
+                                                id="hidden_program_id"
+                                                value="<?= esc($program_id); ?>">
 
 
                                             <input
@@ -484,18 +471,33 @@
     <script>
         $(document).ready(function() {
 
-
             /*
             ==========================================
-            PROGRAM -> CENTER
+            FIXED PROGRAM
+            ==========================================
+            Program comes from sidebar URL.
+            Example:
+            fees?program_id=PRG_LA
+
+            Program is NOT editable on this page.
             ==========================================
             */
 
-            $('#program_id').on('change', function() {
+            const programId = $('#hidden_program_id').val();
 
-                let programId = $(this).val();
+            console.log('Fixed Program ID:', programId);
 
-                console.log('Selected Program:', programId);
+
+            /*
+            ==========================================
+            LOAD CENTERS AUTOMATICALLY
+            ==========================================
+            */
+
+            loadCenters();
+
+
+            function loadCenters() {
 
                 $('#center_id').html(
                     '<option value="">Loading Centers...</option>'
@@ -505,14 +507,18 @@
                     '<option value="">Select Batch</option>'
                 );
 
-                if (programId === '') {
+
+                if (!programId) {
+
+                    console.error('Program ID is missing.');
 
                     $('#center_id').html(
-                        '<option value="">Select Center</option>'
+                        '<option value="">Program Not Found</option>'
                     );
 
                     return;
                 }
+
 
                 $.ajax({
 
@@ -528,10 +534,15 @@
 
                     success: function(response) {
 
-                        console.log('CENTER RESPONSE:', response);
+                        console.log(
+                            'CENTER RESPONSE:',
+                            response
+                        );
+
 
                         let html =
                             '<option value="">Select Center</option>';
+
 
                         if (
                             response.status === true &&
@@ -539,41 +550,63 @@
                             response.data.length > 0
                         ) {
 
-                            $.each(response.data, function(index, center) {
+                            $.each(
+                                response.data,
+                                function(index, center) {
 
-                                html +=
-                                    '<option value="' +
-                                    center.Center_Id +
-                                    '">' +
-                                    center.Center_Name +
-                                    '</option>';
+                                    html +=
+                                        '<option value="' +
+                                        escapeAttribute(center.Center_Id) +
+                                        '">' +
+                                        escapeHtml(center.Center_Name) +
+                                        '</option>';
 
-                            });
+                                }
+                            );
 
                         } else {
 
                             html =
                                 '<option value="">No Center Available</option>';
+
                         }
 
+
                         $('#center_id').html(html);
+
                     },
 
                     error: function(xhr, status, error) {
 
-                        console.log('CENTER AJAX ERROR');
-                        console.log('Status:', status);
-                        console.log('Error:', error);
-                        console.log('Response:', xhr.responseText);
+                        console.log(
+                            'CENTER AJAX ERROR'
+                        );
+
+                        console.log(
+                            'Status:',
+                            status
+                        );
+
+                        console.log(
+                            'Error:',
+                            error
+                        );
+
+                        console.log(
+                            'Response:',
+                            xhr.responseText
+                        );
+
 
                         $('#center_id').html(
                             '<option value="">Error Loading Center</option>'
                         );
+
                     }
 
                 });
 
-            });
+            }
 
 
             /*
@@ -584,14 +617,22 @@
 
             $('#center_id').on('change', function() {
 
-                let programId = $('#program_id').val();
                 let centerId = $(this).val();
+
+
+                /*
+                Clear current batch
+                */
 
                 $('#batch_id').html(
                     '<option value="">Loading Batches...</option>'
                 );
 
-                if (programId === '' || centerId === '') {
+
+                hideStudentSection();
+
+
+                if (!programId || !centerId) {
 
                     $('#batch_id').html(
                         '<option value="">Select Batch</option>'
@@ -600,6 +641,7 @@
                     return;
                 }
 
+
                 $.ajax({
 
                     url: "<?= site_url('finance/fees/get-batches'); ?>",
@@ -607,18 +649,26 @@
                     type: "POST",
 
                     data: {
+
                         program_id: programId,
+
                         center_id: centerId
+
                     },
 
                     dataType: "json",
 
                     success: function(response) {
 
-                        console.log('BATCH RESPONSE:', response);
+                        console.log(
+                            'BATCH RESPONSE:',
+                            response
+                        );
+
 
                         let html =
                             '<option value="">Select Batch</option>';
+
 
                         if (
                             response.status === true &&
@@ -626,36 +676,58 @@
                             response.data.length > 0
                         ) {
 
-                            $.each(response.data, function(index, batch) {
+                            $.each(
+                                response.data,
+                                function(index, batch) {
 
-                                html +=
-                                    '<option value="' +
-                                    batch.Batch_Id +
-                                    '">' +
-                                    batch.Batch_Name +
-                                    '</option>';
+                                    html +=
+                                        '<option value="' +
+                                        escapeAttribute(batch.Batch_Id) +
+                                        '">' +
+                                        escapeHtml(batch.Batch_Name) +
+                                        '</option>';
 
-                            });
+                                }
+                            );
 
                         } else {
 
                             html =
                                 '<option value="">No Batch Available</option>';
+
                         }
 
+
                         $('#batch_id').html(html);
+
                     },
 
                     error: function(xhr, status, error) {
 
-                        console.log('BATCH AJAX ERROR');
-                        console.log('Status:', status);
-                        console.log('Error:', error);
-                        console.log('Response:', xhr.responseText);
+                        console.log(
+                            'BATCH AJAX ERROR'
+                        );
+
+                        console.log(
+                            'Status:',
+                            status
+                        );
+
+                        console.log(
+                            'Error:',
+                            error
+                        );
+
+                        console.log(
+                            'Response:',
+                            xhr.responseText
+                        );
+
 
                         $('#batch_id').html(
                             '<option value="">Error Loading Batch</option>'
                         );
+
                     }
 
                 });
@@ -688,10 +760,12 @@
 
                 let frequency = $(this).val();
 
+
                 /*
-                 * FULL COURSE
-                 * To Date should be manually selectable
-                 */
+                FULL COURSE
+                To Date manually selectable
+                */
+
                 if (frequency === '0') {
 
                     $('#to_date')
@@ -702,15 +776,18 @@
                 } else {
 
                     /*
-                     * NORMAL FREQUENCY
-                     * To Date should be automatic and readonly
-                     */
+                    NORMAL FREQUENCY
+                    To Date automatically calculated
+                    */
+
                     $('#to_date')
                         .prop('readonly', true)
                         .addClass('date-display');
 
                     calculateToDate();
+
                 }
+
 
                 hideStudentSection();
 
@@ -727,13 +804,14 @@
 
             $('#from_date').on('change', function() {
 
-                let frequency = $('#frequencyMonths').val();
+                let frequency =
+                    $('#frequencyMonths').val();
 
 
                 /*
-                 * For normal frequencies,
-                 * recalculate To Date automatically
-                 */
+                Normal frequencies
+                */
+
                 if (frequency !== '0') {
 
                     calculateToDate();
@@ -742,9 +820,9 @@
 
 
                 /*
-                 * For Full Course, clear the manually selected
-                 * To Date when From Date changes
-                 */
+                Full Course
+                */
+
                 if (frequency === '0') {
 
                     $('#to_date').val('');
@@ -762,23 +840,22 @@
             /*
             ==========================================
             TO DATE CHANGE
-            FULL COURSE ONLY
+            FULL COURSE
             ==========================================
             */
 
             $('#to_date').on('change', function() {
 
-                let frequency = $('#frequencyMonths').val();
+                let frequency =
+                    $('#frequencyMonths').val();
 
 
-                /*
-                 * Only manually selected for Full Course
-                 */
                 if (frequency === '0') {
 
                     hideStudentSection();
 
                     checkFeeSelection();
+
                 }
 
             });
@@ -792,24 +869,24 @@
 
             function calculateToDate() {
 
-                let frequency = $('#frequencyMonths').val();
+                let frequency =
+                    $('#frequencyMonths').val();
 
-                let fromDateValue = $('#from_date').val();
+                let fromDateValue =
+                    $('#from_date').val();
 
 
                 /*
-                 * FULL COURSE
-                 * Do not calculate To Date automatically
-                 */
+                Full Course
+                */
+
                 if (frequency === '0') {
 
                     return;
+
                 }
 
 
-                /*
-                 * Normal frequency validation
-                 */
                 frequency = parseInt(frequency);
 
 
@@ -818,18 +895,23 @@
                     $('#to_date').val('');
 
                     return;
+
                 }
 
 
-                let fromDate = new Date(
-                    fromDateValue + 'T00:00:00'
-                );
+                let fromDate =
+                    new Date(
+                        fromDateValue + 'T00:00:00'
+                    );
+
+
+                let toDate =
+                    new Date(fromDate);
 
 
                 /*
-                 * Add frequency months
-                 */
-                let toDate = new Date(fromDate);
+                Add frequency months
+                */
 
                 toDate.setMonth(
                     toDate.getMonth() + frequency
@@ -837,22 +919,28 @@
 
 
                 /*
-                 * Subtract one day
-                 */
+                Subtract one day
+                */
+
                 toDate.setDate(
                     toDate.getDate() - 1
                 );
 
 
-                let year = toDate.getFullYear();
+                let year =
+                    toDate.getFullYear();
 
-                let month = String(
-                    toDate.getMonth() + 1
-                ).padStart(2, '0');
 
-                let day = String(
-                    toDate.getDate()
-                ).padStart(2, '0');
+                let month =
+                    String(
+                        toDate.getMonth() + 1
+                    ).padStart(2, '0');
+
+
+                let day =
+                    String(
+                        toDate.getDate()
+                    ).padStart(2, '0');
 
 
                 $('#to_date').val(
@@ -860,10 +948,11 @@
                 );
 
 
-                /*
-                 * Keep automatic date readonly
-                 */
-                $('#to_date').prop('readonly', true);
+                $('#to_date').prop(
+                    'readonly',
+                    true
+                );
+
             }
 
 
@@ -875,28 +964,30 @@
 
             function checkFeeSelection() {
 
-                let programId = $('#program_id').val();
+                /*
+                Program is fixed.
+                */
 
-                let centerId = $('#center_id').val();
+                let centerId =
+                    $('#center_id').val();
 
-                let batchId = $('#batch_id').val();
+                let batchId =
+                    $('#batch_id').val();
 
-                let frequency = $('#frequencyMonths').val();
+                let frequency =
+                    $('#frequencyMonths').val();
 
-                let fromDate = $('#from_date').val();
+                let fromDate =
+                    $('#from_date').val();
 
-                let toDate = $('#to_date').val();
+                let toDate =
+                    $('#to_date').val();
 
 
                 /*
-                 * All fields including To Date are required
-                 *
-                 * Normal frequency:
-                 * To Date is calculated automatically
-                 *
-                 * Full Course:
-                 * To Date is selected manually
-                 */
+                Program comes from hidden field.
+                */
+
                 if (
                     programId &&
                     centerId &&
@@ -925,17 +1016,20 @@
 
             function loadStudents() {
 
-                let programId = $('#program_id').val();
+                let centerId =
+                    $('#center_id').val();
 
-                let centerId = $('#center_id').val();
+                let batchId =
+                    $('#batch_id').val();
 
-                let batchId = $('#batch_id').val();
+                let frequency =
+                    $('#frequencyMonths').val();
 
-                let frequency = $('#frequencyMonths').val();
+                let fromDate =
+                    $('#from_date').val();
 
-                let fromDate = $('#from_date').val();
-
-                let toDate = $('#to_date').val();
+                let toDate =
+                    $('#to_date').val();
 
 
                 if (
@@ -951,6 +1045,12 @@
 
                 }
 
+
+                /*
+                ==========================================
+                SHOW STUDENT SECTION
+                ==========================================
+                */
 
                 $('#studentFeeSection').show();
 
@@ -975,6 +1075,12 @@
 
                 );
 
+
+                /*
+                ==========================================
+                AJAX
+                ==========================================
+                */
 
                 $.ajax({
 
@@ -1001,7 +1107,10 @@
 
                     success: function(response) {
 
-                        console.log("STUDENT RESPONSE:", response);
+                        console.log(
+                            "STUDENT RESPONSE:",
+                            response
+                        );
 
 
                         if (
@@ -1024,7 +1133,10 @@
 
                             );
 
-                            $('#studentCount').text('0 Students');
+
+                            $('#studentCount').text(
+                                '0 Students'
+                            );
 
                             return;
 
@@ -1036,307 +1148,366 @@
                         let counter = 1;
 
 
-                        $.each(response.data, function(index, student) {
+                        $.each(
+                            response.data,
+                            function(index, student) {
 
-                            let dueAmount =
-                                parseFloat(student.due_amount) || 0;
 
-                            let previousPending =
-                                parseFloat(student.previous_pending_amount) || 0;
+                                let dueAmount =
+                                    parseFloat(
+                                        student.due_amount
+                                    ) || 0;
 
-                            let paidAmount =
-                                parseFloat(student.paid_amount) || 0;
 
-                            let lateFine = parseFloat(student.late_fine) || 0;
+                                let previousPending =
+                                    parseFloat(
+                                        student.previous_pending_amount
+                                    ) || 0;
 
-                            let totalDue =
-                                dueAmount + previousPending + lateFine;
 
-                            let pendingAmount =
-                                parseFloat(student.pending_amount);
+                                let paidAmount =
+                                    parseFloat(
+                                        student.paid_amount
+                                    ) || 0;
 
-                            if (isNaN(pendingAmount)) {
 
-                                pendingAmount =
-                                    totalDue - paidAmount;
-                            }
+                                let lateFine =
+                                    parseFloat(
+                                        student.late_fine
+                                    ) || 0;
 
-                            let paidDate =
-                                student.paid_date || '';
 
-                            let remarks =
-                                student.remarks || '';
+                                let totalDue =
+                                    dueAmount +
+                                    previousPending +
+                                    lateFine;
 
-                            let existingFee =
-                                student.existing_fee === true;
 
+                                let pendingAmount =
+                                    parseFloat(
+                                        student.pending_amount
+                                    );
 
-                            html += '<tr>';
 
+                                if (
+                                    isNaN(pendingAmount)
+                                ) {
 
-                            /*
-                             * Number
-                             */
+                                    pendingAmount =
+                                        totalDue -
+                                        paidAmount;
 
-                            html += '<td>';
+                                }
 
-                            html += counter++;
 
-                            html += '</td>';
+                                let paidDate =
+                                    student.paid_date || '';
 
 
+                                let remarks =
+                                    student.remarks || '';
 
-                            /*
-                             * Student Name
-                             */
 
-                            html += '<td>';
+                                /*
+                                ==========================================
+                                ROW
+                                ==========================================
+                                */
 
-                            html += escapeHtml(
-                                student.First_Name
-                            );
+                                html += '<tr>';
 
-                            html += ' ';
 
-                            html += escapeHtml(
-                                student.Last_Name || ''
-                            );
+                                /*
+                                Number
+                                */
 
-                            html += '</td>';
+                                html += '<td>';
 
+                                html += counter++;
 
+                                html += '</td>';
 
-                            /*
-                             * Paid Date
-                             */
 
-                            html += '<td>';
+                                /*
+                                Student Name
+                                */
 
-                            html +=
+                                html += '<td>';
 
-                                '<input ' +
+                                html += escapeHtml(
+                                    student.First_Name
+                                );
 
-                                'type="date" ' +
+                                html += ' ';
 
-                                'class="form-control paid-date" ' +
+                                html += escapeHtml(
+                                    student.Last_Name || ''
+                                );
 
-                                'name="students[' +
-                                index +
-                                '][paid_date]" ' +
+                                html += '</td>';
 
-                                'value="' +
-                                paidDate +
-                                '" ' +
 
-                                'max="<?= date('Y-m-d'); ?>">';
+                                /*
+                                Paid Date
+                                */
 
-                            html += '</td>';
+                                html += '<td>';
 
+                                html +=
 
-                            /*
-                             * Previous Pending Amount
-                             */
+                                    '<input ' +
 
-                            html += '<td>';
+                                    'type="date" ' +
 
-                            html +=
+                                    'class="form-control paid-date" ' +
 
-                                '<input ' +
-
-                                'type="text" ' +
-
-                                'class="form-control previous-pending-amount pending-highlight" ' +
-
-                                'name="students[' +
-                                index +
-                                '][previous_pending_amount]" ' +
-
-                                'value="' +
-                                previousPending.toFixed(2) +
-                                '" ' +
-
-                                'readonly>';
-
-                            html += '</td>';
-
-                            /*
-                             * Due Amount
-                             */
-
-                            html += '<td>';
-
-                            html +=
-
-                                '<input ' +
-
-                                'type="number" ' +
-
-                                'step="0.01" ' +
-
-                                'min="0" ' +
-
-                                'class="form-control student-fee-input due-amount current-due-amount editable-amount" ' +
-
-                                'name="students[' +
-                                index +
-                                '][due_amount]" ' +
-
-                                'data-index="' +
-                                index +
-                                '" ' +
-
-                                'value="' +
-                                dueAmount.toFixed(2) +
-                                '">';
-
-                            html +=
-
-                                '<input ' +
-
-                                'type="hidden" ' +
-
-                                nameAttr(
-                                    'students[' +
+                                    'name="students[' +
                                     index +
-                                    '][student_id]'
-                                ) +
+                                    '][paid_date]" ' +
 
-                                'value="' +
-                                escapeAttribute(
-                                    student.Student_Id
-                                ) +
-                                '">';
+                                    'value="' +
+                                    escapeAttribute(
+                                        paidDate
+                                    ) +
+                                    '" ' +
 
-                            html += '</td>';
+                                    'max="<?= date('Y-m-d'); ?>">';
 
-
-                            /*
-                             * Late Fine
-                             */
+                                html += '</td>';
 
 
+                                /*
+                                Previous Pending
+                                */
 
-                            html += '<td>';
-                            html += '<input type="number" ';
-                            html += 'class="form-control student-fee-input late-fine editable-amount" ';
-                            html += 'name="students[' + index + '][late_fine]" ';
-                            html += 'value="' + lateFine.toFixed(2) + '" ';
-                            html += 'min="0" step="0.01">';
-                            html += '</td>';
+                                html += '<td>';
 
+                                html +=
 
-                            /*
-                             * Total Due Amount
-                             */
+                                    '<input ' +
 
-                            html += '<td>';
+                                    'type="text" ' +
 
-                            html +=
+                                    'class="form-control previous-pending-amount pending-highlight" ' +
 
-                                '<input ' +
+                                    'name="students[' +
+                                    index +
+                                    '][previous_pending_amount]" ' +
 
-                                'type="text" ' +
+                                    'value="' +
+                                    previousPending.toFixed(2) +
+                                    '" ' +
 
-                                'class="form-control total-due-amount" ' +
+                                    'readonly>';
 
-                                'value="' +
-                                totalDue.toFixed(2) +
-                                '" ' +
-
-                                'readonly>';
-
-                            html += '</td>';
+                                html += '</td>';
 
 
-                            /*
-                             * Paid Amount
-                             */
+                                /*
+                                Due Amount
+                                */
 
-                            html += '<td>';
+                                html += '<td>';
 
-                            html +=
+                                html +=
 
-                                '<input ' +
+                                    '<input ' +
 
-                                'type="number" ' +
+                                    'type="number" ' +
 
-                                'step="0.01" ' +
+                                    'step="0.01" ' +
 
-                                'min="0" ' +
+                                    'min="0" ' +
 
-                                'class="form-control student-fee-input paid-amount editable-amount" ' +
+                                    'class="form-control student-fee-input due-amount current-due-amount editable-amount" ' +
 
-                                'name="students[' +
-                                index +
-                                '][paid_amount]" ' +
+                                    'name="students[' +
+                                    index +
+                                    '][due_amount]" ' +
 
-                                'data-index="' +
-                                index +
-                                '" ' +
+                                    'data-index="' +
+                                    index +
+                                    '" ' +
 
-                                'value="' +
-                                paidAmount.toFixed(2) +
-                                '">';
-
-                            html += '</td>';
+                                    'value="' +
+                                    dueAmount.toFixed(2) +
+                                    '">';
 
 
-                            /*
-                             * Pending Amount
-                             */
+                                html +=
 
-                            html += '<td>';
+                                    '<input ' +
 
-                            html +=
+                                    'type="hidden" ' +
 
-                                '<input ' +
+                                    nameAttr(
+                                        'students[' +
+                                        index +
+                                        '][student_id]'
+                                    ) +
 
-                                'type="text" ' +
-
-                                'class="form-control pending-amount pending-highlight" ' +
-
-                                'value="' +
-                                pendingAmount.toFixed(2) +
-                                '" ' +
-
-                                'readonly>';
-
-                            html += '</td>';
+                                    'value="' +
+                                    escapeAttribute(
+                                        student.Student_Id
+                                    ) +
+                                    '">';
 
 
-                            /*
-                             * Remark
-                             */
-
-                            html += '<td>';
-
-                            html +=
-
-                                '<textarea ' +
-
-                                'class="form-control remark-input" ' +
-
-                                'name="students[' +
-                                index +
-                                '][remark]" ' +
-
-                                'rows="3" ' +
-
-                                'placeholder="Enter remark...">' +
-                                escapeHtml(remarks) +
-                                '</textarea>';
-
-                            html += '</td>';
-                        });
+                                html += '</td>';
 
 
-                        $('#studentTableBody').html(html);
+                                /*
+                                Late Fine
+                                */
 
-                        $('#studentTableBody tr').each(function() {
+                                html += '<td>';
 
-                            updatePendingHighlight($(this));
+                                html +=
+                                    '<input type="number" ' +
+                                    'class="form-control student-fee-input late-fine editable-amount" ' +
+                                    'name="students[' +
+                                    index +
+                                    '][late_fine]" ' +
+                                    'value="' +
+                                    lateFine.toFixed(2) +
+                                    '" ' +
+                                    'min="0" step="0.01">';
 
-                        });
+                                html += '</td>';
+
+
+                                /*
+                                Total Due
+                                */
+
+                                html += '<td>';
+
+                                html +=
+
+                                    '<input ' +
+
+                                    'type="text" ' +
+
+                                    'class="form-control total-due-amount" ' +
+
+                                    'value="' +
+                                    totalDue.toFixed(2) +
+                                    '" ' +
+
+                                    'readonly>';
+
+                                html += '</td>';
+
+
+                                /*
+                                Paid Amount
+                                */
+
+                                html += '<td>';
+
+                                html +=
+
+                                    '<input ' +
+
+                                    'type="number" ' +
+
+                                    'step="0.01" ' +
+
+                                    'min="0" ' +
+
+                                    'class="form-control student-fee-input paid-amount editable-amount" ' +
+
+                                    'name="students[' +
+                                    index +
+                                    '][paid_amount]" ' +
+
+                                    'data-index="' +
+                                    index +
+                                    '" ' +
+
+                                    'value="' +
+                                    paidAmount.toFixed(2) +
+                                    '">';
+
+                                html += '</td>';
+
+
+                                /*
+                                Pending Amount
+                                */
+
+                                html += '<td>';
+
+                                html +=
+
+                                    '<input ' +
+
+                                    'type="text" ' +
+
+                                    'class="form-control pending-amount pending-highlight" ' +
+
+                                    'value="' +
+                                    pendingAmount.toFixed(2) +
+                                    '" ' +
+
+                                    'readonly>';
+
+                                html += '</td>';
+
+
+                                /*
+                                Remark
+                                */
+
+                                html += '<td>';
+
+                                html +=
+
+                                    '<textarea ' +
+
+                                    'class="form-control remark-input" ' +
+
+                                    'name="students[' +
+                                    index +
+                                    '][remark]" ' +
+
+                                    'rows="3" ' +
+
+                                    'placeholder="Enter remark...">' +
+
+                                    escapeHtml(
+                                        remarks
+                                    ) +
+
+                                    '</textarea>';
+
+                                html += '</td>';
+
+
+                                html += '</tr>';
+
+                            }
+                        );
+
+
+                        $('#studentTableBody').html(
+                            html
+                        );
+
+
+                        /*
+                        Update highlights
+                        */
+
+                        $('#studentTableBody tr').each(
+                            function() {
+
+                                updatePendingHighlight(
+                                    $(this)
+                                );
+
+                            }
+                        );
 
 
                         $('#studentCount').text(
@@ -1346,25 +1517,35 @@
 
 
                         /*
-                         * Set hidden values
-                         */
+                        ==========================================
+                        SET HIDDEN VALUES
+                        ==========================================
+                        */
 
-                        $('#hidden_program_id').val(programId);
+                        $('#hidden_program_id').val(
+                            programId
+                        );
 
-                        $('#hidden_center_id').val(centerId);
+                        $('#hidden_center_id').val(
+                            centerId
+                        );
 
-                        $('#hidden_batch_id').val(batchId);
+                        $('#hidden_batch_id').val(
+                            batchId
+                        );
 
-                        $('#hidden_frequency_months').val(frequency);
+                        $('#hidden_frequency_months').val(
+                            frequency
+                        );
 
-                        $('#hidden_from_date').val(fromDate);
+                        $('#hidden_from_date').val(
+                            fromDate
+                        );
 
-                        $('#hidden_to_date').val(toDate);
+                        $('#hidden_to_date').val(
+                            toDate
+                        );
 
-
-                        /*
-                         * Calculate pending
-                         */
 
                         calculateAllPending();
 
@@ -1402,7 +1583,7 @@
 
             /*
             ==========================================
-            DUE / PAID -> PENDING
+            DUE / PAID / LATE FINE -> PENDING
             ==========================================
             */
 
@@ -1411,7 +1592,8 @@
                 '.due-amount, .late-fine, .paid-amount',
                 function() {
 
-                    let row = $(this).closest('tr');
+                    let row =
+                        $(this).closest('tr');
 
                     calculatePending(row);
 
@@ -1421,7 +1603,7 @@
 
             /*
             ==========================================
-            CLEAR ZERO AMOUNT WHEN FIELD IS CLICKED
+            CLEAR ZERO ON FOCUS
             ==========================================
             */
 
@@ -1430,11 +1612,11 @@
                 '.editable-amount',
                 function() {
 
-                    let value = parseFloat($(this).val()) || 0;
+                    let value =
+                        parseFloat(
+                            $(this).val()
+                        ) || 0;
 
-                    /*
-                     * If value is 0, clear it
-                     */
 
                     if (value === 0) {
 
@@ -1442,12 +1624,8 @@
 
                     } else {
 
-                        /*
-                         * If amount already exists,
-                         * select it so user can directly replace it
-                         */
-
                         $(this).select();
+
                     }
 
                 }
@@ -1456,7 +1634,7 @@
 
             /*
             ==========================================
-            IF USER LEAVES FIELD EMPTY, PUT 0.00 BACK
+            EMPTY -> 0.00
             ==========================================
             */
 
@@ -1465,99 +1643,126 @@
                 '.editable-amount',
                 function() {
 
-                    let value = $(this).val().trim();
+                    let value =
+                        $(this).val().trim();
+
 
                     if (value === '') {
 
                         $(this).val('0.00');
+
                     }
 
-                    let row = $(this).closest('tr');
+
+                    let row =
+                        $(this).closest('tr');
+
 
                     calculatePending(row);
 
                 }
             );
 
+
             /*
             ==========================================
-            UPDATE PENDING COLOR
+            UPDATE PENDING HIGHLIGHT
             ==========================================
             */
 
             function updatePendingHighlight(row) {
 
-                let previousPending = parseFloat(
-                    row.find('.previous-pending-amount').val()
-                ) || 0;
+                let previousPending =
+                    parseFloat(
+                        row.find(
+                            '.previous-pending-amount'
+                        ).val()
+                    ) || 0;
 
 
-                let pendingAmount = parseFloat(
-                    row.find('.pending-amount').val()
-                ) || 0;
+                let pendingAmount =
+                    parseFloat(
+                        row.find(
+                            '.pending-amount'
+                        ).val()
+                    ) || 0;
 
-
-                /*
-                 * Previous Pending
-                 */
 
                 if (previousPending > 0) {
 
-                    row.find('.previous-pending-amount')
-                        .addClass('has-pending');
+                    row.find(
+                        '.previous-pending-amount'
+                    ).addClass('has-pending');
 
                 } else {
 
-                    row.find('.previous-pending-amount')
-                        .removeClass('has-pending');
+                    row.find(
+                        '.previous-pending-amount'
+                    ).removeClass('has-pending');
+
                 }
 
-
-                /*
-                 * Pending Amount
-                 */
 
                 if (pendingAmount > 0) {
 
-                    row.find('.pending-amount')
-                        .addClass('has-pending');
+                    row.find(
+                        '.pending-amount'
+                    ).addClass('has-pending');
 
                 } else {
 
-                    row.find('.pending-amount')
-                        .removeClass('has-pending');
+                    row.find(
+                        '.pending-amount'
+                    ).removeClass('has-pending');
+
                 }
+
             }
 
 
+            /*
+            ==========================================
+            CALCULATE PENDING
+            ==========================================
+            */
+
             function calculatePending(row) {
 
-                let previousPending = parseFloat(
-                    row.find('.previous-pending-amount').val()
-                ) || 0;
+                let previousPending =
+                    parseFloat(
+                        row.find(
+                            '.previous-pending-amount'
+                        ).val()
+                    ) || 0;
 
-                let dueAmount = parseFloat(
-                    row.find('.due-amount').val()
-                ) || 0;
 
-                let lateFine = parseFloat(
-                    row.find('.late-fine').val()
-                ) || 0;
+                let dueAmount =
+                    parseFloat(
+                        row.find(
+                            '.due-amount'
+                        ).val()
+                    ) || 0;
 
-                let paidAmount = parseFloat(
-                    row.find('.paid-amount').val()
-                ) || 0;
+
+                let lateFine =
+                    parseFloat(
+                        row.find(
+                            '.late-fine'
+                        ).val()
+                    ) || 0;
+
+
+                let paidAmount =
+                    parseFloat(
+                        row.find(
+                            '.paid-amount'
+                        ).val()
+                    ) || 0;
 
 
                 /*
-                 * ======================================
-                 * TOTAL DUE
-                 *
-                 * Previous Pending
-                 * + Due Amount
-                 * + Late Fine
-                 * ======================================
-                 */
+                Total Due
+                */
 
                 let totalDue =
                     previousPending +
@@ -1566,68 +1771,83 @@
 
 
                 /*
-                 * Prevent Paid Amount from being
-                 * greater than Total Due
-                 */
+                Paid cannot exceed total
+                */
 
                 if (paidAmount > totalDue) {
 
-                    paidAmount = totalDue;
+                    paidAmount =
+                        totalDue;
 
-                    row.find('.paid-amount').val(
+                    row.find(
+                        '.paid-amount'
+                    ).val(
                         paidAmount.toFixed(2)
                     );
+
                 }
 
 
                 /*
-                 * PENDING AMOUNT
-                 */
+                Pending
+                */
 
                 let pendingAmount =
-                    totalDue - paidAmount;
+                    totalDue -
+                    paidAmount;
+
 
                 if (pendingAmount < 0) {
 
                     pendingAmount = 0;
+
                 }
 
 
                 /*
-                 * UPDATE TOTAL DUE BOX
-                 */
+                Total Due box
+                */
 
-                row.find('.total-due-amount').val(
+                row.find(
+                    '.total-due-amount'
+                ).val(
                     totalDue.toFixed(2)
                 );
 
 
                 /*
-                 * UPDATE PENDING AMOUNT BOX
-                 */
+                Pending box
+                */
 
-                row.find('.pending-amount').val(
+                row.find(
+                    '.pending-amount'
+                ).val(
                     pendingAmount.toFixed(2)
                 );
 
 
-                /*
-                 * UPDATE ORANGE HIGHLIGHT
-                 */
-
                 updatePendingHighlight(row);
+
             }
 
 
+            /*
+            ==========================================
+            CALCULATE ALL PENDING
+            ==========================================
+            */
+
             function calculateAllPending() {
 
-                $('#studentTableBody tr').each(function() {
+                $('#studentTableBody tr').each(
+                    function() {
 
-                    calculatePending(
-                        $(this)
-                    );
+                        calculatePending(
+                            $(this)
+                        );
 
-                });
+                    }
+                );
 
             }
 
@@ -1638,275 +1858,311 @@
             ==========================================
             */
 
-            $('#saveFees').on('click', function() {
+            $('#saveFees').on(
+                'click',
+                function() {
 
+                    let programId =
+                        $('#hidden_program_id').val();
 
-                let programId = $('#hidden_program_id').val();
+                    let centerId =
+                        $('#hidden_center_id').val();
 
-                let centerId = $('#hidden_center_id').val();
+                    let batchId =
+                        $('#hidden_batch_id').val();
 
-                let batchId = $('#hidden_batch_id').val();
+                    let frequency =
+                        $('#hidden_frequency_months').val();
 
-                let frequency = $('#hidden_frequency_months').val();
+                    let fromDate =
+                        $('#hidden_from_date').val();
 
-                let fromDate = $('#hidden_from_date').val();
+                    let toDate =
+                        $('#hidden_to_date').val();
 
-                let toDate = $('#hidden_to_date').val();
 
+                    if (
+                        !programId ||
+                        !centerId ||
+                        !batchId ||
+                        frequency === '' ||
+                        !fromDate ||
+                        !toDate
+                    ) {
 
-                if (
-                    !programId ||
-                    !centerId ||
-                    !batchId ||
-                    frequency === '' ||
-                    !fromDate ||
-                    !toDate
-                ) {
-
-                    alert(
-                        'Please select Program, Center, Batch, Frequency and From Date.'
-                    );
-
-                    return;
-
-                }
-
-
-                let hasInvalidAmount = false;
-
-
-                $('#studentTableBody tr').each(function() {
-
-                    let due = parseFloat(
-                        $(this).find('.due-amount').val()
-                    ) || 0;
-
-                    let paid = parseFloat(
-                        $(this).find('.paid-amount').val()
-                    ) || 0;
-
-                    let lateFine = parseFloat(
-                        $(this).find('.late-fine').val()
-                    ) || 0;
-
-                    let paidDate = $(this)
-                        .find('.paid-date')
-                        .val();
-
-                    let today = new Date()
-                        .toISOString()
-                        .split('T')[0];
-
-
-                    /*
-                    ==========================================
-                    VALIDATE DUE AMOUNT
-                    ==========================================
-                    */
-
-                    if (due <= 0) {
-
-                        hasInvalidAmount = true;
-
-                        $(this)
-                            .find('.due-amount')
-                            .addClass('is-invalid');
-
-                    } else {
-
-                        $(this)
-                            .find('.due-amount')
-                            .removeClass('is-invalid');
-
-                    }
-
-
-                    /*
-                    ==========================================
-                    VALIDATE PAID AMOUNT
-                    ==========================================
-                    */
-
-                    let previousPending = parseFloat(
-                        $(this)
-                        .find('.previous-pending-amount')
-                        .val()
-                    ) || 0;
-
-
-                    let totalDue =
-                        due +
-                        previousPending +
-                        lateFine;
-
-                    if (paid < 0 || paid > totalDue) {
-
-                        hasInvalidAmount = true;
-
-                        $(this)
-                            .find('.paid-amount')
-                            .addClass('is-invalid');
-
-                    } else {
-
-                        $(this)
-                            .find('.paid-amount')
-                            .removeClass('is-invalid');
-
-                    }
-
-
-                    /*
-                    ==========================================
-                    VALIDATE PAID DATE
-                    ==========================================
-                    */
-
-                    if (paidDate && paidDate > today) {
-
-                        hasInvalidAmount = true;
-
-                        $(this)
-                            .find('.paid-date')
-                            .addClass('is-invalid');
-
-                    } else {
-
-                        $(this)
-                            .find('.paid-date')
-                            .removeClass('is-invalid');
-
-                    }
-
-                });
-
-
-                if (hasInvalidAmount) {
-
-                    alert(
-                        'Please check Due Amount and Paid Amount and Fees Paid on for all students.'
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                 * Make sure pending values are updated
-                 */
-
-                calculateAllPending();
-
-
-                let button = $(this);
-
-
-                button.prop(
-                    'disabled',
-                    true
-                );
-
-
-                button.html(
-                    'Saving...'
-                );
-
-
-                $.ajax({
-
-                    url: "<?= site_url('finance/fees/save'); ?>",
-
-                    type: "POST",
-
-                    data: $('#feesForm').serialize(),
-
-                    dataType: "json",
-
-
-                    success: function(response) {
-
-                        console.log(
-                            "SAVE RESPONSE:",
-                            response
+                        alert(
+                            'Please select Center, Batch, Frequency and dates.'
                         );
 
+                        return;
 
-                        if (response.status === true) {
+                    }
 
-                            alert(
-                                response.message +
-                                "\n\nStudents Saved: " +
-                                response.saved_count
-                            );
+
+                    let hasInvalidAmount = false;
+
+
+                    $('#studentTableBody tr').each(
+                        function() {
+
+                            let due =
+                                parseFloat(
+                                    $(this)
+                                    .find('.due-amount')
+                                    .val()
+                                ) || 0;
+
+
+                            let paid =
+                                parseFloat(
+                                    $(this)
+                                    .find('.paid-amount')
+                                    .val()
+                                ) || 0;
+
+
+                            let lateFine =
+                                parseFloat(
+                                    $(this)
+                                    .find('.late-fine')
+                                    .val()
+                                ) || 0;
+
+
+                            let paidDate =
+                                $(this)
+                                .find('.paid-date')
+                                .val();
+
+
+                            let today =
+                                new Date()
+                                .toISOString()
+                                .split('T')[0];
 
 
                             /*
-                             * Clear student table
-                             */
+                            Due
+                            */
 
-                            $('#studentTableBody').html(
+                            if (due <= 0) {
 
-                                '<tr>' +
+                                hasInvalidAmount = true;
 
-                                '<td colspan="10" class="text-center text-success">' +
+                                $(this)
+                                    .find('.due-amount')
+                                    .addClass(
+                                        'is-invalid'
+                                    );
 
-                                'Fee records saved successfully.' +
+                            } else {
 
-                                '</td>' +
+                                $(this)
+                                    .find('.due-amount')
+                                    .removeClass(
+                                        'is-invalid'
+                                    );
 
-                                '</tr>'
+                            }
 
+
+                            /*
+                            Paid
+                            */
+
+                            let previousPending =
+                                parseFloat(
+                                    $(this)
+                                    .find(
+                                        '.previous-pending-amount'
+                                    )
+                                    .val()
+                                ) || 0;
+
+
+                            let totalDue =
+                                due +
+                                previousPending +
+                                lateFine;
+
+
+                            if (
+                                paid < 0 ||
+                                paid > totalDue
+                            ) {
+
+                                hasInvalidAmount = true;
+
+                                $(this)
+                                    .find('.paid-amount')
+                                    .addClass(
+                                        'is-invalid'
+                                    );
+
+                            } else {
+
+                                $(this)
+                                    .find('.paid-amount')
+                                    .removeClass(
+                                        'is-invalid'
+                                    );
+
+                            }
+
+
+                            /*
+                            Paid Date
+                            */
+
+                            if (
+                                paidDate &&
+                                paidDate > today
+                            ) {
+
+                                hasInvalidAmount = true;
+
+                                $(this)
+                                    .find('.paid-date')
+                                    .addClass(
+                                        'is-invalid'
+                                    );
+
+                            } else {
+
+                                $(this)
+                                    .find('.paid-date')
+                                    .removeClass(
+                                        'is-invalid'
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    if (hasInvalidAmount) {
+
+                        alert(
+                            'Please check Due Amount and Paid Amount and Fees Paid on for all students.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    calculateAllPending();
+
+
+                    let button =
+                        $(this);
+
+
+                    button.prop(
+                        'disabled',
+                        true
+                    );
+
+
+                    button.html(
+                        'Saving...'
+                    );
+
+
+                    $.ajax({
+
+                        url: "<?= site_url('finance/fees/save'); ?>",
+
+                        type: "POST",
+
+                        data: $('#feesForm').serialize(),
+
+                        dataType: "json",
+
+
+                        success: function(response) {
+
+                            console.log(
+                                "SAVE RESPONSE:",
+                                response
                             );
 
 
-                            $('#studentCount').text(
-                                '0 Students'
+                            if (
+                                response.status === true
+                            ) {
+
+                                alert(
+                                    response.message +
+                                    "\n\nStudents Saved: " +
+                                    response.saved_count
+                                );
+
+
+                                $('#studentTableBody').html(
+
+                                    '<tr>' +
+
+                                    '<td colspan="10" class="text-center text-success">' +
+
+                                    'Fee records saved successfully.' +
+
+                                    '</td>' +
+
+                                    '</tr>'
+
+                                );
+
+
+                                $('#studentCount').text(
+                                    '0 Students'
+                                );
+
+                            } else {
+
+                                alert(
+                                    response.message
+                                );
+
+                            }
+
+                        },
+
+
+                        error: function(xhr) {
+
+                            console.log(
+                                "SAVE ERROR:",
+                                xhr.responseText
                             );
 
-                        } else {
 
                             alert(
-                                response.message
+                                'Error saving fee records.'
+                            );
+
+                        },
+
+
+                        complete: function() {
+
+                            button.prop(
+                                'disabled',
+                                false
+                            );
+
+
+                            button.html(
+                                '<i class="mdi mdi-content-save"></i> Save Fees'
                             );
 
                         }
 
-                    },
+                    });
 
-
-                    error: function(xhr) {
-
-                        console.log(
-                            "SAVE ERROR:",
-                            xhr.responseText
-                        );
-
-
-                        alert(
-                            'Error saving fee records.'
-                        );
-
-                    },
-
-
-                    complete: function() {
-
-                        button.prop(
-                            'disabled',
-                            false
-                        );
-
-
-                        button.html(
-                            '<i class="mdi mdi-content-save"></i> Save Fees'
-                        );
-
-                    }
-
-                });
-
-            });
+                }
+            );
 
 
             /*
@@ -1953,9 +2209,15 @@
 
             function escapeHtml(value) {
 
-                if (value === null || value === undefined) {
+                if (
+                    value === null ||
+                    value === undefined
+                ) {
+
                     return '';
+
                 }
+
 
                 return $('<div>')
                     .text(value)
@@ -1964,21 +2226,54 @@
             }
 
 
+            /*
+            ==========================================
+            ESCAPE ATTRIBUTE
+            ==========================================
+            */
+
             function escapeAttribute(value) {
 
-                if (value === null || value === undefined) {
+                if (
+                    value === null ||
+                    value === undefined
+                ) {
+
                     return '';
+
                 }
 
+
                 return String(value)
-                    .replace(/&/g, '&amp;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#039;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
+                    .replace(
+                        /&/g,
+                        '&amp;'
+                    )
+                    .replace(
+                        /"/g,
+                        '&quot;'
+                    )
+                    .replace(
+                        /'/g,
+                        '&#039;'
+                    )
+                    .replace(
+                        /</g,
+                        '&lt;'
+                    )
+                    .replace(
+                        />/g,
+                        '&gt;'
+                    );
 
             }
 
+
+            /*
+            ==========================================
+            NAME ATTRIBUTE
+            ==========================================
+            */
 
             function nameAttr(value) {
 
@@ -1999,13 +2294,14 @@
 
                 $('#studentFeeSection').hide();
 
+
                 $('#studentTableBody').html(
 
                     '<tr>' +
 
                     '<td colspan="10" class="text-center text-muted">' +
 
-                    'Select Program, Center, Batch, Frequency and From Date.'
+                    'Select Center, Batch, Frequency and From Date.'
 
                     +
 
@@ -2015,12 +2311,12 @@
 
                 );
 
+
                 $('#studentCount').text(
                     '0 Students'
                 );
 
             }
-
 
         });
     </script>

@@ -12,7 +12,10 @@
 
             <!-- Header with Status Filter -->
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title mb-0"><i class="mdi mdi-book-open-page-variant me-2"></i>Vijetaas List</h4>
+                <h4 class="card-title mb-0">
+                    <i class="mdi mdi-account-group menu-icon"></i>  Vijetaas List
+                </h4>
+
                 <?= view('includes/messages'); ?>
                 <div class="d-flex align-items-center">
                     <label for="statusFilter" class="me-2">Status:</label>

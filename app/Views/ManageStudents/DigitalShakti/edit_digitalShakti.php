@@ -13,7 +13,7 @@
 
           <?= view('includes/breadcrumb'); ?>
 
-          <h4 class="card-title">Edit Digital Shakti Student</h4>
+          <h4 class="card-title"><i class="mdi mdi-laptop menu-icon"></i>  Edit Digital Shakti Student</h4>
 
           <form action="<?= site_url('digitalshakti/update/' . $student['DS_Stu_Id']) ?>"
             method="post"

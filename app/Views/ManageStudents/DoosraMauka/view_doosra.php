@@ -14,7 +14,7 @@
               <?= view('includes/breadcrumb'); ?>
               <!-- Page Header -->
               <h4 class="card-title mb-4">
-                <i class="mdi mdi-book-open-page-variant me-2"></i> Doosra Mauka Student Details
+                <i class="mdi mdi-account-convert-outline menu-icon"></i> Doosra Mauka Student Details
               </h4>
 
               <!-- Tabs -->

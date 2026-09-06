@@ -1,9 +1,6 @@
 <!-- app/views/includes/breadcrumb.php -->
 <div class="mb-3">
-    <!-- Back Button -->
-    <button class="btn btn-secondary mb-3" onclick="window.history.back()">
-        <i class="mdi mdi-arrow-left"></i> Back
-    </button>
+    
 
     <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb">

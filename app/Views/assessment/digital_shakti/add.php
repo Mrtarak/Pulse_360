@@ -1,8 +1,8 @@
 <?= view('includes/header'); ?>
+
 <?= view('includes/navbar'); ?>
 
 <div class="container-fluid page-body-wrapper">
-
     <?= view('includes/sidebar'); ?>
 
     <div class="main-panel">
@@ -18,7 +18,6 @@
                         <div class="card-body">
 
                             <?= view('includes/breadcrumb'); ?>
-
                             <?= view('includes/messages'); ?>
 
 
@@ -305,7 +304,7 @@
                                         <?= csrf_field() ?>
 
 
-                                        <!-- Hidden filter values -->
+                                        <!-- ================= HIDDEN FILTER VALUES ================= -->
 
                                         <input
                                             type="hidden"
@@ -356,7 +355,7 @@
                                                             Remarks / Notes
                                                         </th>
 
-                                                        <th width="130">
+                                                        <th width="160">
                                                             Status
                                                         </th>
 
@@ -414,16 +413,16 @@
         </div>
 
     </div>
+    ```
 
 </div>
 
-
 <?= view('includes/footer'); ?>
 
-
-
 <!-- ===================================================== -->
+
 <!-- DIGITAL SHAKTI JAVASCRIPT -->
+
 <!-- ===================================================== -->
 
 <script>
@@ -830,6 +829,7 @@
                                 student.Student_Assessment_Id || '';
 
 
+
                             /*
                              * Existing date
                              */
@@ -858,42 +858,181 @@
 
 
                             /*
-                             * Status
+                             * Today
                              */
 
-                            let statusHtml = '';
-
-
-                            if (assessmentId) {
-
-                                statusHtml =
-
-                                    '<span class="badge bg-success">' +
-
-                                    'Completed' +
-
-                                    '</span>';
-
-                            } else {
-
-                                statusHtml =
-
-                                    '<span class="badge bg-warning text-dark">' +
-
-                                    'Pending' +
-
-                                    '</span>';
-
-                            }
+                            let today =
+                                new Date()
+                                .toISOString()
+                                .split('T')[0];
 
 
 
-                            /*
-                             * Hidden existing assessment ID
-                             *
-                             * Not required by current controller,
-                             * but kept available for future use.
-                             */
+                            /* =================================================
+                               ASSESSMENT DATE
+                            ================================================= */
+
+                            let dateClass = assessmentId ?
+                                'form-control assessment-date locked-field' :
+                                'form-control assessment-date';
+
+
+                            let dateInput =
+
+                                '<input ' +
+
+                                'type="date" ' +
+
+                                'name="assessment_date[]" ' +
+
+                                'class="' +
+                                dateClass +
+                                '" ' +
+
+                                'max="' +
+                                today +
+                                '" ' +
+
+                                (assessmentId ?
+                                    'readonly ' :
+                                    '') +
+
+                                'value="' +
+
+                                $('<div>')
+                                .text(assessmentDate)
+                                .html() +
+
+                                '">';
+
+
+
+                            /* =================================================
+                               GRADE
+                            ================================================= */
+
+                            let gradeClass = assessmentId ?
+                                'form-select digital-grade locked-field' :
+                                'form-select digital-grade';
+
+
+                            let gradeInput =
+
+                                '<select ' +
+
+                                'name="digital_shakti_grade[]" ' +
+
+                                'class="' +
+                                gradeClass +
+                                '">' +
+
+                                '<option value="">Select Grade</option>' +
+
+                                '<option value="A" ' +
+                                (grade === 'A' ?
+                                    'selected' :
+                                    '') +
+                                '>A</option>' +
+
+                                '<option value="A+" ' +
+                                (grade === 'A+' ?
+                                    'selected' :
+                                    '') +
+                                '>A+</option>' +
+
+                                '<option value="B" ' +
+                                (grade === 'B' ?
+                                    'selected' :
+                                    '') +
+                                '>B</option>' +
+
+                                '<option value="B+" ' +
+                                (grade === 'B+' ?
+                                    'selected' :
+                                    '') +
+                                '>B+</option>' +
+
+                                '<option value="C" ' +
+                                (grade === 'C' ?
+                                    'selected' :
+                                    '') +
+                                '>C</option>' +
+
+                                '<option value="C+" ' +
+                                (grade === 'C+' ?
+                                    'selected' :
+                                    '') +
+                                '>C+</option>' +
+
+                                '<option value="D" ' +
+                                (grade === 'D' ?
+                                    'selected' :
+                                    '') +
+                                '>D</option>' +
+
+                                '</select>';
+
+
+
+                            /* =================================================
+                               REMARK
+                            ================================================= */
+
+                            let remarkClass = assessmentId ?
+                                'form-control digital-remark locked-field' :
+                                'form-control digital-remark';
+
+
+                            let remarkInput =
+
+                                '<textarea ' +
+
+                                'name="digital_shakti_remark[]" ' +
+
+                                'class="' +
+                                remarkClass +
+                                '" ' +
+
+                                'rows="1" ' +
+
+                                (assessmentId ?
+                                    'readonly ' :
+                                    '') +
+
+                                'placeholder="Enter remarks">' +
+
+                                $('<div>')
+                                .text(remark)
+                                .html() +
+
+                                '</textarea>'
+                            /* =================================================
+                               STUDENT ID
+                            ================================================= */
+
+                            let hiddenStudentId =
+
+                                '<input ' +
+
+                                'type="hidden" ' +
+
+                                'name="student_id[]" ' +
+
+                                'value="' +
+
+                                $('<div>')
+                                .text(
+                                    student.Student_Id
+                                )
+                                .html() +
+
+                                '">';
+
+
+
+                            /* =================================================
+                               EXISTING ASSESSMENT ID
+                            ================================================= */
 
                             let hiddenAssessmentId =
 
@@ -913,142 +1052,81 @@
 
 
 
-                            /*
-                             * Student ID
-                             */
+                            /* =================================================
+                               STATUS
+                            ================================================= */
 
-                            let hiddenStudentId =
-
-                                '<input ' +
-
-                                'type="hidden" ' +
-
-                                'name="student_id[]" ' +
-
-                                'value="' +
-
-                                $('<div>')
-                                .text(student.Student_Id)
-                                .html() +
-
-                                '">';
+                            let statusHtml = '';
 
 
-
-                            /*
-                             * Assessment Date
-                             */
-
-                            let today = new Date().toISOString().split('T')[0];
-
-                            let dateInput =
-
-                                '<input ' +
-
-                                'type="date" ' +
-
-                                'name="assessment_date[]" ' +
-
-                                'class="form-control assessment-date" ' +
-
-                                'max="' + today + '" ' +
-
-                                'value="' +
-
-                                $('<div>')
-                                .text(assessmentDate)
-                                .html() +
-
-                                '">';
+                            if (assessmentId) {
 
 
-                            /*
-                             * Grade
-                             */
+                                statusHtml =
 
-                            let gradeInput =
+                                    '<div class="student-status">' +
 
-                                '<select ' +
+                                    '<span class="badge bg-success mb-2">' +
 
-                                'name="digital_shakti_grade[]" ' +
+                                    '<i class="mdi mdi-check-circle me-1"></i>' +
 
-                                'class="form-select digital-grade">' +
+                                    'Completed' +
 
-                                '<option value="">Select Grade</option>' +
+                                    '</span>' +
 
-                                '<option value="A" ' +
-                                (grade === 'A' ? 'selected' : '') +
-                                '>A</option>' +
+                                    '<br>' +
 
-                                '<option value="A+" ' +
-                                (grade === 'A+' ? 'selected' : '') +
-                                '>A+</option>' +
+                                    '<button ' +
 
-                                '<option value="B" ' +
-                                (grade === 'B' ? 'selected' : '') +
-                                '>B</option>' +
+                                    'type="button" ' +
 
-                                '<option value="B+" ' +
-                                (grade === 'B+' ? 'selected' : '') +
-                                '>B+</option>' +
+                                    'class="btn btn-sm btn-outline-primary edit-student-btn">' +
 
-                                '<option value="C" ' +
-                                (grade === 'C' ? 'selected' : '') +
-                                '>C</option>' +
+                                    '<i class="mdi mdi-pencil me-1"></i>' +
 
-                                '<option value="C+" ' +
-                                (grade === 'C+' ? 'selected' : '') +
-                                '>C+</option>' +
+                                    'Edit' +
 
-                                '<option value="D" ' +
-                                (grade === 'D' ? 'selected' : '') +
-                                '>D</option>' +
+                                    '</button>' +
 
-                                '</select>';
+                                    '</div>';
+
+
+                            } else {
+
+
+                                statusHtml =
+
+                                    '<span class="badge bg-warning text-dark">' +
+
+                                    '<i class="mdi mdi-clock-outline me-1"></i>' +
+
+                                    'Pending' +
+
+                                    '</span>';
+
+                            }
 
 
 
-                            /*
-                             * Remark
-                             */
-
-                            let remarkInput =
-
-                                '<textarea ' +
-
-                                'name="digital_shakti_remark[]" ' +
-
-                                'class="form-control digital-remark" ' +
-
-                                'rows="1" ' +
-
-                                'placeholder="Enter remarks">' +
-
-                                $('<div>')
-                                .text(remark)
-                                .html() +
-
-                                '</textarea>';
-
-
-
-                            /*
-                             * Existing assessment indicator
-                             */
+                            /* =================================================
+                               ROW CLASS
+                            ================================================= */
 
                             let rowClass = assessmentId ?
-                                'assessment-completed' :
+                                'assessment-completed assessment-locked' :
                                 '';
 
 
 
-                            /*
-                             * Build row
-                             */
+                            /* =================================================
+                               BUILD ROW
+                            ================================================= */
 
                             let row =
 
-                                '<tr class="' +
+                                '<tr ' +
+
+                                'class="' +
                                 rowClass +
                                 '">' +
 
@@ -1096,7 +1174,7 @@
                                 '</td>' +
 
 
-                                '<td>' +
+                                '<td class="text-center">' +
 
                                 statusHtml +
 
@@ -1151,44 +1229,126 @@
 
 
         /* =====================================================
-           SAVE FORM
+           EDIT INDIVIDUAL STUDENT
         ===================================================== */
 
-        $('#assessmentForm').on('submit', function(e) {
+        $(document).on(
+            'click',
+            '.edit-student-btn',
+            function() {
 
 
-            /*
-             * Prevent accidental double submission
-             */
-
-            let button =
-                $('#saveAssessment');
+                let button =
+                    $(this);
 
 
-            button
-                .prop('disabled', true)
-                .html(
-                    '<i class="mdi mdi-loading mdi-spin me-2"></i>Saving...'
+                let row =
+                    button.closest('tr');
+
+
+
+                /* ================= UNLOCK DATE ================= */
+
+                row.find('.assessment-date')
+                    .prop('readonly', false)
+                    .removeClass('locked-field');
+
+
+
+                /* ================= UNLOCK GRADE ================= */
+
+                row.find('.digital-grade')
+                    .removeClass('locked-field');
+
+
+
+                /* ================= UNLOCK REMARK ================= */
+
+                row.find('.digital-remark')
+                    .prop('readonly', false)
+                    .removeClass('locked-field');
+
+
+
+                /* ================= ROW APPEARANCE ================= */
+
+                row.removeClass(
+                    'assessment-locked'
                 );
 
 
-            /*
-             * Allow normal form submission.
-             */
 
-        });
+                /* ================= CHANGE BUTTON ================= */
+
+                button
+                    .removeClass(
+                        'btn-outline-primary'
+                    )
+                    .addClass(
+                        'btn-success'
+                    )
+                    .html(
+                        '<i class="mdi mdi-pencil-off me-1"></i> Editing'
+                    )
+                    .prop(
+                        'disabled',
+                        true
+                    );
+
+            }
+        );
+
+
+
+        /* =====================================================
+           SAVE FORM
+        ===================================================== */
+
+        $('#assessmentForm').on(
+            'submit',
+            function(e) {
+
+
+                /*
+                 * Prevent accidental double submission
+                 */
+
+                let button =
+                    $('#saveAssessment');
+
+
+                button
+                    .prop(
+                        'disabled',
+                        true
+                    )
+                    .html(
+                        '<i class="mdi mdi-loading mdi-spin me-2"></i>Saving...'
+                    );
+
+
+                /*
+                 * Allow normal form submission.
+                 */
+
+            }
+        );
 
 
     });
 </script>
 
-
-
 <!-- ===================================================== -->
+
 <!-- PAGE CSS -->
+
 <!-- ===================================================== -->
 
 <style>
+    /* =====================================================
+       GENERAL CARD
+    ===================================================== */
+
     .card {
         border: 0;
         border-radius: 10px;
@@ -1203,6 +1363,10 @@
     }
 
 
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
+
     .summary-box {
         background: #f8f9fa;
         border-left: 4px solid #4B49AC;
@@ -1210,6 +1374,10 @@
         padding: 15px;
     }
 
+
+    /* =====================================================
+       TABLE
+    ===================================================== */
 
     .table thead {
         background: #eef2ff;
@@ -1233,10 +1401,43 @@
     }
 
 
+    /* =====================================================
+       COMPLETED ROW
+    ===================================================== */
+
     .assessment-completed {
         background-color: rgba(25, 135, 84, 0.04);
     }
 
+
+    /* =====================================================
+       LOCKED EXISTING FIELDS
+    ===================================================== */
+
+    .assessment-locked {
+        background-color: rgba(0, 0, 0, 0.015);
+    }
+
+
+    .locked-field {
+        background-color: #e9ecef !important;
+        cursor: not-allowed;
+    }
+
+
+    /*
+     * Grade select behaves like readonly
+     */
+
+    .digital-grade.locked-field {
+        pointer-events: none;
+        background-color: #e9ecef !important;
+    }
+
+
+    /* =====================================================
+       INPUT WIDTHS
+    ===================================================== */
 
     .assessment-date {
         min-width: 150px !important;
@@ -1250,5 +1451,28 @@
 
     .digital-remark {
         min-width: 220px !important;
+    }
+
+
+    /* =====================================================
+       EDIT BUTTON
+    ===================================================== */
+
+    .edit-student-btn {
+        min-width: 80px;
+    }
+
+
+    .student-status {
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       SAVE BUTTON
+    ===================================================== */
+
+    #saveAssessment {
+        min-width: 220px;
     }
 </style>

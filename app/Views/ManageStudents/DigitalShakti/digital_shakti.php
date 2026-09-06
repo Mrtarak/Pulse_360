@@ -15,7 +15,7 @@
                   <div class="card-body">
                     <?= view('includes/breadcrumb'); ?>
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title mb-0">Digital Shakti Participants</h4>
+                    <h4 class="card-title mb-0"><i class="mdi mdi-laptop menu-icon"></i>  Digital Shakti Participants</h4>
                     <?= view('includes/messages'); ?>
                     <a href="<?= site_url('digitalshakti/add') ?>" class="btn btn-primary btn-sm">
                         <i class="mdi mdi-plus-circle-outline me-1"></i> Add New Student

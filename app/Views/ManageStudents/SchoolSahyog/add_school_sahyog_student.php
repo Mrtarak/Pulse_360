@@ -20,6 +20,11 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
+                            <h4 class="card-title mb-4">
+                                <i class="mdi mdi-school-outline menu-icon"></i>
+                                Add School Sahyog Student
+                            </h4>
+
                             <form
                                 method="post"
                                 action="<?= base_url('students/school_sahyog/store') ?>"

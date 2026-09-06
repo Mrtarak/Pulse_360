@@ -1,9 +1,8 @@
-
 <?= view('includes/header'); ?>
+
 <?= view('includes/navbar'); ?>
 
 <div class="container-fluid page-body-wrapper">
-
     <?= view('includes/sidebar'); ?>
 
     <div class="main-panel">
@@ -33,7 +32,7 @@
 
                                     <i class="mdi mdi-school me-2"></i>
 
-                                    Doosra Mauka Assessment
+                                    School Sahyog Assessment
 
                                 </h4>
 
@@ -159,6 +158,10 @@
                                                     Baseline
                                                 </option>
 
+                                                <option value="Midline">
+                                                    Midline
+                                                </option>
+
                                                 <option value="Endline">
                                                     Endline
                                                 </option>
@@ -249,7 +252,7 @@
 
                                                 <br>
 
-                                                Doosra Mauka
+                                                School Sahyog
 
                                             </div>
 
@@ -351,16 +354,16 @@
         </div>
 
     </div>
+    ```
 
 </div>
 
-
 <?= view('includes/footer'); ?>
 
-
-
 <!-- ===================================================== -->
-<!-- DOOSRA MAUKA ASSESSMENT JAVASCRIPT -->
+
+<!-- SCHOOL SAHYOG ASSESSMENT JAVASCRIPT -->
+
 <!-- ===================================================== -->
 
 <script>
@@ -403,7 +406,7 @@
 
             $.ajax({
 
-                url: '<?= site_url('assessment/doosra-mauka/get-batches') ?>',
+                url: '<?= site_url('assessment/school-sahyog/get-batches') ?>',
 
                 type: 'POST',
 
@@ -558,7 +561,7 @@
 
             $.ajax({
 
-                url: '<?= site_url('assessment/doosra-mauka/get-students') ?>',
+                url: '<?= site_url('assessment/school-sahyog/get-students') ?>',
 
                 type: 'POST',
 
@@ -705,7 +708,7 @@
 
                             actionHtml =
 
-                                '<a href="<?= site_url('assessment/doosra-mauka/add') ?>' +
+                                '<a href="<?= site_url('assessment/school-sahyog/add') ?>' +
 
                                 '?student_id=' +
                                 encodeURIComponent(student.Student_Id) +
@@ -751,7 +754,7 @@
 
                             actionHtml =
 
-                                '<a href="<?= site_url('assessment/doosra-mauka/view') ?>/' +
+                                '<a href="<?= site_url('assessment/school-sahyog/view') ?>/' +
 
                                 encodeURIComponent(
                                     student.Student_Assessment_Id
@@ -768,7 +771,7 @@
                                 '</a>' +
 
 
-                                '<a href="<?= site_url('assessment/doosra-mauka/edit') ?>/' +
+                                '<a href="<?= site_url('assessment/school-sahyog/edit') ?>/' +
 
                                 encodeURIComponent(
                                     student.Student_Assessment_Id
@@ -883,10 +886,10 @@
     });
 </script>
 
-
-
 <!-- ===================================================== -->
+
 <!-- PAGE CSS -->
+
 <!-- ===================================================== -->
 
 <style>

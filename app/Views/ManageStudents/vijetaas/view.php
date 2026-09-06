@@ -15,7 +15,7 @@
               <div class="card-body">
                 <?= view('includes/breadcrumb'); ?>
 
-                <h4 class="card-title">Vijetaas - Student Details</h4>
+                <h4 class="card-title"><i class="mdi mdi-account-group menu-icon"></i>  Vijetaas - Student Details</h4>
                 <ul class="nav nav-tabs">
 
                   <li class="nav-item">

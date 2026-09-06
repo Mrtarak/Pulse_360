@@ -135,8 +135,13 @@
           <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
               <div class="card-body">
+                <?= view('includes/breadcrumb'); ?>
                 <form id="attendanceForm">
-                  <input type="hidden" name="program_id" id="hidden_program_id">
+                  <input
+                    type="hidden"
+                    name="program_id"
+                    id="hidden_program_id"
+                    value="<?= esc($program_id); ?>">
                   <input type="hidden" name="center_id" id="hidden_center_id">
                   <input type="hidden" name="batch_id" id="hidden_batch_id">
 
@@ -158,24 +163,13 @@
                             Program
                           </label>
 
-                          <select class="form-select" id="program_id">
-
-                            <option value="">
-                              Select Program
-                            </option>
-
-                            <?php foreach ($programs as $program): ?>
-
-                              <option value="<?= $program['Program_Id']; ?>">
-                                <?= $program['Program_Name']; ?>
-                              </option>
-
-                            <?php endforeach; ?>
-
-                          </select>
+                          <input
+                            type="text"
+                            class="form-control"
+                            value="<?= esc($program['Program_Name']); ?>"
+                            readonly>
 
                         </div>
-
                         <div class="col-md-3 mb-3">
 
                           <label class="fw-bold">
@@ -220,6 +214,24 @@
                             id="attendance_date"
                             class="form-control"
                             value="<?= date('Y-m-d') ?>">
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+
+                        <div class="col-md-12 text-end">
+
+                          <button
+                            type="button"
+                            id="fetchStudents"
+                            class="btn btn-primary">
+
+                            <i class="mdi mdi-account-search me-1"></i>
+                            Fetch Students
+
+                          </button>
+
                         </div>
 
                       </div>
@@ -319,207 +331,567 @@
     <script>
       $(document).ready(function() {
 
-        // PROGRAM -> CENTER
-        $('#program_id').change(function() {
+        /*
+        |--------------------------------------------------------------------------
+        | FIXED PROGRAM
+        |--------------------------------------------------------------------------
+        */
 
-          let programId = $(this).val();
+        const programId = $('#hidden_program_id').val();
 
-          console.log("Selected Program:", programId);
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOAD CENTERS AUTOMATICALLY
+        |--------------------------------------------------------------------------
+        */
+
+        if (programId) {
+
+          loadCenters(programId);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOAD CENTERS
+        |--------------------------------------------------------------------------
+        */
+
+        function loadCenters(programId) {
 
           $.ajax({
+
             url: "<?= base_url('attendance/get-centers'); ?>",
+
             type: "POST",
+
             data: {
               program_id: programId
             },
+
             dataType: "json",
 
             success: function(data) {
 
               console.log("Centers Response:", data);
 
-              let html = '<option value="">Select Center</option>';
 
-              if (data.centers) {
-                $.each(data.centers, function(i, row) {
+              let html =
+                '<option value="">Select Center</option>';
 
-                  html +=
-                    '<option value="' +
-                    row.Center_Id +
-                    '">' +
-                    row.Center_Name +
-                    '</option>';
 
-                });
+              if (
+                data.status &&
+                data.centers
+              ) {
+
+                $.each(
+                  data.centers,
+                  function(i, row) {
+
+                    html +=
+                      '<option value="' +
+                      row.Center_Id +
+                      '">' +
+                      row.Center_Name +
+                      '</option>';
+
+                  }
+                );
+
               }
 
+
               $('#center_id').html(html);
-              $('#batch_id').html('<option value="">Select Batch</option>');
-              $('#studentTableBody').html('');
+
+
+              $('#batch_id').html(
+                '<option value="">Select Batch</option>'
+              );
+
+
+              $('#studentTableBody').html(
+                '<tr>' +
+                '<td colspan="6" class="text-center">' +
+                'Select Center → Batch' +
+                '</td>' +
+                '</tr>'
+              );
 
             },
 
             error: function(xhr) {
-              console.log("CENTER ERROR:");
-              console.log(xhr.responseText);
+
+              console.log(
+                "CENTER ERROR:",
+                xhr.responseText
+              );
+
             }
+
           });
 
-        });
+        }
 
 
-        // CENTER -> BATCH
+        /*
+        |--------------------------------------------------------------------------
+        | CENTER -> BATCH
+        |--------------------------------------------------------------------------
+        */
+
         $('#center_id').change(function() {
 
+          const centerId = $(this).val();
+
+
+          /*
+           * Reset batch.
+           */
+          $('#batch_id').html(
+            '<option value="">Select Batch</option>'
+          );
+
+
+          $('#hidden_center_id').val(centerId);
+
+          $('#hidden_batch_id').val('');
+
+
+          $('#studentTableBody').html(
+            '<tr>' +
+            '<td colspan="6" class="text-center">' +
+            'Select Batch' +
+            '</td>' +
+            '</tr>'
+          );
+
+
+          if (!centerId) {
+
+            return;
+
+          }
+
+
           $.ajax({
+
             url: "<?= base_url('attendance/get-batches'); ?>",
+
             type: "POST",
+
             data: {
-              program_id: $('#program_id').val(),
-              center_id: $('#center_id').val()
+
+              program_id: programId,
+
+              center_id: centerId
+
             },
+
             dataType: "json",
 
             success: function(data) {
 
-              console.log("Batch Response:", data);
+              console.log(
+                "Batch Response:",
+                data
+              );
 
-              let html = '<option value="">Select Batch</option>';
 
-              $.each(data, function(i, row) {
+              let html =
+                '<option value="">Select Batch</option>';
 
-                html +=
-                  '<option value="' +
-                  row.Batch_Id +
-                  '">' +
-                  row.Batch_Name +
-                  '</option>';
 
-              });
+              $.each(
+                data,
+                function(i, row) {
+
+                  html +=
+                    '<option value="' +
+                    row.Batch_Id +
+                    '">' +
+                    row.Batch_Name +
+                    '</option>';
+
+                }
+              );
+
 
               $('#batch_id').html(html);
 
             },
 
             error: function(xhr) {
-              console.log("BATCH ERROR:");
-              console.log(xhr.responseText);
+
+              console.log(
+                "BATCH ERROR:",
+                xhr.responseText
+              );
+
             }
+
           });
 
         });
 
 
-        // BATCH -> STUDENTS
+        /*
+        |--------------------------------------------------------------------------
+        | BATCH -> STUDENTS
+        |--------------------------------------------------------------------------
+        */
+
         $('#batch_id').change(function() {
 
-          // Load students
-          $.ajax({
-            url: "<?= base_url('attendance/get-students'); ?>",
-            type: "POST",
-            data: {
-              program_id: $('#program_id').val(),
-              batch_id: $('#batch_id').val(),
-              attendance_date: $('#attendance_date').val()
-            },
-            success: function(response) {
-              $('#studentTableBody').html(response);
-            }
-          });
+          const batchId = $(this).val();
 
-          // Load attendance dates
+          $('#hidden_batch_id').val(batchId);
+
+          if (!batchId) {
+
+            $('#studentTableBody').html(
+              '<tr>' +
+              '<td colspan="6" class="text-center">' +
+              'Select Batch' +
+              '</td>' +
+              '</tr>'
+            );
+
+            return;
+
+          }
+
+          /*
+           * Load attendance dates.
+           */
           $.ajax({
+
             url: "<?= base_url('attendance/get-attendance-dates'); ?>",
+
             type: "POST",
+
             data: {
-              batch_id: $('#batch_id').val()
+
+              program_id: programId,
+
+              batch_id: batchId
+
             },
+
             dataType: "json",
 
             success: function(response) {
 
-              console.log("Attendance Dates:", response);
+              console.log(
+                "Attendance Dates:",
+                response
+              );
 
               markedDates = [];
 
               response.forEach(function(item) {
-                markedDates.push(item.Attendance_Date);
+
+                markedDates.push(
+                  item.Attendance_Date
+                );
+
               });
 
-              console.log("Marked Dates:", markedDates);
+              if (attendanceCalendar) {
 
-              attendanceCalendar.redraw();
+                attendanceCalendar.redraw();
+
+              }
+
             },
 
             error: function(xhr) {
-              console.log(xhr.responseText);
+
+              console.log(
+                xhr.responseText
+              );
+
             }
+
           });
 
         });
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATE CHANGE -> STUDENTS
+        |--------------------------------------------------------------------------
+        */
+
         $('#attendance_date').change(function() {
 
-          if ($('#batch_id').val() == '') {
+          $('#studentTableBody').html(
+            '<tr>' +
+            '<td colspan="6" class="text-center">' +
+            'Click "Fetch Students" to load students' +
+            '</td>' +
+            '</tr>'
+          );
+
+        });
+
+
+
+        /*
+|--------------------------------------------------------------------------
+| FETCH STUDENTS BUTTON
+|--------------------------------------------------------------------------
+*/
+
+        $('#fetchStudents').click(function() {
+
+          const centerId =
+            $('#center_id').val();
+
+          const batchId =
+            $('#batch_id').val();
+
+          const attendanceDate =
+            $('#attendance_date').val();
+
+
+          /*
+           * Validation
+           */
+
+          if (!programId) {
+
+            alert('Program is not selected.');
+
             return;
+
           }
 
+          if (!centerId) {
+
+            alert('Please select a Center.');
+
+            return;
+
+          }
+
+          if (!batchId) {
+
+            alert('Please select a Batch.');
+
+            return;
+
+          }
+
+          if (!attendanceDate) {
+
+            alert('Please select Attendance Date.');
+
+            return;
+
+          }
+
+
+          /*
+           * Set hidden values
+           */
+
+          $('#hidden_program_id')
+            .val(programId);
+
+          $('#hidden_center_id')
+            .val(centerId);
+
+          $('#hidden_batch_id')
+            .val(batchId);
+
+
+          /*
+           * Show loading
+           */
+
+          $('#studentTableBody').html(
+            '<tr>' +
+            '<td colspan="6" class="text-center">' +
+            '<i class="mdi mdi-loading mdi-spin me-2"></i>' +
+            'Loading students...' +
+            '</td>' +
+            '</tr>'
+          );
+
+
+          /*
+           * Fetch Students
+           */
+
+          loadStudents();
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOAD STUDENTS FUNCTION
+        |--------------------------------------------------------------------------
+        */
+
+        function loadStudents() {
+
+          const batchId =
+            $('#batch_id').val();
+
+          const date =
+            $('#attendance_date').val();
+
+
+          if (!batchId) {
+
+            return;
+
+          }
+
+
           $.ajax({
+
             url: "<?= base_url('attendance/get-students'); ?>",
+
             type: "POST",
+
             data: {
-              program_id: $('#program_id').val(),
-              batch_id: $('#batch_id').val(),
-              attendance_date: $('#attendance_date').val()
+
+              program_id: programId,
+
+              batch_id: batchId,
+
+              attendance_date: date
+
             },
 
             success: function(response) {
 
-              $('#studentTableBody').html(response);
+              $('#studentTableBody')
+                .html(response);
 
             },
 
             error: function(xhr) {
 
-              console.log(xhr.responseText);
+              console.log(
+                xhr.responseText
+              );
+
+
+              $('#studentTableBody').html(
+                '<tr>' +
+                '<td colspan="6" class="text-center text-danger">' +
+                'Unable to load students.' +
+                '</td>' +
+                '</tr>'
+              );
 
             }
+
           });
 
-        });
+        }
 
-      });
-    </script>
-    <script>
-      $('#saveAttendance').click(function() {
 
-        $('#hidden_program_id').val($('#program_id').val());
-        $('#hidden_center_id').val($('#center_id').val());
-        $('#hidden_batch_id').val($('#batch_id').val());
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE ATTENDANCE
+        |--------------------------------------------------------------------------
+        */
 
-        $.ajax({
+        $('#saveAttendance').click(function() {
 
-          url: "<?= base_url('attendance/save'); ?>",
+          const centerId =
+            $('#center_id').val();
 
-          type: "POST",
+          const batchId =
+            $('#batch_id').val();
 
-          data: $('#attendanceForm').serialize(),
 
-          dataType: "json",
+          /*
+           * Front-end validation.
+           */
 
-          success: function(response) {
+          if (!programId) {
 
-            alert(response.message);
+            alert(
+              'Program is not selected.'
+            );
 
-          },
-
-          error: function(xhr) {
-
-            console.log(xhr.responseText);
-
-            alert('Error Saving Attendance');
+            return;
 
           }
+
+
+          if (!centerId) {
+
+            alert(
+              'Please select a Center.'
+            );
+
+            return;
+
+          }
+
+
+          if (!batchId) {
+
+            alert(
+              'Please select a Batch.'
+            );
+
+            return;
+
+          }
+
+
+          $('#hidden_program_id')
+            .val(programId);
+
+          $('#hidden_center_id')
+            .val(centerId);
+
+          $('#hidden_batch_id')
+            .val(batchId);
+
+
+          $.ajax({
+
+            url: "<?= base_url('attendance/save'); ?>",
+
+            type: "POST",
+
+            data: $('#attendanceForm').serialize(),
+
+            dataType: "json",
+
+            success: function(response) {
+
+              alert(
+                response.message
+              );
+
+            },
+
+            error: function(xhr) {
+
+              console.log(
+                xhr.responseText
+              );
+
+              alert(
+                'Error Saving Attendance'
+              );
+
+            }
+
+          });
 
         });
 

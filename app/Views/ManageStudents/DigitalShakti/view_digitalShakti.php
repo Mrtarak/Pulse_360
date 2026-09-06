@@ -14,7 +14,7 @@
                             <?= view('includes/breadcrumb'); ?>
                             <!-- Page Header -->
                             <h4 class="card-title mb-4">
-                                <i class="mdi mdi-book-open-page-variant me-2"></i> Digital Shakti Student Details
+                                <i class="mdi mdi-laptop menu-icon"></i> Digital Shakti Student Details
                             </h4>
 
                             <!-- Tabs -->

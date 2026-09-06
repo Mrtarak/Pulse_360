@@ -26,6 +26,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
 
                             <h4 class="card-title mb-0">
+                                <i class="mdi mdi-book-open-page-variant me-2"></i>
                                 Learning Adda Students
                             </h4>
 
@@ -173,7 +174,7 @@
 
                                     <?php else: ?>
 
-                                        
+
 
                                     <?php endif; ?>
 

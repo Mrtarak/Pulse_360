@@ -13,7 +13,7 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
-                            <h4 class="card-title">Add Student</h4>
+                            <h4 class="card-title"><i class="mdi mdi-account-group menu-icon"></i>  Add Student</h4>
                             <form
                                 action="<?= site_url('students/vijetaas/store') ?>"
                                 method="post"

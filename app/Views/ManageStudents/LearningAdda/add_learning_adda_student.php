@@ -17,6 +17,11 @@
             <div class="card-body">
 
               <?= view('includes/breadcrumb'); ?>
+              <h4 class="card-title mb-0">
+                <i class="mdi mdi-book-open-page-variant me-2"></i>
+                Add Learning Adda Students
+              </h4>
+
 
               <form
                 method="post"

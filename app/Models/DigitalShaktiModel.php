@@ -23,7 +23,6 @@ class DigitalShaktiModel extends Model
         'Completion_Date',
         'DS_Status',
         'Remarks',
-        'Fees_Id',
         'Rec_Added_By',
         'Rec_Added_On',
         'Rec_Updated_By',
@@ -115,10 +114,6 @@ class DigitalShaktiModel extends Model
 
             b.Batch_Name,
 
-            f.Total_Fees_Amount,
-            f.Paid_Amount,
-            f.Fee_Status,
-
             sm.Mentor_Status,
             sm.From_Date,
             sm.To_Date,
@@ -128,9 +123,7 @@ class DigitalShaktiModel extends Model
                 um.User_FirstName,
                 ' ',
                 um.User_LastName
-            ) AS Mentor_Name,
-
-            
+            ) AS Mentor_Name
         ")
 
             ->join(
@@ -164,12 +157,6 @@ class DigitalShaktiModel extends Model
             )
 
             ->join(
-                'fees f',
-                'f.Fees_Id = ds.Fees_Id',
-                'left'
-            )
-
-            ->join(
                 'student_mentor sm',
                 'sm.Student_Id = ds.Student_Id',
                 'left'
@@ -180,7 +167,6 @@ class DigitalShaktiModel extends Model
                 'um.User_Id = sm.Mentor_Id',
                 'left'
             )
-
 
             ->where('ds.DS_Stu_Id', $id)
 
