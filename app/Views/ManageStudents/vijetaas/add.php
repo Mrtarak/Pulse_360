@@ -13,7 +13,7 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
-                            <h4 class="card-title"><i class="mdi mdi-account-group menu-icon"></i>  Add Student</h4>
+                            <h4 class="card-title"><i class="mdi mdi-account-group menu-icon"></i> Add Student</h4>
                             <form
                                 action="<?= site_url('students/vijetaas/store') ?>"
                                 method="post"
@@ -24,8 +24,6 @@
                                     <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#personal">Personal Info</a></li>
                                     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#education">Education</a></li>
                                     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#program">Program</a></li>
-                                    <li class="nav-item"><a class="nav-link" id="goals-tab" data-bs-toggle="tab" href="#goals" role="tab">5. Goals</a></li>
-                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#mentor">Mentor</a></li>
                                     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family">Family</a></li>
                                 </ul>
 
@@ -225,124 +223,205 @@
 
                                     </div>
 
-                                    <!-- Goal Info -->
-                                    <div class="tab-pane fade" id="goals">
 
-                                        <div class="row">
-
-                                            <div class="col-md-12 mb-3">
-
-                                                <label>Select Existing Goal *</label>
-
-                                                <select class="form-control"
-                                                    name="Goal_Id"
-                                                    required>
-
-                                                    <option value="">Select Goal</option>
-
-                                                    <?php foreach ($goals as $goal): ?>
-
-                                                        <option value="<?= esc($goal['Goal_Id']); ?>">
-
-                                                            <?= esc($goal['Goal_Title']); ?>
-
-                                                        </option>
-
-                                                    <?php endforeach; ?>
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <button type="button"
-                                                class="btn btn-secondary prev-tab">
-                                                Previous
-                                            </button>
-
-                                            <button type="button"
-                                                class="btn btn-primary next-tab">
-                                                Next
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- Mentor Info -->
-                                    <div class="tab-pane fade" id="mentor">
-
-                                        <div class="row">
-
-                                            <div class="col-md-6 mb-3">
-
-                                                <label>Mentor *</label>
-
-                                                <select class="form-control"
-                                                    name="Mentor_Id"
-                                                    required>
-
-                                                    <option value="">Select Mentor</option>
-
-                                                    <?php foreach ($mentors as $mentor): ?>
-
-                                                        <option value="<?= esc($mentor['User_Id']); ?>">
-
-                                                            <?= esc(
-                                                                $mentor['User_FirstName'] .
-                                                                    ' ' .
-                                                                    $mentor['User_LastName']
-                                                            ); ?>
-
-                                                        </option>
-
-                                                    <?php endforeach; ?>
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <button type="button"
-                                                class="btn btn-secondary prev-tab">
-                                                Previous
-                                            </button>
-
-                                            <button type="button"
-                                                class="btn btn-primary next-tab">
-                                                Next
-                                            </button>
-
-                                        </div>
-
-                                    </div>
                                     <!-- Family Info -->
                                     <div class="tab-pane fade" id="family">
+
                                         <div class="row">
-                                            <div class="col-md-6 mb-3"><label>Father's Name <span class="text-danger">*</span></label><input type="text" class="form-control" name="father_name"></div>
-                                            <div class="col-md-6 mb-3"><label>Father's Contact <span class="text-danger">*</span></label><input type="text" class="form-control" name="father_contact"></div>
-                                            <div class="col-md-6 mb-3"><label>Father's Email <span class="text-danger">*</span></label><input type="email" class="form-control" name="father_email"></div>
-                                            <div class="col-md-6 mb-3"><label>Father's Occupation <span class="text-danger">*</span></label><input type="text" class="form-control" name="father_occupation"></div>
-                                            <div class="col-md-6 mb-3"><label>Mother's Name <span class="text-danger">*</span></label><input type="text" class="form-control" name="mother_name"></div>
-                                            <div class="col-md-6 mb-3"><label>Mother's Contact <span class="text-danger">*</span></label><input type="text" class="form-control" name="mother_contact"></div>
-                                            <div class="col-md-6 mb-3"><label>Mother's Email <span class="text-danger">*</span></label><input type="email" class="form-control" name="mother_email"></div>
-                                            <div class="col-md-6 mb-3"><label>Mother's Occupation <span class="text-danger">*</span></label><input type="text" class="form-control" name="mother_occupation"></div>
-                                            <div class="col-md-6 mb-3"><label>Family Monthly Income <span class="text-danger">*</span></label><input type="text" class="form-control" name="income"></div>
-                                            <div class="col-md-6 mb-3"><label>Number of Siblings <span class="text-danger">*</span></label><input type="number" class="form-control" name="siblings"></div>
+
+
+                                            <!-- Father's Name -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Guardian's Name</label>
+                                                <input type="text"
+                                                    class="form-control"
+                                                    name="father_name"
+                                                    value="<?= old('father_name') ?>">
+                                            </div>
+
+                                            <!-- Relation with Guardian -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>
+                                                    Relation with Guardian
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select name="Guardian_Relation"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Relation --</option>
+
+                                                    <option value="Father"
+                                                        <?= old('Guardian_Relation') === 'Father' ? 'selected' : '' ?>>
+                                                        Father
+                                                    </option>
+
+                                                    <option value="Mother"
+                                                        <?= old('Guardian_Relation') === 'Mother' ? 'selected' : '' ?>>
+                                                        Mother
+                                                    </option>
+
+                                                    <option value="Guardian"
+                                                        <?= old('Guardian_Relation') === 'Guardian' ? 'selected' : '' ?>>
+                                                        Guardian
+                                                    </option>
+
+                                                    <option value="Uncle"
+                                                        <?= old('Guardian_Relation') === 'Uncle' ? 'selected' : '' ?>>
+                                                        Uncle
+                                                    </option>
+
+                                                    <option value="Aunt"
+                                                        <?= old('Guardian_Relation') === 'Aunt' ? 'selected' : '' ?>>
+                                                        Aunt
+                                                    </option>
+
+                                                    <option value="Grandfather"
+                                                        <?= old('Guardian_Relation') === 'Grandfather' ? 'selected' : '' ?>>
+                                                        Grandfather
+                                                    </option>
+
+                                                    <option value="Grandmother"
+                                                        <?= old('Guardian_Relation') === 'Grandmother' ? 'selected' : '' ?>>
+                                                        Grandmother
+                                                    </option>
+
+                                                    <option value="Sibling"
+                                                        <?= old('Guardian_Relation') === 'Sibling' ? 'selected' : '' ?>>
+                                                        Sibling
+                                                    </option>
+
+                                                    <option value="Other"
+                                                        <?= old('Guardian_Relation') === 'Other' ? 'selected' : '' ?>>
+                                                        Other
+                                                    </option>
+
+                                                </select>
+                                            </div>
+
+
+
+                                            <!-- Father's Contact -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Guardian's Contact</label>
+                                                <input type="text"
+                                                    class="form-control"
+                                                    name="father_contact"
+                                                    value="<?= old('father_contact') ?>">
+                                            </div>
+
+                                            <!-- Father's Email -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Guardian's Email</label>
+                                                <input type="email"
+                                                    class="form-control"
+                                                    name="father_email"
+                                                    value="<?= old('father_email') ?>">
+                                            </div>
+
+                                            <!-- Father's Occupation -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Guardian's Occupation</label>
+                                                <input type="text"
+                                                    class="form-control"
+                                                    name="father_occupation"
+                                                    value="<?= old('father_occupation') ?>">
+                                            </div>
+
+                                            <div class="w-100"></div>
+
+                                            <!-- Mother's Name -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Mother's Name</label>
+                                                <input type="text"
+                                                    class="form-control"
+                                                    name="mother_name"
+                                                    value="<?= old('mother_name') ?>">
+                                            </div>
+
+                                            <!-- Mother's Contact -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Mother's Contact</label>
+                                                <input type="text"
+                                                    class="form-control"
+                                                    name="mother_contact"
+                                                    value="<?= old('mother_contact') ?>">
+                                            </div>
+
+                                            <!-- Mother's Email -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Mother's Email</label>
+                                                <input type="email"
+                                                    class="form-control"
+                                                    name="mother_email"
+                                                    value="<?= old('mother_email') ?>">
+                                            </div>
+
+                                            <!-- Mother's Occupation -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Mother's Occupation</label>
+                                                <input type="text"
+                                                    class="form-control"
+                                                    name="mother_occupation"
+                                                    value="<?= old('mother_occupation') ?>">
+                                            </div>
+
+                                            <!-- Family Monthly Income -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>
+                                                    Family Monthly Income
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <input type="number"
+                                                    class="form-control"
+                                                    name="income"
+                                                    value="<?= old('income') ?>"
+                                                    min="0"
+                                                    step="1"
+                                                    required>
+                                            </div>
+
+                                            <!-- Number of Siblings -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>
+                                                    Number of Siblings
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <input type="number"
+                                                    class="form-control"
+                                                    name="siblings"
+                                                    value="<?= old('siblings') ?>"
+                                                    min="0"
+                                                    required>
+                                            </div>
+
                                         </div>
 
                                         <!-- Submit -->
                                         <div class="mt-4 d-flex justify-content-center flex-wrap gap-3">
-                                            <a href="<?= site_url('students/vijetaas') ?>" class="btn btn-light">Cancel</a>
-                                            <button type="submit" class="btn btn-primary">Save</button>
+
+                                            <button type="button"
+                                                class="btn btn-secondary prev-tab">
+                                                Previous
+                                            </button>
+
+                                            <a href="<?= site_url('students/vijetaas') ?>"
+                                                class="btn btn-light">
+                                                Cancel
+                                            </a>
+
+                                            <button type="submit"
+                                                class="btn btn-primary">
+                                                Save
+                                            </button>
+
                                         </div>
+
+                                    </div>
+
 
                             </form>
                         </div>

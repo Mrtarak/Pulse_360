@@ -52,21 +52,6 @@
                                         </a>
                                     </li>
 
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            data-bs-toggle="tab"
-                                            href="#goals">
-                                            Goals
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            data-bs-toggle="tab"
-                                            href="#mentor">
-                                            Mentor
-                                        </a>
-                                    </li>
 
                                     <li class="nav-item">
                                         <a class="nav-link"
@@ -163,8 +148,8 @@
 
                                                 <input type="email"
                                                     name="email"
-                                                    class="form-control"
-                                                    value="<?= esc($student['Email_Id']) ?>">
+                                                    value="<?= esc($student['Email_Id'] ?? '') ?>"
+                                                    class="form-control">
                                             </div>
 
                                             <div class="col-md-4 mb-3">
@@ -375,8 +360,7 @@
                                                     Student Status
                                                 </label>
 
-                                                <select name="status"
-                                                    class="form-control">
+                                                <select name="student_status" class="form-select">
 
                                                     <option value="Active"
                                                         <?= $student['Student_Status'] == 'Active' ? 'selected' : '' ?>>
@@ -441,9 +425,9 @@
                                                 <label>Vijetaas Email ID</label>
 
                                                 <input type="email"
-                                                    class="form-control"
-                                                    name="email"
-                                                    value="<?= esc($student['Vijetas_Mail_Id']) ?>">
+                                                    name="vijetaas_email"
+                                                    value="<?= esc($student['Vijetas_Mail_Id'] ?? '') ?>"
+                                                    class="form-control">
 
                                             </div>
 
@@ -474,7 +458,7 @@
                                                 <label>Vijetaas Status</label>
 
                                                 <select class="form-control"
-                                                    name="status">
+                                                    name="vijeta_status">
 
                                                     <option value="Active"
                                                         <?= $student['Vijeta_Status'] == 'Active' ? 'selected' : '' ?>>
@@ -513,116 +497,19 @@
 
                                     </div>
 
-                                    <!-- GOAL TAB -->
-
-                                    <div class="tab-pane fade"
-                                        id="goals">
-
-                                        <div class="row">
-
-                                            <div class="col-md-12 mb-3">
-
-                                                <label>Select Goal</label>
-
-                                                <select class="form-control"
-                                                    name="goal_id">
-
-                                                    <?php foreach ($goals as $goal): ?>
-
-                                                        <option
-                                                            value="<?= $goal['Goal_Id'] ?>"
-                                                            <?= ($student['Goal_Id'] == $goal['Goal_Id']) ? 'selected' : '' ?>>
-
-                                                            <?= esc($goal['Goal_Title']) ?>
-
-                                                        </option>
-
-                                                    <?php endforeach; ?>
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <button type="button"
-                                                class="btn btn-secondary prev-tab">
-                                                Previous
-                                            </button>
-
-                                            <button type="button"
-                                                class="btn btn-primary next-tab">
-                                                Next
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-                                    <!-- MENTOR TAB -->
-
-                                    <div class="tab-pane fade"
-                                        id="mentor">
-
-                                        <div class="row">
-
-                                            <div class="col-md-12 mb-3">
-
-                                                <label>Select Mentor</label>
-
-                                                <select class="form-control"
-                                                    name="mentor_id">
-
-                                                    <?php foreach ($mentors as $mentor): ?>
-
-                                                        <option
-                                                            value="<?= $mentor['User_Id'] ?>"
-                                                            <?= ($student['Mentor_Id'] == $mentor['User_Id']) ? 'selected' : '' ?>>
-
-                                                            <?= esc(
-                                                                $mentor['User_FirstName']
-                                                                    . ' ' .
-                                                                    $mentor['User_LastName']
-                                                            ) ?>
-
-                                                        </option>
-
-                                                    <?php endforeach; ?>
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <button type="button"
-                                                class="btn btn-secondary prev-tab">
-                                                Previous
-                                            </button>
-
-                                            <button type="button"
-                                                class="btn btn-primary next-tab">
-                                                Next
-                                            </button>
-
-                                        </div>
-
-                                    </div>
 
                                     <!-- FAMILY TAB -->
 
-                                    <div class="tab-pane fade"
-                                        id="family">
+                                    <div class="tab-pane fade" id="family">
 
                                         <div class="row">
 
+                                            <!-- Row 1 -->
+
+
                                             <div class="col-md-6 mb-3">
 
-                                                <label>Father Name</label>
+                                                <label>Guardian's Name</label>
 
                                                 <input type="text"
                                                     class="form-control"
@@ -633,7 +520,73 @@
 
                                             <div class="col-md-6 mb-3">
 
-                                                <label>Father Contact</label>
+                                                <label>
+                                                    Relation with Guardian
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select name="Guardian_Relation"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Relation --</option>
+
+                                                    <option value="Father"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Father' ? 'selected' : '' ?>>
+                                                        Father
+                                                    </option>
+
+                                                    <option value="Mother"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Mother' ? 'selected' : '' ?>>
+                                                        Mother
+                                                    </option>
+
+                                                    <option value="Guardian"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Guardian' ? 'selected' : '' ?>>
+                                                        Guardian
+                                                    </option>
+
+                                                    <option value="Uncle"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Uncle' ? 'selected' : '' ?>>
+                                                        Uncle
+                                                    </option>
+
+                                                    <option value="Aunt"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Aunt' ? 'selected' : '' ?>>
+                                                        Aunt
+                                                    </option>
+
+                                                    <option value="Grandfather"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Grandfather' ? 'selected' : '' ?>>
+                                                        Grandfather
+                                                    </option>
+
+                                                    <option value="Grandmother"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Grandmother' ? 'selected' : '' ?>>
+                                                        Grandmother
+                                                    </option>
+
+                                                    <option value="Sibling"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Sibling' ? 'selected' : '' ?>>
+                                                        Sibling
+                                                    </option>
+
+                                                    <option value="Other"
+                                                        <?= ($student['Guardian_Relation'] ?? '') == 'Other' ? 'selected' : '' ?>>
+                                                        Other
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+
+
+
+                                            <!-- Row 2 -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>Guardian's Contact</label>
 
                                                 <input type="text"
                                                     class="form-control"
@@ -644,7 +597,7 @@
 
                                             <div class="col-md-6 mb-3">
 
-                                                <label>Father Email</label>
+                                                <label>Guardian's Email</label>
 
                                                 <input type="email"
                                                     class="form-control"
@@ -653,9 +606,11 @@
 
                                             </div>
 
+
+                                            <!-- Row 3 -->
                                             <div class="col-md-6 mb-3">
 
-                                                <label>Father Occupation</label>
+                                                <label>Guardian's Occupation</label>
 
                                                 <input type="text"
                                                     class="form-control"
@@ -663,6 +618,9 @@
                                                     value="<?= esc($student['Father_Occupation']) ?>">
 
                                             </div>
+
+                                            <!-- Force Mother Name to next row -->
+                                            <div class="w-100"></div>
 
                                             <div class="col-md-6 mb-3">
 
@@ -675,6 +633,8 @@
 
                                             </div>
 
+
+                                            <!-- Row 4 -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>Mother Contact</label>
@@ -697,6 +657,8 @@
 
                                             </div>
 
+
+                                            <!-- Row 5 -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>Mother Occupation</label>
@@ -712,13 +674,17 @@
 
                                                 <label>Family Monthly Income</label>
 
-                                                <input type="text"
+                                                <input type="number"
                                                     class="form-control"
                                                     name="income"
-                                                    value="<?= esc($student['Family_Monthly_Income']) ?>">
+                                                    value="<?= esc($student['Family_Monthly_Income']) ?>"
+                                                    min="0"
+                                                    step="1">
 
                                             </div>
 
+
+                                            <!-- Row 6 -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>Number Of Siblings</label>
@@ -726,15 +692,24 @@
                                                 <input type="number"
                                                     class="form-control"
                                                     name="siblings"
-                                                    value="<?= esc($student['Sibling_Number']) ?>">
+                                                    value="<?= esc($student['Sibling_Number']) ?>"
+                                                    min="0">
 
                                             </div>
 
                                         </div>
 
-                                        <!-- BUTTONS -->
+
+                                        <!-- ONLY FINAL TAB BUTTONS -->
 
                                         <div class="mt-4 d-flex justify-content-center gap-3">
+
+                                            <button type="button"
+                                                class="btn btn-secondary prev-tab">
+
+                                                Previous
+
+                                            </button>
 
                                             <a href="<?= site_url('students/vijetaas') ?>"
                                                 class="btn btn-light">
@@ -756,16 +731,18 @@
 
                                 </div>
 
-                            </form>
-
                         </div>
+
+                        </form>
+
                     </div>
-
                 </div>
-            </div>
 
+            </div>
         </div>
+
     </div>
+</div>
 </div>
 
 <?= view('includes/footer'); ?>

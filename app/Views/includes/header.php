@@ -39,9 +39,9 @@
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-      background-color: #005eff !important;
+      background-color: #1B4482 !important;
       color: white !important;
-      border-color: #005eff !important;
+      border-color: #1B4482 !important;
     }
 
     table.dataTable thead th {
@@ -84,7 +84,7 @@
 
     /* Dropdown options */
     .form-select option {
-      color: #212529 !important;
+      color: #1B4482 !important;
       background-color: #ffffff !important;
     }
 

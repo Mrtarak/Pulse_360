@@ -3,13 +3,11 @@
 namespace App\Controllers\ManageStudents;
 
 use App\Controllers\BaseController;
-use App\Models\RoleModel;
+
 use App\Models\StudentModel;
 use App\Models\VijetaasModel;
 use App\Models\UserModel;
-use App\Models\StudentGoalsModel;
-use App\Models\GoalModel;
-use CodeIgniter\Controller;
+
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 
@@ -137,23 +135,11 @@ class Vijetaas extends BaseController
 
     public function add()
     {
-        $goalModel = new GoalModel();
-        $userModel = new UserModel();
-
-        $data['goals'] = $goalModel
-            ->where('Goal_Status', 'Active')
-            ->findAll();
-
-        $data['mentors'] = $userModel
-            ->where('Role_Id', 'ROLE005')
-            ->where('User_Status', 'Active')
-            ->findAll();
-
         return view(
-            'ManageStudents/vijetaas/add',
-            $data
+            'ManageStudents/vijetaas/add'
         );
     }
+
 
     public function store()
     {
@@ -264,6 +250,9 @@ class Vijetaas extends BaseController
             'Fathers_Name'
             => $this->request->getPost('father_name'),
 
+            'Guardian_Relation'
+            => $this->request->getPost('Guardian_Relation'),
+
             'Father_Contact_Number'
             => $this->request->getPost('father_contact'),
 
@@ -315,11 +304,9 @@ class Vijetaas extends BaseController
 
             'Program_Id' => \Config\CorePrograms::VIJEETAS,
 
-            'Goal_Id'
-            => $this->request->getPost('Goal_Id'),
+            'Goal_Id' => null,
 
-            'Mentor_Id'
-            => $this->request->getPost('Mentor_Id'),
+            'Mentor_Id' => null,
 
             'Vijetas_Mail_Id'
             => $this->request->getPost('Email_Id'),
@@ -362,58 +349,12 @@ class Vijetaas extends BaseController
 
             ->select("
             vijetaas_stu.*,
-
-            student.*,
-
-            mentor.User_FirstName AS Mentor_FirstName,
-            mentor.User_LastName AS Mentor_LastName,
-
-            goal_m.Goal_Title,
-            goal_m.Goal_Description,
-
-            goaltype_m.Goal_Type_Name,
-
-            student_goal.Student_Goal_Id,
-            student_goal.Goal_Start_On,
-            student_goal.Expected_Completion_Date,
-            student_goal.Actual_Completion_Date,
-            student_goal.Target_Value,
-            student_goal.Achieved_Value,
-            student_goal.Self_Progress,
-            student_goal.Mentor_Progress,
-            student_goal.Student_Remark,
-            student_goal.Mentor_Remark,
-            student_goal.Goal_Status
+            student.*
         ")
 
             ->join(
                 'student',
                 'student.Student_Id = vijetaas_stu.Student_Id'
-            )
-
-            ->join(
-                'user_m mentor',
-                'mentor.User_Id = vijetaas_stu.Mentor_Id',
-                'left'
-            )
-
-            ->join(
-                'goal_m',
-                'goal_m.Goal_Id = vijetaas_stu.Goal_Id',
-                'left'
-            )
-
-            ->join(
-                'goaltype_m',
-                'goaltype_m.Goal_Type_Id = goal_m.Goal_Type_Id',
-                'left'
-            )
-
-            ->join(
-                'student_goal',
-                'student_goal.Goal_Id = vijetaas_stu.Goal_Id
-             AND student_goal.Student_Id = vijetaas_stu.Student_Id',
-                'left'
             )
 
             ->where(
@@ -438,10 +379,7 @@ class Vijetaas extends BaseController
 
     public function edit($id)
     {
-
         $vijetaasModel = new VijetaasModel();
-        $userModel     = new UserModel();
-        $goalModel     = new StudentGoalsModel();
 
         /*
     |--------------------------------------------------------------------------
@@ -453,7 +391,6 @@ class Vijetaas extends BaseController
 
             ->select("
             vijetaas_stu.*,
-
             student.*
         ")
 
@@ -470,41 +407,11 @@ class Vijetaas extends BaseController
             ->first();
 
         if (!$data['student']) {
+
             throw PageNotFoundException::forPageNotFound(
                 'Student not found'
             );
         }
-
-        /*
-    |--------------------------------------------------------------------------
-    | Mentor Dropdown
-    |--------------------------------------------------------------------------
-    */
-
-        $data['mentors'] = $userModel
-
-            ->where('Role_Id', 'ROLE005')
-
-            ->where('User_Status', 'Active')
-
-            ->findAll();
-
-        /*
-    |--------------------------------------------------------------------------
-    | Goal Dropdown
-    |--------------------------------------------------------------------------
-    */
-
-        $data['goals'] = (new \App\Models\GoalModel())
-
-            ->select("
-        Goal_Id,
-        Goal_Title
-    ")
-
-            ->where('Goal_Status', 'Active')
-
-            ->findAll();
 
         return view(
             'ManageStudents/vijetaas/edit',
@@ -656,10 +563,13 @@ class Vijetaas extends BaseController
             => $this->request->getPost('highest_edu'),
 
             'Student_Status'
-            => $this->request->getPost('status'),
+            => $this->request->getPost('student_status'),
 
             'Fathers_Name'
             => $this->request->getPost('father_name'),
+
+            'Guardian_Relation'
+            => $this->request->getPost('Guardian_Relation'),
 
             'Father_Contact_Number'
             => $this->request->getPost('father_contact'),
@@ -699,14 +609,12 @@ class Vijetaas extends BaseController
 
             'Role_Id' => 'ROLE005',
 
-            'Goal_Id'
-            => $this->request->getPost('goal_id'),
+            'Goal_Id' => null,
 
-            'Mentor_Id'
-            => $this->request->getPost('mentor_id'),
+            'Mentor_Id' => null,
 
             'Vijetas_Mail_Id'
-            => $this->request->getPost('email'),
+            => $this->request->getPost('vijetaas_email'),
 
             'Education'
             => $this->request->getPost('current_edu'),
@@ -718,7 +626,7 @@ class Vijetaas extends BaseController
             => $this->request->getPost('completion_date'),
 
             'Vijeta_Status'
-            => $this->request->getPost('status'),
+            => $this->request->getPost('vijeta_status'),
 
             'Remarks'
             => $this->request->getPost('remarks'),

@@ -1356,7 +1356,7 @@
 
 
     .card-header {
-        background: #4B49AC;
+        background: #1B4482;
         color: #fff;
         font-size: 18px;
         font-weight: 600;
@@ -1369,7 +1369,7 @@
 
     .summary-box {
         background: #f8f9fa;
-        border-left: 4px solid #4B49AC;
+        border-left: 4px solid #1B4482;
         border-radius: 8px;
         padding: 15px;
     }

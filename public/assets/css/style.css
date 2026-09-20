@@ -11439,19 +11439,19 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
 
 .btn-primary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #1F3BB3;
-  --bs-btn-border-color: #1F3BB3;
+  --bs-btn-bg: #1B4482;
+  --bs-btn-border-color: #1B4482;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #1a3298;
-  --bs-btn-hover-border-color: #192f8f;
+  --bs-btn-hover-bg: #1B4482;
+  --bs-btn-hover-border-color: #1B4482;
   --bs-btn-focus-shadow-rgb: 65, 88, 190;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #192f8f;
-  --bs-btn-active-border-color: #172c86;
+  --bs-btn-active-bg: #1B4482;
+  --bs-btn-active-border-color: #1B4482;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #1F3BB3;
-  --bs-btn-disabled-border-color: #1F3BB3;
+  --bs-btn-disabled-bg: #1B4482;
+  --bs-btn-disabled-border-color: #1B4482;
 }
 
 .btn-secondary {
@@ -23762,14 +23762,14 @@ svg {
 
 /*social buttons*/
 .btn-primary {
-  background: #1F3BB3;
+  background: #1B4482;
   color: #ffffff;
 }
 .btn-primary.btn-light {
   color: #1E283D;
 }
 .btn-primary:hover, .btn-primary:focus {
-  background: #172d88;
+  background: #1B4482;
   color: #ffffff;
 }
 .btn-primary.btn-social-icon-text {
@@ -23793,14 +23793,14 @@ svg {
 }
 
 .btn-secondary {
-  background: #05C3FB;
+  background: #1B4482;
   color: #ffffff;
 }
 .btn-secondary.btn-light {
   color: #1E283D;
 }
 .btn-secondary:hover, .btn-secondary:focus {
-  background: #039dca;
+  background: #1B4482;
   color: #ffffff;
 }
 .btn-secondary.btn-social-icon-text {

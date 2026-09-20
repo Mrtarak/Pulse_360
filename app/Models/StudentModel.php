@@ -33,6 +33,7 @@ class StudentModel extends Model
         'Student_Status',
         'Remarks',
         'Fathers_Name',
+        'Guardian_Relation',
         'Father_Contact_Number',
         'Father_Email_ID',
         'Father_Occupation',

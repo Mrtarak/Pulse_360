@@ -15,7 +15,7 @@
               <div class="card-body">
                 <?= view('includes/breadcrumb'); ?>
 
-                <h4 class="card-title"><i class="mdi mdi-account-group menu-icon"></i>  Vijetaas - Student Details</h4>
+                <h4 class="card-title"><i class="mdi mdi-account-group menu-icon"></i> Vijetaas - Student Details</h4>
                 <ul class="nav nav-tabs">
 
                   <li class="nav-item">
@@ -39,22 +39,6 @@
                       data-bs-toggle="tab"
                       href="#program">
                       Program
-                    </a>
-                  </li>
-
-                  <li class="nav-item">
-                    <a class="nav-link"
-                      data-bs-toggle="tab"
-                      href="#goal">
-                      Goal
-                    </a>
-                  </li>
-
-                  <li class="nav-item">
-                    <a class="nav-link"
-                      data-bs-toggle="tab"
-                      href="#mentor">
-                      Mentor
                     </a>
                   </li>
 
@@ -283,53 +267,7 @@
 
                   </div>
 
-                  <!-- Goal-->
-                  <div class="tab-pane fade"
-                    id="goal">
 
-                    <table class="table table-bordered">
-
-                      <tr>
-                        <th>Goal Title</th>
-                        <td><?= esc($student['Goal_Title']) ?></td>
-                      </tr>
-
-                      <tr>
-                        <th>Goal Description</th>
-                        <td><?= esc($student['Goal_Description']) ?></td>
-                      </tr>
-
-                      <tr>
-                        <th>Goal Status</th>
-                        <td><?= esc($student['Goal_Status']) ?></td>
-                      </tr>
-
-                    </table>
-
-                  </div>
-
-                  <!-- Mentor -->
-                  <div class="tab-pane fade"
-                    id="mentor">
-
-                    <table class="table table-bordered">
-
-                      <tr>
-                        <th>Mentor Name</th>
-
-                        <td>
-                          <?= esc(
-                            $student['Mentor_FirstName']
-                              . ' ' .
-                              $student['Mentor_LastName']
-                          ) ?>
-                        </td>
-
-                      </tr>
-
-                    </table>
-
-                  </div>
 
                   <!-- Family -->
                   <div class="tab-pane fade"
@@ -338,53 +276,82 @@
                     <table class="table table-bordered">
 
                       <tr>
-                        <th>Father Name</th>
-                        <td><?= esc($student['Fathers_Name']) ?></td>
+                        <th>Guardian's Name</th>
+                        <td>
+                          <?= esc($student['Fathers_Name']) ?>
+                        </td>
+                      </tr>
+
+
+                      <tr>
+                        <th>Relation with Guardian</th>
+                        <td>
+                          <?= esc($student['Guardian_Relation'] ?? '') ?>
+                        </td>
+                      </tr>
+
+
+                      <tr>
+                        <th>Guardian's Contact</th>
+                        <td>
+                          <?= esc($student['Father_Contact_Number']) ?>
+                        </td>
                       </tr>
 
                       <tr>
-                        <th>Father Contact</th>
-                        <td><?= esc($student['Father_Contact_Number']) ?></td>
+                        <th>Guardian's Email</th>
+                        <td>
+                          <?= esc($student['Father_Email_ID']) ?>
+                        </td>
                       </tr>
 
                       <tr>
-                        <th>Father Email</th>
-                        <td><?= esc($student['Father_Email_ID']) ?></td>
-                      </tr>
-
-                      <tr>
-                        <th>Father Occupation</th>
-                        <td><?= esc($student['Father_Occupation']) ?></td>
+                        <th>Guardian's Occupation</th>
+                        <td>
+                          <?= esc($student['Father_Occupation']) ?>
+                        </td>
                       </tr>
 
                       <tr>
                         <th>Mother Name</th>
-                        <td><?= esc($student['Mothers_Name']) ?></td>
+                        <td>
+                          <?= esc($student['Mothers_Name']) ?>
+                        </td>
                       </tr>
 
                       <tr>
                         <th>Mother Contact</th>
-                        <td><?= esc($student['Mother_Contact_Number']) ?></td>
+                        <td>
+                          <?= esc($student['Mother_Contact_Number']) ?>
+                        </td>
                       </tr>
 
                       <tr>
                         <th>Mother Email</th>
-                        <td><?= esc($student['Mother_Email_ID']) ?></td>
+                        <td>
+                          <?= esc($student['Mother_Email_ID']) ?>
+                        </td>
                       </tr>
 
                       <tr>
                         <th>Mother Occupation</th>
-                        <td><?= esc($student['Mother_Occupation']) ?></td>
+                        <td>
+                          <?= esc($student['Mother_Occupation']) ?>
+                        </td>
                       </tr>
 
                       <tr>
                         <th>Family Income</th>
-                        <td><?= esc($student['Family_Monthly_Income']) ?></td>
+                        <td>
+                          <?= esc($student['Family_Monthly_Income']) ?>
+                        </td>
                       </tr>
 
                       <tr>
                         <th>Siblings</th>
-                        <td><?= esc($student['Sibling_Number']) ?></td>
+                        <td>
+                          <?= esc($student['Sibling_Number']) ?>
+                        </td>
                       </tr>
 
                     </table>
