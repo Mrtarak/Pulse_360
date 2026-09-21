@@ -230,66 +230,6 @@
                                 <div class="card-body">
 
 
-                                    <!-- ================= SUMMARY ================= -->
-
-                                    <div class="summary-box mb-4">
-
-                                        <div class="row">
-
-
-                                            <!-- Program -->
-
-                                            <div class="col-md-4">
-
-                                                <strong>
-                                                    Program :
-                                                </strong>
-
-                                                <br>
-
-                                                Digital Shakti
-
-                                            </div>
-
-
-                                            <!-- Center -->
-
-                                            <div class="col-md-4">
-
-                                                <strong>
-                                                    Center :
-                                                </strong>
-
-                                                <br>
-
-                                                <span id="summaryCenter">
-                                                    -
-                                                </span>
-
-                                            </div>
-
-
-                                            <!-- Batch -->
-
-                                            <div class="col-md-4">
-
-                                                <strong>
-                                                    Batch :
-                                                </strong>
-
-                                                <br>
-
-                                                <span id="summaryBatch">
-                                                    -
-                                                </span>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
 
                                     <!-- ================================================= -->
                                     <!-- ASSESSMENT FORM -->
@@ -731,22 +671,6 @@
 
 
 
-                    /* ================= SUMMARY ================= */
-
-                    $('#summaryCenter').text(
-
-                        $('#center_id option:selected').text()
-
-                    );
-
-
-                    $('#summaryBatch').text(
-
-                        $('#batch_id option:selected').text()
-
-                    );
-
-
 
                     /* =================================================
                        SET FORM VALUES
@@ -1061,38 +985,31 @@
 
                             if (assessmentId) {
 
-
                                 statusHtml =
 
                                     '<div class="student-status">' +
 
-                                    '<span class="badge bg-success mb-2">' +
+                                    '<button ' +
+                                    'type="button" ' +
+                                    'class="btn btn-success btn-sm assessment-action-btn" ' +
+                                    'title="Assessment Completed">' +
 
-                                    '<i class="mdi mdi-check-circle me-1"></i>' +
+                                    '<i class="mdi mdi-check"></i>' +
 
-                                    'Completed' +
-
-                                    '</span>' +
-
-                                    '<br>' +
+                                    '</button>' +
 
                                     '<button ' +
-
                                     'type="button" ' +
+                                    'class="btn btn-primary btn-sm edit-student-btn assessment-action-btn" ' +
+                                    'title="Edit Assessment">' +
 
-                                    'class="btn btn-sm btn-outline-primary edit-student-btn">' +
-
-                                    '<i class="mdi mdi-pencil me-1"></i>' +
-
-                                    'Edit' +
+                                    '<i class="mdi mdi-pencil"></i>' +
 
                                     '</button>' +
 
                                     '</div>';
 
-
                             } else {
-
 
                                 statusHtml =
 
@@ -1105,7 +1022,6 @@
                                     '</span>';
 
                             }
-
 
 
                             /* =================================================
@@ -1281,19 +1197,9 @@
                 /* ================= CHANGE BUTTON ================= */
 
                 button
-                    .removeClass(
-                        'btn-outline-primary'
-                    )
-                    .addClass(
-                        'btn-success'
-                    )
-                    .html(
-                        '<i class="mdi mdi-pencil-off me-1"></i> Editing'
-                    )
-                    .prop(
-                        'disabled',
-                        true
-                    );
+                    .html('<i class="mdi mdi-pencil-off"></i>')
+                    .prop('disabled', true)
+                    .attr('title', 'Editing');
 
             }
         );
@@ -1458,15 +1364,50 @@
        EDIT BUTTON
     ===================================================== */
 
-    .edit-student-btn {
-        min-width: 80px;
-    }
-
 
     .student-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
         white-space: nowrap;
     }
 
+    .assessment-action-btn {
+        width: 34px !important;
+        height: 34px !important;
+
+        min-width: 34px !important;
+        min-height: 34px !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        border-radius: 50% !important;
+    }
+
+    /* Completed button - GREEN */
+    .assessment-action-btn.btn-success {
+        background-color: #198754 !important;
+        border-color: #198754 !important;
+        color: #ffffff !important;
+    }
+
+    /* Edit button - BLUE */
+    .assessment-action-btn.btn-primary {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .assessment-action-btn i {
+        font-size: 16px !important;
+        line-height: 1;
+    }
 
     /* =====================================================
        SAVE BUTTON

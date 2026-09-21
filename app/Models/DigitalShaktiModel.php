@@ -46,6 +46,7 @@ class DigitalShaktiModel extends Model
             s.Last_Name,
             s.Gender,
             s.DOB,
+            s.Phone_No,
             s.Email_Id,
             
 

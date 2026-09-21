@@ -235,66 +235,6 @@
                                 <div class="card-body">
 
 
-                                    <!-- ================= SUMMARY ================= -->
-
-                                    <div class="summary-box mb-4">
-
-                                        <div class="row">
-
-
-                                            <!-- Program -->
-
-                                            <div class="col-md-4">
-
-                                                <strong>
-                                                    Program :
-                                                </strong>
-
-                                                <br>
-
-                                                Learning Adda
-
-                                            </div>
-
-
-                                            <!-- Center -->
-
-                                            <div class="col-md-4">
-
-                                                <strong>
-                                                    Center :
-                                                </strong>
-
-                                                <br>
-
-                                                <span id="summaryCenter">
-                                                    -
-                                                </span>
-
-                                            </div>
-
-
-                                            <!-- Batch -->
-
-                                            <div class="col-md-4">
-
-                                                <strong>
-                                                    Batch :
-                                                </strong>
-
-                                                <br>
-
-                                                <span id="summaryBatch">
-                                                    -
-                                                </span>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
 
                                     <!-- ================= TABLE ================= -->
 
@@ -622,23 +562,6 @@
 
                         'Total Students : ' +
                         students.length
-
-                    );
-
-
-
-                    /* ================= SUMMARY ================= */
-
-                    $('#summaryCenter').text(
-
-                        $('#center_id option:selected').text()
-
-                    );
-
-
-                    $('#summaryBatch').text(
-
-                        $('#batch_id option:selected').text()
 
                     );
 
