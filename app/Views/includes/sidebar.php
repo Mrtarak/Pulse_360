@@ -130,6 +130,22 @@ use Config\CorePrograms;
 
 
     <!-- =========================================================
+     MANAGE USERS
+      ========================================================== -->
+    <li class="nav-item">
+
+      <a class="nav-link"
+        href="<?= site_url('users') ?>">
+
+        <i class="mdi mdi-account-multiple menu-icon"></i>
+        <span class="menu-title">Manage Users</span>
+
+      </a>
+
+    </li>
+
+
+    <!-- =========================================================
          PROGRAM
     ========================================================== -->
     <li class="nav-item nav-category">PROGRAM</li>

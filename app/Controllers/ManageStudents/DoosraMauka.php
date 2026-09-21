@@ -25,11 +25,22 @@ class DoosraMauka extends BaseController
         );
     }
 
+
+    // =========================================================
+    // VIEW
+    // =========================================================
+
     public function view($id)
     {
         $model = new DoosraMaukaModel();
 
         $data['student'] = $model->getStudentDetails($id);
+
+        if (!$data['student']) {
+            return redirect()
+                ->to('/ManageStudents/DoosraMauka')
+                ->with('error', 'Student not found');
+        }
 
         return view(
             'ManageStudents/DoosraMauka/view_doosra',
@@ -37,28 +48,40 @@ class DoosraMauka extends BaseController
         );
     }
 
+
+    // =========================================================
+    // ADD
+    // =========================================================
+
     public function add()
     {
-        $centerModel = new \App\Models\CenterModel();
-        $batchModel  = new \App\Models\BatchModel();
+        $centerModel = new CenterModel();
+        $batchModel  = new BatchModel();
 
         //------------------------------------
         // Get Doosra Mauka batches
         //------------------------------------
 
         $data['batches'] = $batchModel
-            ->where('Program_Id', \Config\CorePrograms::DOOSRA_MAUKA)
+            ->where(
+                'Program_Id',
+                CorePrograms::DOOSRA_MAUKA
+            )
             ->where('Batch_Status', 'Active')
             ->findAll();
 
+
         //------------------------------------
-        // If batches exist → load related centers
+        // Get related centers
         //------------------------------------
 
         if (!empty($data['batches'])) {
 
             $centerIds = array_unique(
-                array_column($data['batches'], 'Center_Id')
+                array_column(
+                    $data['batches'],
+                    'Center_Id'
+                )
             );
 
             $data['centers'] = $centerModel
@@ -77,18 +100,24 @@ class DoosraMauka extends BaseController
                 ->findAll();
         }
 
+
         return view(
             'ManageStudents/DoosraMauka/add_doosra',
             $data
         );
     }
 
+
+    // =========================================================
+    // STORE
+    // =========================================================
+
     public function store()
     {
-
         $db = \Config\Database::connect();
 
         $db->transStart();
+
 
         //--------------------------------
         // Generate IDs
@@ -98,20 +127,20 @@ class DoosraMauka extends BaseController
         $dmId      = 'DM' . date('YmdHis');
         $spId      = 'SP' . date('YmdHis');
 
-        //--------------------------------
-        // STUDENT TABLE
-        //--------------------------------
 
-        $studentModel = new StudentModel();
-
-        // --------------------------------
-        // Upload Student Photo
-        // --------------------------------
+        //--------------------------------
+        // STUDENT PHOTO
+        //--------------------------------
 
         $photo = $this->request->getFile('photo');
+
         $photoName = null;
 
-        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+        if (
+            $photo &&
+            $photo->isValid() &&
+            !$photo->hasMoved()
+        ) {
 
             $photoName = $photo->getRandomName();
 
@@ -122,11 +151,13 @@ class DoosraMauka extends BaseController
         }
 
 
-        // --------------------------------
-        // Upload Aadhaar Photo
-        // --------------------------------
+        //--------------------------------
+        // AADHAAR PHOTO
+        //--------------------------------
 
-        $aadharPhoto = $this->request->getFile('aadhar_photo');
+        $aadharPhoto = $this->request
+            ->getFile('aadhar_photo');
+
         $aadharPhotoName = null;
 
         if (
@@ -135,7 +166,8 @@ class DoosraMauka extends BaseController
             !$aadharPhoto->hasMoved()
         ) {
 
-            $aadharPhotoName = $aadharPhoto->getRandomName();
+            $aadharPhotoName =
+                $aadharPhoto->getRandomName();
 
             $aadharPhoto->move(
                 FCPATH . 'uploads/students/aadhar',
@@ -143,32 +175,82 @@ class DoosraMauka extends BaseController
             );
         }
 
+
+        // =====================================================
+        // STUDENT TABLE
+        // =====================================================
+
+        $studentModel = new StudentModel();
+
         $studentModel->insert([
 
             'Student_Id' => $studentId,
 
-            'First_Name' => $this->request->getPost('first_name'),
-            'Last_Name'  => $this->request->getPost('last_name'),
+            'First_Name' =>
+            $this->request->getPost('first_name'),
 
-            'Gender' => $this->request->getPost('gender'),
-            'DOB'    => $this->request->getPost('dob'),
+            'Last_Name' =>
+            $this->request->getPost('last_name'),
 
-            'Aadhar_No' => $this->request->getPost('aadhar_no'),
+            'Gender' =>
+            $this->request->getPost('gender'),
 
-            'Phone_No' => $this->request->getPost('phone'),
-            'Email_Id' => $this->request->getPost('email'),
+            'DOB' =>
+            $this->request->getPost('dob'),
 
-            'Village_City' => $this->request->getPost('city'),
-            'District'     => $this->request->getPost('district'),
-            'State'        => $this->request->getPost('state'),
-            'Pincode'      => $this->request->getPost('pincode'),
+            'Aadhar_No' =>
+            $this->request->getPost('aadhar_no'),
 
-            'Nationality' => $this->request->getPost('nationality'),
-            'Address'     => $this->request->getPost('address'),
+            'Phone_No' =>
+            $this->request->getPost('phone'),
 
-            'Photo_URL' => $photoName,
+            'Email_Id' =>
+            $this->request->getPost('email'),
 
-            'Aadhar_Photo_URL' => $aadharPhotoName,
+
+            // -----------------------------------------
+            // Personal Details
+            // -----------------------------------------
+
+            'Marital_Status' =>
+            $this->request->getPost('marital_status'),
+
+            'Student_Caste' =>
+            $this->request->getPost('caste'),
+
+            'Village_City' =>
+            $this->request->getPost('city'),
+
+            'District' =>
+            $this->request->getPost('district'),
+
+            'State' =>
+            $this->request->getPost('state'),
+
+            'Pincode' =>
+            $this->request->getPost('pincode'),
+
+            'Nationality' =>
+            $this->request->getPost('nationality'),
+
+            'Address' =>
+            $this->request->getPost('address'),
+
+
+            // -----------------------------------------
+            // Photos
+            // -----------------------------------------
+
+            'Photo_URL' =>
+            $photoName,
+
+            'Aadhar_Photo_URL' =>
+            $aadharPhotoName,
+
+
+            // -----------------------------------------
+            // Education
+            // -----------------------------------------
 
             'Enrollment_Date' =>
             $this->request->getPost('enroll_date'),
@@ -179,17 +261,19 @@ class DoosraMauka extends BaseController
             'Highest_Education_Completed' =>
             $this->request->getPost('highest_edu'),
 
-            'Student_Caste' =>
-            $this->request->getPost('caste'),
-
             'Student_Status' =>
             $this->request->getPost('status'),
 
-            'Remarks' =>
-            $this->request->getPost('remarks'),
+
+            // -----------------------------------------
+            // Guardian / Family
+            // -----------------------------------------
 
             'Fathers_Name' =>
             $this->request->getPost('father_name'),
+
+            'Guardian_Relation' =>
+            $this->request->getPost('guardian_relation'),
 
             'Father_Contact_Number' =>
             $this->request->getPost('father_contact'),
@@ -199,6 +283,11 @@ class DoosraMauka extends BaseController
 
             'Father_Occupation' =>
             $this->request->getPost('father_occupation'),
+
+
+            // -----------------------------------------
+            // Mother
+            // -----------------------------------------
 
             'Mothers_Name' =>
             $this->request->getPost('mother_name'),
@@ -212,27 +301,46 @@ class DoosraMauka extends BaseController
             'Mother_Occupation' =>
             $this->request->getPost('mother_occupation'),
 
+
+            // -----------------------------------------
+            // Family
+            // -----------------------------------------
+
             'Family_Monthly_Income' =>
             $this->request->getPost('income'),
 
             'Sibling_Number' =>
             $this->request->getPost('siblings'),
 
-            'Rec_Added_By' => 'Admin',
-            'Rec_Added_On' => date('Y-m-d')
+
+            // -----------------------------------------
+            // Other
+            // -----------------------------------------
+
+            'Remarks' =>
+            $this->request->getPost('remarks'),
+
+            'Rec_Added_By' =>
+            'Admin',
+
+            'Rec_Added_On' =>
+            date('Y-m-d')
         ]);
 
-        //--------------------------------
+
+        // =====================================================
         // DOOSRA MAUKA TABLE
-        //--------------------------------
+        // =====================================================
 
         $model = new DoosraMaukaModel();
 
-        $result = $model->insert([
+        $model->insert([
 
-            'DM_Stu_Id' => $dmId,
+            'DM_Stu_Id' =>
+            $dmId,
 
-            'Student_Id' => $studentId,
+            'Student_Id' =>
+            $studentId,
 
             'Marital_Status' =>
             $this->request->getPost('marital_status'),
@@ -267,22 +375,28 @@ class DoosraMauka extends BaseController
             'Remarks' =>
             $this->request->getPost('remarks'),
 
-            'Rec_Added_By' => null,
-            'Rec_Added_On' => date('Y-m-d')
+            'Rec_Added_By' =>
+            'Admin',
+
+            'Rec_Added_On' =>
+            date('Y-m-d')
         ]);
 
 
-        //--------------------------------
+        // =====================================================
         // STUDENT PROGRAM TABLE
-        //--------------------------------
+        // =====================================================
 
-        $studentProgramModel = new StudentProgramModel();
+        $studentProgramModel =
+            new StudentProgramModel();
 
         $studentProgramModel->insert([
 
-            'Student_Program_Id' => $spId,
+            'Student_Program_Id' =>
+            $spId,
 
-            'Student_Id' => $studentId,
+            'Student_Id' =>
+            $studentId,
 
             'Program_Id' =>
             CorePrograms::DOOSRA_MAUKA,
@@ -301,24 +415,37 @@ class DoosraMauka extends BaseController
         ]);
 
 
-        //--------------------------------
+        // =====================================================
         // COMMIT
-        //--------------------------------
+        // =====================================================
 
         $db->transComplete();
 
+
         if ($db->transStatus() === false) {
 
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->withInput()
-                ->with('error', 'Failed to save student');
+                ->with(
+                    'error',
+                    'Failed to save student'
+                );
         }
+
 
         return redirect()
             ->to('/ManageStudents/DoosraMauka')
-            ->with('success', 'Student Added Successfully');
+            ->with(
+                'success',
+                'Student Added Successfully'
+            );
     }
 
+
+    // =========================================================
+    // EDIT
+    // =========================================================
 
     public function edit($id)
     {
@@ -327,15 +454,40 @@ class DoosraMauka extends BaseController
         $centerModel = new CenterModel();
         $batchModel  = new BatchModel();
 
-        $data['student'] = $model->getStudentDetails($id);
+        $data['student'] =
+            $model->getStudentDetails($id);
+
+        if (!$data['student']) {
+
+            return redirect()
+                ->to('/ManageStudents/DoosraMauka')
+                ->with(
+                    'error',
+                    'Student not found'
+                );
+        }
+
+
+        //------------------------------------
+        // Active Centers
+        //------------------------------------
 
         $data['centers'] = $centerModel
             ->where('Center_Status', 'Active')
             ->findAll();
 
+
+        //------------------------------------
+        // Doosra Mauka Batches
+        //------------------------------------
+
         $data['batches'] = $batchModel
-            ->where('Program_Id', \Config\CorePrograms::DOOSRA_MAUKA)
+            ->where(
+                'Program_Id',
+                CorePrograms::DOOSRA_MAUKA
+            )
             ->findAll();
+
 
         return view(
             'ManageStudents/DoosraMauka/edit_doosra',
@@ -343,137 +495,260 @@ class DoosraMauka extends BaseController
         );
     }
 
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
     public function update($id)
     {
         $db = \Config\Database::connect();
 
         $db->transStart();
 
-        $doosraModel = new DoosraMaukaModel();
-        $studentModel = new StudentModel();
-        $studentProgramModel = new StudentProgramModel();
-        $uploadPathPhoto  = FCPATH . 'uploads/students/photos/';
-        $uploadPathAadhar = FCPATH . 'uploads/students/aadhar/';
 
-        //----------------------------------
-        // Get Student Record
-        //----------------------------------
+        $doosraModel =
+            new DoosraMaukaModel();
+
+        $studentModel =
+            new StudentModel();
+
+        $studentProgramModel =
+            new StudentProgramModel();
+
+
+        $uploadPathPhoto =
+            FCPATH . 'uploads/students/photos/';
+
+        $uploadPathAadhar =
+            FCPATH . 'uploads/students/aadhar/';
+
+
+        // =====================================================
+        // GET DOOSRA MAUKA RECORD
+        // =====================================================
 
         $dmStudent = $doosraModel
             ->where('DM_Stu_Id', $id)
             ->first();
 
+
         if (!$dmStudent) {
-            return redirect()->back()
-                ->with('error', 'Student not found');
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Student not found'
+                );
         }
 
-        $studentId = $dmStudent['Student_Id'];
 
-        //----------------------------------
-        // Existing Student Data
-        //----------------------------------
+        $studentId =
+            $dmStudent['Student_Id'];
+
+
+        // =====================================================
+        // GET STUDENT RECORD
+        // =====================================================
 
         $student = $studentModel
             ->where('Student_Id', $studentId)
             ->first();
 
+
         if (!$student) {
-            return redirect()->back()
-                ->with('error', 'Student record not found');
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Student record not found'
+                );
         }
 
-        $studentPhotoName = $student['Photo_URL'] ?? null;
-        $aadharPhotoName  = $student['Aadhar_Photo_URL'] ?? null;
+
+        $studentPhotoName =
+            $student['Photo_URL'] ?? null;
+
+        $aadharPhotoName =
+            $student['Aadhar_Photo_URL'] ?? null;
 
 
-        //----------------------------------
+        // =====================================================
         // STUDENT PHOTO
-        //----------------------------------
+        // =====================================================
 
-        $studentPhoto = $this->request->getFile('student_photo');
+        $studentPhoto =
+            $this->request->getFile('student_photo');
 
-        if ($studentPhoto && $studentPhoto->isValid() && !$studentPhoto->hasMoved()) {
+
+        if (
+            $studentPhoto &&
+            $studentPhoto->isValid() &&
+            !$studentPhoto->hasMoved()
+        ) {
 
             if (!is_dir($uploadPathPhoto)) {
-                mkdir($uploadPathPhoto, 0777, true);
+
+                mkdir(
+                    $uploadPathPhoto,
+                    0777,
+                    true
+                );
             }
 
-            $newStudentPhoto = $studentPhoto->getRandomName();
+
+            $newStudentPhoto =
+                $studentPhoto->getRandomName();
+
 
             $studentPhoto->move(
                 $uploadPathPhoto,
                 $newStudentPhoto
             );
 
+
             // Delete old photo
             if (
                 !empty($studentPhotoName) &&
-                file_exists($uploadPathPhoto . $studentPhotoName)
+                file_exists(
+                    $uploadPathPhoto .
+                        $studentPhotoName
+                )
             ) {
-                unlink($uploadPathPhoto . $studentPhotoName);
+
+                unlink(
+                    $uploadPathPhoto .
+                        $studentPhotoName
+                );
             }
 
-            $studentPhotoName = $newStudentPhoto;
+
+            $studentPhotoName =
+                $newStudentPhoto;
         }
 
 
-        //----------------------------------
+        // =====================================================
         // AADHAAR PHOTO
-        //----------------------------------
+        // =====================================================
 
-        $aadharPhoto = $this->request->getFile('aadhar_photo');
+        $aadharPhoto =
+            $this->request->getFile('aadhar_photo');
 
-        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+
+        if (
+            $aadharPhoto &&
+            $aadharPhoto->isValid() &&
+            !$aadharPhoto->hasMoved()
+        ) {
 
             if (!is_dir($uploadPathAadhar)) {
-                mkdir($uploadPathAadhar, 0777, true);
+
+                mkdir(
+                    $uploadPathAadhar,
+                    0777,
+                    true
+                );
             }
 
-            $newAadharPhoto = $aadharPhoto->getRandomName();
+
+            $newAadharPhoto =
+                $aadharPhoto->getRandomName();
+
 
             $aadharPhoto->move(
                 $uploadPathAadhar,
                 $newAadharPhoto
             );
 
+
             // Delete old Aadhaar photo
             if (
                 !empty($aadharPhotoName) &&
-                file_exists($uploadPathAadhar . $aadharPhotoName)
+                file_exists(
+                    $uploadPathAadhar .
+                        $aadharPhotoName
+                )
             ) {
-                unlink($uploadPathAadhar . $aadharPhotoName);
+
+                unlink(
+                    $uploadPathAadhar .
+                        $aadharPhotoName
+                );
             }
 
-            $aadharPhotoName = $newAadharPhoto;
+
+            $aadharPhotoName =
+                $newAadharPhoto;
         }
 
-        //----------------------------------
-        // STUDENT TABLE
-        //----------------------------------
+
+        // =====================================================
+        // UPDATE STUDENT TABLE
+        // =====================================================
 
         $studentModel
-            ->where('Student_Id', $studentId)
+            ->where(
+                'Student_Id',
+                $studentId
+            )
             ->set([
 
-                'First_Name' => $this->request->getPost('first_name'),
-                'Last_Name'  => $this->request->getPost('last_name'),
+                // -----------------------------------------
+                // Personal
+                // -----------------------------------------
 
-                'Gender' => $this->request->getPost('gender'),
-                'DOB' => $this->request->getPost('dob'),
+                'First_Name' =>
+                $this->request->getPost('first_name'),
 
-                'Aadhar_No' => $this->request->getPost('aadhar_no'),
+                'Last_Name' =>
+                $this->request->getPost('last_name'),
 
-                'Phone_No' => $this->request->getPost('phone'),
-                'Email_Id' => $this->request->getPost('email'),
+                'Gender' =>
+                $this->request->getPost('gender'),
 
-                'Village_City' => $this->request->getPost('city'),
-                'District' => $this->request->getPost('district'),
-                'State' => $this->request->getPost('state'),
-                'Pincode' => $this->request->getPost('pincode'),
+                'DOB' =>
+                $this->request->getPost('dob'),
 
-                'Nationality' => $this->request->getPost('nationality'),
-                'Address' => $this->request->getPost('address'),
+                'Aadhar_No' =>
+                $this->request->getPost('aadhar_no'),
+
+                'Phone_No' =>
+                $this->request->getPost('phone'),
+
+                'Email_Id' =>
+                $this->request->getPost('email'),
+
+                'Marital_Status' =>
+                $this->request->getPost('marital_status'),
+
+                'Student_Caste' =>
+                $this->request->getPost('caste'),
+
+                'Village_City' =>
+                $this->request->getPost('city'),
+
+                'District' =>
+                $this->request->getPost('district'),
+
+                'State' =>
+                $this->request->getPost('state'),
+
+                'Pincode' =>
+                $this->request->getPost('pincode'),
+
+                'Nationality' =>
+                $this->request->getPost('nationality'),
+
+                'Address' =>
+                $this->request->getPost('address'),
+
+
+                // -----------------------------------------
+                // Photos
+                // -----------------------------------------
 
                 'Photo_URL' =>
                 $studentPhotoName,
@@ -481,23 +756,30 @@ class DoosraMauka extends BaseController
                 'Aadhar_Photo_URL' =>
                 $aadharPhotoName,
 
+
+                // -----------------------------------------
+                // Education
+                // -----------------------------------------
+
                 'Current_Education_level' =>
                 $this->request->getPost('current_edu'),
 
                 'Highest_Education_Completed' =>
                 $this->request->getPost('highest_edu'),
 
-                'Student_Caste' =>
-                $this->request->getPost('caste'),
-
                 'Student_Status' =>
                 $this->request->getPost('status'),
 
-                'Remarks' =>
-                $this->request->getPost('remarks'),
+
+                // -----------------------------------------
+                // Guardian / Family
+                // -----------------------------------------
 
                 'Fathers_Name' =>
                 $this->request->getPost('father_name'),
+
+                'Guardian_Relation' =>
+                $this->request->getPost('guardian_relation'),
 
                 'Father_Contact_Number' =>
                 $this->request->getPost('father_contact'),
@@ -507,6 +789,11 @@ class DoosraMauka extends BaseController
 
                 'Father_Occupation' =>
                 $this->request->getPost('father_occupation'),
+
+
+                // -----------------------------------------
+                // Mother
+                // -----------------------------------------
 
                 'Mothers_Name' =>
                 $this->request->getPost('mother_name'),
@@ -520,101 +807,162 @@ class DoosraMauka extends BaseController
                 'Mother_Occupation' =>
                 $this->request->getPost('mother_occupation'),
 
+
+                // -----------------------------------------
+                // Family
+                // -----------------------------------------
+
                 'Family_Monthly_Income' =>
                 $this->request->getPost('income'),
 
                 'Sibling_Number' =>
                 $this->request->getPost('siblings'),
 
-                'Rec_Last_Updated_On' => date('Y-m-d')
-            ])
-            ->update();
 
-        //----------------------------------
-        // DOOSRA MAUKA TABLE
-        //----------------------------------
-
-        $doosraModel
-            ->update($id, [
-
-                'Marital_Status' =>
-                $this->request->getPost('marital_status'),
-
-                'Education' =>
-                $this->request->getPost('highest_edu'),
-
-                'Student_Caste' =>
-                $this->request->getPost('caste'),
-
-                'User_Siblings' =>
-                $this->request->getPost('siblings'),
-
-                'Center_Id' =>
-                $this->request->getPost('center_id'),
-
-                'Batch_Id' =>
-                $this->request->getPost('batch_id'),
-
-                'Enrollment_Date' =>
-                $this->request->getPost('enroll_date'),
-
-                'Completion_Date' =>
-                $this->request->getPost('prog_till'),
-
-                'DM_Status' =>
-                $this->request->getPost('program_status'),
+                // -----------------------------------------
+                // Other
+                // -----------------------------------------
 
                 'Remarks' =>
                 $this->request->getPost('remarks'),
 
-                'Rec_Last_Updated_On' => date('Y-m-d')
-            ]);
-
-        //----------------------------------
-        // STUDENT PROGRAM TABLE
-        //----------------------------------
-
-        $studentProgramModel
-            ->where('Student_Id', $studentId)
-            ->where('Program_Id', \Config\CorePrograms::DOOSRA_MAUKA)
-            ->set([
-
-                'Center_Id' =>
-                $this->request->getPost('center_id'),
-
-                'Batch_Id' =>
-                $this->request->getPost('batch_id'),
-
-                'Enrollment_Date' =>
-                $this->request->getPost('enroll_date'),
-
-                'Student_Status' =>
-                $this->request->getPost('program_status')
+                'Rec_Last_Updated_On' =>
+                date('Y-m-d')
             ])
             ->update();
 
-        //----------------------------------
+
+        // =====================================================
+        // UPDATE DOOSRA MAUKA TABLE
+        // =====================================================
+
+        $doosraModel->update(
+            $id,
+            [
+
+                'Marital_Status' =>
+                $this->request
+                    ->getPost('marital_status'),
+
+                'Education' =>
+                $this->request
+                    ->getPost('highest_edu'),
+
+                'Student_Caste' =>
+                $this->request
+                    ->getPost('caste'),
+
+                'User_Siblings' =>
+                $this->request
+                    ->getPost('siblings'),
+
+                'Center_Id' =>
+                $this->request
+                    ->getPost('center_id'),
+
+                'Batch_Id' =>
+                $this->request
+                    ->getPost('batch_id'),
+
+                'Enrollment_Date' =>
+                $this->request
+                    ->getPost('enroll_date'),
+
+                'Completion_Date' =>
+                $this->request
+                    ->getPost('prog_till'),
+
+                'DM_Status' =>
+                $this->request
+                    ->getPost('program_status'),
+
+                'Remarks' =>
+                $this->request
+                    ->getPost('remarks'),
+
+                'Rec_Last_Updated_On' =>
+                date('Y-m-d')
+            ]
+        );
+
+
+        // =====================================================
+        // UPDATE STUDENT PROGRAM TABLE
+        // =====================================================
+
+        $studentProgramModel
+            ->where(
+                'Student_Id',
+                $studentId
+            )
+            ->where(
+                'Program_Id',
+                CorePrograms::DOOSRA_MAUKA
+            )
+            ->set([
+
+                'Center_Id' =>
+                $this->request
+                    ->getPost('center_id'),
+
+                'Batch_Id' =>
+                $this->request
+                    ->getPost('batch_id'),
+
+                'Enrollment_Date' =>
+                $this->request
+                    ->getPost('enroll_date'),
+
+                'Student_Status' =>
+                $this->request
+                    ->getPost('program_status')
+            ])
+            ->update();
+
+
+        // =====================================================
         // COMMIT
-        //----------------------------------
+        // =====================================================
 
         $db->transComplete();
 
+
         if ($db->transStatus() === false) {
+
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to update student');
+                ->with(
+                    'error',
+                    'Failed to update student'
+                );
         }
+
 
         return redirect()
             ->to('/ManageStudents/DoosraMauka')
-            ->with('success', 'Student Updated Successfully');
+            ->with(
+                'success',
+                'Student Updated Successfully'
+            );
     }
+
+
+    // =========================================================
+    // DELETE
+    // =========================================================
 
     public function delete($id)
     {
         $model = new DoosraMaukaModel();
+
         $model->delete($id);
-        return redirect()->to('/ManageStudents/DoosraMauka');
+
+        return redirect()
+            ->to('/ManageStudents/DoosraMauka')
+            ->with(
+                'success',
+                'Student deleted successfully'
+            );
     }
 }

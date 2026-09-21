@@ -1,58 +1,186 @@
 <?= view('includes/header'); ?>
 <?= view('includes/navbar'); ?>
-<!-- partial -->
+
+<!-- Page Body -->
 <div class="container-fluid page-body-wrapper">
+
   <?= view('includes/sidebar'); ?>
-  <!-- Main Panel Start -->
+
+  <!-- Main Panel -->
   <div class="main-panel">
+
     <div class="content-wrapper">
+
       <div class="row">
+
         <div class="col-lg-12 grid-margin stretch-card">
+
           <div class="card">
+
             <div class="card-body">
 
               <?= view('includes/breadcrumb'); ?>
-              <!-- Page Header -->
+
+
+              <!-- ===================================================== -->
+              <!-- PAGE HEADER -->
+              <!-- ===================================================== -->
+
               <h4 class="card-title mb-4">
-                <i class="mdi mdi-account-convert-outline menu-icon"></i> Doosra Mauka Student Details
+
+                <i class="mdi mdi-account-convert-outline menu-icon"></i>
+
+                Doosra Mauka Student Details
+
               </h4>
 
-              <!-- Tabs -->
-              <ul class="nav nav-tabs" id="viewStudentTabs" role="tablist">
-                <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#vpersonal">Personal Info</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#veducation">Education</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#vprogram">Program</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#vfamily">Family</a></li>
+
+              <!-- ===================================================== -->
+              <!-- TABS -->
+              <!-- ===================================================== -->
+
+              <ul
+                class="nav nav-tabs"
+                id="viewStudentTabs"
+                role="tablist">
+
+
+                <!-- PERSONAL -->
+
+                <li class="nav-item">
+
+                  <a
+                    class="nav-link active"
+                    data-bs-toggle="tab"
+                    href="#vpersonal"
+                    role="tab">
+
+                    <i class="mdi mdi-account me-1"></i>
+
+                    Personal Info
+
+                  </a>
+
+                </li>
+
+
+                <!-- EDUCATION -->
+
+                <li class="nav-item">
+
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    href="#veducation"
+                    role="tab">
+
+                    <i class="mdi mdi-school me-1"></i>
+
+                    Education
+
+                  </a>
+
+                </li>
+
+
+                <!-- PROGRAM -->
+
+                <li class="nav-item">
+
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    href="#vprogram"
+                    role="tab">
+
+                    <i class="mdi mdi-book-open-page-variant me-1"></i>
+
+                    Program
+
+                  </a>
+
+                </li>
+
+
+                <!-- FAMILY -->
+
+                <li class="nav-item">
+
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    href="#vfamily"
+                    role="tab">
+
+                    <i class="mdi mdi-account-group me-1"></i>
+
+                    Family Details
+
+                  </a>
+
+                </li>
+
               </ul>
 
-              <!-- Details -->
+
+              <!-- ===================================================== -->
+              <!-- TAB CONTENT -->
+              <!-- ===================================================== -->
+
               <div class="tab-content mt-3">
-                <!-- Example for Personal -->
-                <div class="tab-pane fade show active" id="vpersonal">
+
+
+                <!-- ===================================================== -->
+                <!-- PERSONAL INFO -->
+                <!-- ===================================================== -->
+
+                <div
+                  class="tab-pane fade show active"
+                  id="vpersonal"
+                  role="tabpanel">
+
+
                   <div class="row view-details">
 
-                    <!-- Student & Aadhaar Photos -->
+
+                    <!-- ================================================= -->
+                    <!-- PHOTOS -->
+                    <!-- ================================================= -->
+
                     <div class="row mb-4 mt-3">
 
-                      <!-- Student Photo -->
+
+                      <!-- STUDENT PHOTO -->
+
                       <div class="col-md-6">
+
                         <div class="card shadow-sm border-0">
 
+
                           <div class="card-header bg-primary text-white text-center">
+
                             <h5 class="mb-0">
+
                               <i class="mdi mdi-account-circle"></i>
+
                               Student Photo
+
                             </h5>
+
                           </div>
+
 
                           <div class="card-body text-center">
 
+
                             <?php if (!empty($student['Photo_URL'])) : ?>
 
-                              <a href="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
+                              <a
+                                href="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
                                 target="_blank">
 
-                                <img src="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
+                                <img
+                                  src="<?= base_url('uploads/students/photos/' . $student['Photo_URL']) ?>"
                                   class="img-thumbnail shadow"
                                   style="width:250px;height:250px;object-fit:cover;border-radius:10px;"
                                   alt="Student Photo">
@@ -62,37 +190,56 @@
                             <?php else : ?>
 
                               <div class="text-muted py-5">
+
                                 <i class="mdi mdi-image-off mdi-48px"></i>
-                                <p class="mt-2 mb-0">No Student Photo Available</p>
+
+                                <p class="mt-2 mb-0">
+                                  No Student Photo Available
+                                </p>
+
                               </div>
 
                             <?php endif; ?>
 
+
                           </div>
 
                         </div>
+
                       </div>
 
 
-                      <!-- Aadhaar Photo -->
+                      <!-- AADHAAR PHOTO -->
+
                       <div class="col-md-6">
+
                         <div class="card shadow-sm border-0">
 
+
                           <div class="card-header bg-success text-white text-center">
+
                             <h5 class="mb-0">
+
                               <i class="mdi mdi-card-account-details"></i>
+
                               Aadhaar Photo
+
                             </h5>
+
                           </div>
+
 
                           <div class="card-body text-center">
 
+
                             <?php if (!empty($student['Aadhar_Photo_URL'])) : ?>
 
-                              <a href="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
+                              <a
+                                href="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
                                 target="_blank">
 
-                                <img src="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
+                                <img
+                                  src="<?= base_url('uploads/students/aadhar/' . $student['Aadhar_Photo_URL']) ?>"
                                   class="img-thumbnail shadow"
                                   style="width:250px;height:250px;object-fit:cover;border-radius:10px;"
                                   alt="Aadhaar Photo">
@@ -102,235 +249,644 @@
                             <?php else : ?>
 
                               <div class="text-muted py-5">
+
                                 <i class="mdi mdi-image-off mdi-48px"></i>
-                                <p class="mt-2 mb-0">No Aadhaar Photo Available</p>
+
+                                <p class="mt-2 mb-0">
+                                  No Aadhaar Photo Available
+                                </p>
+
                               </div>
 
                             <?php endif; ?>
 
+
                           </div>
 
                         </div>
+
                       </div>
 
                     </div>
-                    <div class="col-md-6 mb-2">
-                      <strong>Full Name:</strong>
-                      <?= esc(($student['First_Name'] ?? '') . ' ' . ($student['Last_Name'] ?? '')) ?>
+
+
+                    <!-- ================================================= -->
+                    <!-- PERSONAL DETAILS -->
+                    <!-- ================================================= -->
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Full Name:
+                      </strong>
+
+                      <?= esc(
+                        trim(
+                          ($student['First_Name'] ?? '') .
+                            ' ' .
+                            ($student['Last_Name'] ?? '')
+                        )
+                      ) ?: '-' ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Gender:</strong>
+
+                    <!-- GENDER -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Gender:
+                      </strong>
+
                       <?= esc($student['Gender'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Date of Birth:</strong>
+
+                    <!-- DOB -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Date Of Birth:
+                      </strong>
+
                       <?= esc($student['DOB'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Phone:</strong>
-                      <?= esc($student['Phone_No'] ?? '-') ?>
-                    </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Email:</strong>
-                      <?= esc($student['Email_Id'] ?? '-') ?>
-                    </div>
+                    <!-- AADHAR -->
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Aadhar No:</strong>
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Aadhar No:
+                      </strong>
+
                       <?= esc($student['Aadhar_No'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Village/City:</strong>
-                      <?= esc($student['Village_City'] ?? '-') ?>
+
+                    <!-- PHONE -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Phone:
+                      </strong>
+
+                      <?= esc($student['Phone_No'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>District:</strong>
-                      <?= esc($student['District'] ?? '-') ?>
+
+                    <!-- EMAIL -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Email:
+                      </strong>
+
+                      <?= esc($student['Email_Id'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>State:</strong>
-                      <?= esc($student['State'] ?? '-') ?>
+
+                    <!-- MARITAL STATUS -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Marital Status:
+                      </strong>
+
+                      <?= esc($student['Marital_Status'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Pincode:</strong>
-                      <?= esc($student['Pincode'] ?? '-') ?>
-                    </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Nationality:</strong>
-                      <?= esc($student['Nationality'] ?? '-') ?>
-                    </div>
+                    <!-- CASTE -->
 
-                    <div class="col-md-12 mb-2">
-                      <strong>Address:</strong>
-                      <?= esc($student['Address'] ?? '-') ?>
-                    </div>
+                    <div class="col-md-6 mb-3">
 
-                    <div class="col-md-12 mb-2">
-                      <strong>Remarks:</strong>
-                      <?= esc($student['Remarks'] ?? '-') ?>
-                    </div>
-                  </div>
-                </div>
+                      <strong>
+                        Caste:
+                      </strong>
 
-                <!-- Education -->
-                <div class="tab-pane fade" id="veducation">
-                  <div class="row view-details">
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Current Education Level:</strong>
-                      <?= esc($student['Current_Education_level'] ?? '-') ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Highest Education Completed:</strong>
-                      <?= esc($student['Highest_Education_Completed'] ?? '-') ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Caste:</strong>
                       <?= esc($student['Student_Caste'] ?? '-') ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Status:</strong>
-                      <?= esc($student['Student_Status'] ?? '-') ?>
+
+                    <!-- VILLAGE / CITY -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Village / City:
+                      </strong>
+
+                      <?= esc($student['Village_City'] ?? '-') ?>
+
                     </div>
+
+
+                    <!-- DISTRICT -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        District:
+                      </strong>
+
+                      <?= esc($student['District'] ?? '-') ?>
+
+                    </div>
+
+
+                    <!-- STATE -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        State:
+                      </strong>
+
+                      <?= esc($student['State'] ?? '-') ?>
+
+                    </div>
+
+
+                    <!-- PINCODE -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Pincode:
+                      </strong>
+
+                      <?= esc($student['Pincode'] ?? '-') ?>
+
+                    </div>
+
+
+                    <!-- NATIONALITY -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Nationality:
+                      </strong>
+
+                      <?= esc($student['Nationality'] ?? '-') ?>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="col-md-12 mb-3">
+
+                      <strong>
+                        Address:
+                      </strong>
+
+                      <?= esc($student['Address'] ?? '-') ?>
+
+                    </div>
+
+
+                    <!-- REMARKS -->
+
+                    <div class="col-md-12 mb-3">
+
+                      <strong>
+                        Remarks:
+                      </strong>
+
+                      <?= esc($student['Remarks'] ?? '-') ?>
+
+                    </div>
+
+
                   </div>
+
                 </div>
 
-                <!-- Program -->
-                <div class="tab-pane fade" id="vprogram">
+
+                <!-- ===================================================== -->
+                <!-- EDUCATION -->
+                <!-- ===================================================== -->
+
+                <div
+                  class="tab-pane fade"
+                  id="veducation"
+                  role="tabpanel">
+
+
                   <div class="row view-details">
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Enrollment Date:</strong>
-                      <?= esc($student['Enrollment_Date']) ?>
+
+                    <!-- CURRENT EDUCATION -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Current Education Level:
+                      </strong>
+
+                      <?= esc(
+                        $student['Current_Education_level'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Program:</strong>
-                      <?= esc($student['Program_Name']) ?>
+
+                    <!-- HIGHEST EDUCATION -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Highest Education Completed:
+                      </strong>
+
+                      <?= esc(
+                        $student['Highest_Education_Completed'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Center:</strong>
-                      <?= esc($student['Center_Name']) ?>
+
+                    <!-- STUDENT STATUS -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Student Status:
+                      </strong>
+
+                      <?= esc(
+                        $student['Student_Status'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Batch:</strong>
-                      <?= esc($student['Batch_Name']) ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Marital Status:</strong>
-                      <?= esc($student['Marital_Status']) ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Program Status:</strong>
-                      <?= esc($student['DM_Status']) ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Completion Date:</strong>
-                      <?= esc($student['Completion_Date']) ?>
-                    </div>
 
                   </div>
+
                 </div>
 
 
-                <!-- Family -->
-                <div class="tab-pane fade" id="vfamily">
+                <!-- ===================================================== -->
+                <!-- PROGRAM -->
+                <!-- ===================================================== -->
+
+                <div
+                  class="tab-pane fade"
+                  id="vprogram"
+                  role="tabpanel">
+
+
                   <div class="row view-details">
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Father's Name:</strong>
-                      <?= esc($student['Fathers_Name'] ?? '-') ?>
+
+                    <!-- ENROLLMENT DATE -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Enrollment Date:
+                      </strong>
+
+                      <?= esc(
+                        $student['Enrollment_Date'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Father Contact:</strong>
-                      <?= esc($student['Father_Contact_Number'] ?? '-') ?>
+
+                    <!-- PROGRAM -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Program:
+                      </strong>
+
+                      <?= esc(
+                        $student['Program_Name'] ?? 'Doosra Mauka'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Father Email:</strong>
-                      <?= esc($student['Father_Email_ID'] ?? '-') ?>
+
+                    <!-- CENTER -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Center:
+                      </strong>
+
+                      <?= esc(
+                        $student['Center_Name'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Father Occupation:</strong>
-                      <?= esc($student['Father_Occupation'] ?? '-') ?>
+
+                    <!-- BATCH -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Batch:
+                      </strong>
+
+                      <?= esc(
+                        $student['Batch_Name'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Mother's Name:</strong>
-                      <?= esc($student['Mothers_Name'] ?? '-') ?>
+
+                    <!-- PROGRAM STATUS -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Program Status:
+                      </strong>
+
+                      <?= esc(
+                        $student['DM_Status'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Mother Contact:</strong>
-                      <?= esc($student['Mother_Contact_Number'] ?? '-') ?>
+
+                    <!-- COMPLETION DATE -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Completion Date:
+                      </strong>
+
+                      <?= esc(
+                        $student['Completion_Date'] ?? '-'
+                      ) ?>
+
                     </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Mother Email:</strong>
-                      <?= esc($student['Mother_Email_ID'] ?? '-') ?>
-                    </div>
 
-                    <div class="col-md-6 mb-2">
-                      <strong>Mother Occupation:</strong>
-                      <?= esc($student['Mother_Occupation'] ?? '-') ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Family Monthly Income:</strong>
-                      <?= esc($student['Family_Monthly_Income'] ?? '-') ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Number of Siblings:</strong>
-                      <?= esc($student['Sibling_Number'] ?? '-') ?>
-                    </div>
                   </div>
+
                 </div>
 
-                <!-- Actions -->
+
+                <!-- ===================================================== -->
+                <!-- FAMILY DETAILS -->
+                <!-- ===================================================== -->
+
+                <div
+                  class="tab-pane fade"
+                  id="vfamily"
+                  role="tabpanel">
+
+
+                  <div class="row view-details">
+
+
+                    <!-- GUARDIAN NAME -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Guardian Name:
+                      </strong>
+
+                      <?= esc(
+                        $student['Fathers_Name'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- GUARDIAN RELATION -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Guardian Relation:
+                      </strong>
+
+                      <?= esc(
+                        $student['Guardian_Relation'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- GUARDIAN CONTACT -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Guardian Contact:
+                      </strong>
+
+                      <?= esc(
+                        $student['Father_Contact_Number'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- GUARDIAN EMAIL -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Guardian Email:
+                      </strong>
+
+                      <?= esc(
+                        $student['Father_Email_ID'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- GUARDIAN OCCUPATION -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Guardian Occupation:
+                      </strong>
+
+                      <?= esc(
+                        $student['Father_Occupation'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- MOTHER NAME -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Mother's Name:
+                      </strong>
+
+                      <?= esc(
+                        $student['Mothers_Name'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- MOTHER CONTACT -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Mother's Contact:
+                      </strong>
+
+                      <?= esc(
+                        $student['Mother_Contact_Number'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- MOTHER EMAIL -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Mother's Email:
+                      </strong>
+
+                      <?= esc(
+                        $student['Mother_Email_ID'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- MOTHER OCCUPATION -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Mother's Occupation:
+                      </strong>
+
+                      <?= esc(
+                        $student['Mother_Occupation'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- FAMILY INCOME -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Family Monthly Income:
+                      </strong>
+
+                      <?= esc(
+                        $student['Family_Monthly_Income'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                    <!-- SIBLINGS -->
+
+                    <div class="col-md-6 mb-3">
+
+                      <strong>
+                        Number Of Siblings:
+                      </strong>
+
+                      <?= esc(
+                        $student['Sibling_Number'] ?? '-'
+                      ) ?>
+
+                    </div>
+
+
+                  </div>
+
+                </div>
+
+
+                <!-- ===================================================== -->
+                <!-- ACTION BUTTONS -->
+                <!-- ===================================================== -->
+
                 <div class="mt-4 text-center">
 
-                  <a href="<?= base_url('ManageStudents/DoosraMauka/edit/' . $student['DM_Stu_Id']) ?>"
+
+                  <!-- EDIT -->
+
+                  <a
+                    href="<?= base_url('ManageStudents/DoosraMauka/edit/' . $student['DM_Stu_Id']) ?>"
                     class="btn btn-warning btn-sm">
-                    <i class="mdi mdi-pencil"></i> Edit
+
+                    <i class="mdi mdi-pencil"></i>
+
+                    Edit
+
                   </a>
 
-                  <a href="<?= base_url('ManageStudents/DoosraMauka/delete/' . $student['DM_Stu_Id']) ?>"
+
+                  <!-- DELETE -->
+
+                  <a
+                    href="<?= base_url('ManageStudents/DoosraMauka/delete/' . $student['DM_Stu_Id']) ?>"
                     class="btn btn-danger btn-sm"
-                    onclick="return confirm('Are you sure?')">
-                    <i class="mdi mdi-delete"></i> Delete
+                    onclick="return confirm('Are you sure you want to delete this student?')">
+
+                    <i class="mdi mdi-delete"></i>
+
+                    Delete
+
                   </a>
+
 
                 </div>
 
+
               </div>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
-      <!-- content-wrapper ends -->
+
     </div>
-    <!-- main-panel ends -->
+
   </div>
-  <!-- page-body-wrapper ends -->
+
 </div>
+
+
 <?= view('includes/footer'); ?>

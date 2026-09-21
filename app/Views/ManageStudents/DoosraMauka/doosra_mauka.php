@@ -1,182 +1,329 @@
 <?= view('includes/header'); ?>
+
 <?= view('includes/navbar'); ?>
 
-<div class="container-scroller">
-  <div class="container-fluid page-body-wrapper">
+<div class="container-fluid page-body-wrapper">
 
-    <?= view('includes/sidebar'); ?>
+  <?= view('includes/sidebar'); ?>
 
-    <div class="main-panel">
-      <div class="content-wrapper">
+  <div class="main-panel">
 
-        <div class="row">
-          <div class="col-lg-12 grid-margin stretch-card">
+    <div class="content-wrapper">
 
-            <div class="card">
-              <div class="card-body">
+      <div class="col-lg-12 grid-margin stretch-card">
 
-                <?= view('includes/breadcrumb'); ?>
+        <div class="card">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h4 class="card-title mb-0"><i class="mdi mdi-account-convert-outline menu-icon"></i>
-                    Doosra Mauka Participants
-                  </h4>
+          <div class="card-body">
 
-                  <a href="<?= base_url('ManageStudents/DoosraMauka/add'); ?>"
-                    class="btn btn-primary btn-sm">
+            <?= view(
+              'includes/breadcrumb',
+              [
+                'main' => 'Dashboard',
+                'sub'  => 'Doosra Mauka Students',
+                'sub_url' => base_url('ManageStudents/DoosraMauka')
+              ]
+            ); ?>
 
-                    <i class="mdi mdi-plus-circle-outline me-1"></i>
-                    Add New Student
-                  </a>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
-                <p class="card-description">
-                  Manage Doosra Mauka Students
-                </p>
+              <h4 class="card-title mb-0">
 
-                <?php if (session()->getFlashdata('success')) : ?>
-                  <div class="alert alert-success">
-                    <?= session()->getFlashdata('success'); ?>
-                  </div>
-                <?php endif; ?>
+                <i class="mdi mdi-account-convert-outline me-2"></i>
 
-                <?php if (session()->getFlashdata('error')) : ?>
-                  <div class="alert alert-danger">
-                    <?= session()->getFlashdata('error'); ?>
-                  </div>
-                <?php endif; ?>
+                Doosra Mauka Students
 
-                <div class="table-responsive">
+              </h4>
 
-                  <table class="table table-bordered table-hover">
+              <?= view('includes/messages'); ?>
 
-                    <thead class="table-light">
+              <a href="<?= base_url('ManageStudents/DoosraMauka/add') ?>"
+                class="btn btn-primary btn-sm">
+
+                <i class="mdi mdi-plus-circle-outline me-1"></i>
+
+                Add New Student
+
+              </a>
+
+            </div>
+
+
+            <p class="card-description">
+
+              Manage Doosra Mauka Students
+
+            </p>
+
+
+            <div class="table-responsive">
+
+              <table
+                id="studentTable"
+                class="table table-striped">
+
+                <thead>
+
+                  <tr>
+
+                    <th>#</th>
+
+                    <th>Student ID</th>
+
+                    <th>Name</th>
+
+                    <th>Gender</th>
+
+                    <th>Phone</th>
+
+                    <th>Email</th>
+
+                    <th>Center</th>
+
+                    <th>Batch</th>
+
+                    <th>Marital Status</th>
+
+                    <th>Status</th>
+
+                    <th width="160">Actions</th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  <?php if (!empty($students)): ?>
+
+                    <?php $i = 1; ?>
+
+                    <?php foreach ($students as $student): ?>
+
                       <tr>
-                        <th>#</th>
-                        <th>Student Name</th>
-                        <th>Gender</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Center</th>
-                        <th>Batch</th>
-                        <th>Marital Status</th>
-                        <th>Status</th>
-                        <th width="170">Actions</th>
+
+                        <!-- # -->
+                        <td>
+                          <?= $i++ ?>
+                        </td>
+
+
+                        <!-- Student ID -->
+                        <td>
+
+                          <?= esc(
+                            $student['DM_Stu_Id'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Name -->
+                        <td>
+
+                          <?= esc(
+                            trim(
+                              ($student['First_Name'] ?? '') .
+                                ' ' .
+                                ($student['Last_Name'] ?? '')
+                            )
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Gender -->
+                        <td>
+
+                          <?= esc(
+                            $student['Gender'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Phone -->
+                        <td>
+
+                          <?= esc(
+                            $student['Phone_No'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Email -->
+                        <td>
+
+                          <?= esc(
+                            $student['Email_Id'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Center -->
+                        <td>
+
+                          <?= esc(
+                            $student['Center_Name'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Batch -->
+                        <td>
+
+                          <?= esc(
+                            $student['Batch_Name'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Marital Status -->
+                        <td>
+
+                          <?= esc(
+                            $student['Marital_Status'] ?? ''
+                          ) ?>
+
+                        </td>
+
+
+                        <!-- Status -->
+                        <td>
+
+                          <?php if (
+                            ($student['DM_Status'] ?? '') == 'Active'
+                          ): ?>
+
+                            <span class="badge badge-success">
+                              Active
+                            </span>
+
+                          <?php elseif (
+                            ($student['DM_Status'] ?? '') == 'Completed'
+                          ): ?>
+
+                            <span class="badge badge-info">
+                              Completed
+                            </span>
+
+                          <?php else: ?>
+
+                            <span class="badge badge-danger">
+                              Inactive
+                            </span>
+
+                          <?php endif; ?>
+
+                        </td>
+
+
+                        <!-- Actions -->
+                        <td>
+
+                          <a href="<?= base_url(
+                                      'ManageStudents/DoosraMauka/view/' .
+                                        $student['DM_Stu_Id']
+                                    ) ?>"
+                            class="btn btn-info btn-sm"
+                            title="View">
+
+                            <i class="mdi mdi-eye"></i>
+
+                          </a>
+
+
+                          <a href="<?= base_url(
+                                      'ManageStudents/DoosraMauka/edit/' .
+                                        $student['DM_Stu_Id']
+                                    ) ?>"
+                            class="btn btn-warning btn-sm"
+                            title="Edit">
+
+                            <i class="mdi mdi-pencil"></i>
+
+                          </a>
+
+                        </td>
+
                       </tr>
-                    </thead>
 
-                    <tbody>
+                    <?php endforeach; ?>
 
-                      <?php if (!empty($students)) : ?>
 
-                        <?php $i = 1; ?>
+                  <?php else: ?>
 
-                        <?php foreach ($students as $stu) : ?>
-                          <tr>
+                    <tr>
 
-                            <td><?= $i++; ?></td>
+                      <td
+                        colspan="11"
+                        class="text-center">
 
-                            <td>
-                              <?= esc($stu['First_Name'] . ' ' . $stu['Last_Name']); ?>
-                            </td>
+                        No Doosra Mauka Students Found
 
-                            <td>
-                              <?= esc($stu['Gender']); ?>
-                            </td>
+                      </td>
 
-                            <td>
-                              <?= esc($stu['Email_Id']); ?>
-                            </td>
+                    </tr>
 
-                            <td>
-                              <?= esc($stu['Phone_No']); ?>
-                            </td>
+                  <?php endif; ?>
 
-                            <td>
-                              <?= esc($stu['Center_Name'] ?? 'N/A'); ?>
-                            </td>
+                </tbody>
 
-                            <td>
-                              <?= esc($stu['Batch_Name'] ?? 'N/A'); ?>
-                            </td>
+              </table>
 
-                            <td>
-                              <?= esc($stu['Marital_Status'] ?? 'N/A'); ?>
-                            </td>
-
-                            <td>
-
-                              <?php if (($stu['DM_Status'] ?? '') == 'Active') : ?>
-
-                                <span class="badge badge-success">
-                                  Active
-                                </span>
-
-                              <?php elseif (($stu['DM_Status'] ?? '') == 'Completed') : ?>
-
-                                <span class="badge badge-info">
-                                  Completed
-                                </span>
-
-                              <?php else : ?>
-
-                                <span class="badge badge-danger">
-                                  Inactive
-                                </span>
-
-                              <?php endif; ?>
-
-                            </td>
-
-                            <td>
-
-                              <a href="<?= base_url('ManageStudents/DoosraMauka/view/' . $stu['DM_Stu_Id']); ?>"
-                                class="btn btn-info btn-sm"
-                                title="View">
-
-                                <i class="mdi mdi-eye"></i>
-                              </a>
-
-                              <a href="<?= base_url('ManageStudents/DoosraMauka/edit/' . $stu['DM_Stu_Id']); ?>"
-                                class="btn btn-warning btn-sm"
-                                title="Edit">
-
-                                <i class="mdi mdi-pencil"></i>
-                              </a>
-
-                            
-
-                            </td>
-
-                          </tr>
-
-                        <?php endforeach; ?>
-
-                      <?php else : ?>
-
-                        <tr>
-                          <td colspan="10" class="text-center">
-                            No Doosra Mauka Students Found
-                          </td>
-                        </tr>
-
-                      <?php endif; ?>
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-              </div>
             </div>
 
           </div>
+
         </div>
 
       </div>
+
     </div>
 
   </div>
+
 </div>
 
+
 <?= view('includes/footer'); ?>
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+
+    $('#studentTable').DataTable({
+
+      paging: true,
+
+      searching: true,
+
+      ordering: true,
+
+      info: true,
+
+      language: {
+
+        search: "_INPUT_",
+
+        searchPlaceholder: "Search student..."
+
+      }
+
+    });
+
+  });
+</script>
