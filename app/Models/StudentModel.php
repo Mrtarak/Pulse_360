@@ -8,7 +8,8 @@ class StudentModel extends Model
 {
     protected $table            = 'student';
     protected $primaryKey       = 'Student_Id';
-
+    protected $useAutoIncrement = false;
+    
     protected $allowedFields    = [
         'Student_Id',
         'First_Name',

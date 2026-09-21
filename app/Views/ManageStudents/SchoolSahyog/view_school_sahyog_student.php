@@ -2,17 +2,12 @@
 
 <?= view('includes/navbar'); ?>
 
-<!-- partial -->
-
 <div class="container-fluid page-body-wrapper">
 
     <?= view('includes/sidebar'); ?>
 
-    <!-- Main Panel Start -->
-
     <div class="main-panel">
 
-        ```
         <div class="content-wrapper">
 
             <div class="row">
@@ -25,10 +20,17 @@
 
                             <?= view('includes/breadcrumb'); ?>
 
-                            <!-- Page Header -->
+
+                            <!-- =============================== -->
+                            <!-- PAGE HEADER -->
+                            <!-- =============================== -->
+
                             <h4 class="card-title mb-4">
+
                                 <i class="mdi mdi-school-outline menu-icon"></i>
+
                                 School Sahyog Student Details
+
                             </h4>
 
 
@@ -36,38 +38,59 @@
                             <!-- TABS -->
                             <!-- =============================== -->
 
-                            <ul class="nav nav-tabs" id="viewStudentTabs" role="tablist">
+                            <ul class="nav nav-tabs"
+                                id="viewStudentTabs"
+                                role="tablist">
 
                                 <li class="nav-item">
+
                                     <a class="nav-link active"
                                         data-bs-toggle="tab"
                                         href="#vpersonal">
+
                                         Personal Info
+
                                     </a>
+
                                 </li>
 
+
                                 <li class="nav-item">
+
                                     <a class="nav-link"
                                         data-bs-toggle="tab"
                                         href="#veducation">
+
                                         Education
+
                                     </a>
+
                                 </li>
 
+
                                 <li class="nav-item">
+
                                     <a class="nav-link"
                                         data-bs-toggle="tab"
                                         href="#vprogram">
+
                                         Program
+
                                     </a>
+
                                 </li>
 
+
                                 <li class="nav-item">
+
                                     <a class="nav-link"
                                         data-bs-toggle="tab"
                                         href="#vfamily">
+
                                         Family
+
                                     </a>
+
                                 </li>
 
                             </ul>
@@ -85,12 +108,15 @@
                                 <!-- ===================================== -->
 
                                 <div class="tab-pane fade show active"
-                                    id="vpersonal">
+                                    id="vpersonal"
+                                    role="tabpanel">
 
                                     <div class="row view-details">
 
 
+                                        <!-- =============================== -->
                                         <!-- STUDENT PHOTO -->
+                                        <!-- =============================== -->
 
                                         <div class="col-md-6 mb-3">
 
@@ -107,6 +133,7 @@
                                                     </h5>
 
                                                 </div>
+
 
                                                 <div class="card-body text-center">
 
@@ -131,7 +158,9 @@
                                                             <i class="mdi mdi-image-off mdi-48px"></i>
 
                                                             <p class="mt-2 mb-0">
+
                                                                 No Student Photo Available
+
                                                             </p>
 
                                                         </div>
@@ -145,7 +174,9 @@
                                         </div>
 
 
+                                        <!-- =============================== -->
                                         <!-- AADHAAR PHOTO -->
+                                        <!-- =============================== -->
 
                                         <div class="col-md-6 mb-3">
 
@@ -162,6 +193,7 @@
                                                     </h5>
 
                                                 </div>
+
 
                                                 <div class="card-body text-center">
 
@@ -186,7 +218,9 @@
                                                             <i class="mdi mdi-image-off mdi-48px"></i>
 
                                                             <p class="mt-2 mb-0">
+
                                                                 No Aadhaar Photo Available
+
                                                             </p>
 
                                                         </div>
@@ -200,14 +234,17 @@
                                         </div>
 
 
+                                        <!-- =============================== -->
                                         <!-- PERSONAL DETAILS -->
+                                        <!-- =============================== -->
 
                                         <div class="col-md-6 mb-2">
 
                                             <strong>Full Name:</strong>
 
                                             <?= esc(
-                                                $student['First_Name'] . ' ' . $student['Last_Name']
+                                                ($student['First_Name'] ?? '') . ' ' .
+                                                    ($student['Last_Name'] ?? '')
                                             ) ?>
 
                                         </div>
@@ -217,7 +254,7 @@
 
                                             <strong>Gender:</strong>
 
-                                            <?= esc($student['Gender']) ?>
+                                            <?= esc($student['Gender'] ?? '') ?>
 
                                         </div>
 
@@ -226,7 +263,7 @@
 
                                             <strong>Date of Birth:</strong>
 
-                                            <?= esc($student['DOB']) ?>
+                                            <?= esc($student['DOB'] ?? '') ?>
 
                                         </div>
 
@@ -235,7 +272,7 @@
 
                                             <strong>Phone:</strong>
 
-                                            <?= esc($student['Phone_No']) ?>
+                                            <?= esc($student['Phone_No'] ?? '') ?>
 
                                         </div>
 
@@ -244,7 +281,7 @@
 
                                             <strong>Email:</strong>
 
-                                            <?= esc($student['Email_Id']) ?>
+                                            <?= esc($student['Email_Id'] ?? '') ?>
 
                                         </div>
 
@@ -253,7 +290,7 @@
 
                                             <strong>Aadhar No:</strong>
 
-                                            <?= esc($student['Aadhar_No']) ?>
+                                            <?= esc($student['Aadhar_No'] ?? '') ?>
 
                                         </div>
 
@@ -262,7 +299,7 @@
 
                                             <strong>Village/City:</strong>
 
-                                            <?= esc($student['Village_City']) ?>
+                                            <?= esc($student['Village_City'] ?? '') ?>
 
                                         </div>
 
@@ -271,7 +308,7 @@
 
                                             <strong>District:</strong>
 
-                                            <?= esc($student['District']) ?>
+                                            <?= esc($student['District'] ?? '') ?>
 
                                         </div>
 
@@ -280,7 +317,7 @@
 
                                             <strong>State:</strong>
 
-                                            <?= esc($student['State']) ?>
+                                            <?= esc($student['State'] ?? '') ?>
 
                                         </div>
 
@@ -289,7 +326,7 @@
 
                                             <strong>Pincode:</strong>
 
-                                            <?= esc($student['Pincode']) ?>
+                                            <?= esc($student['Pincode'] ?? '') ?>
 
                                         </div>
 
@@ -298,7 +335,7 @@
 
                                             <strong>Nationality:</strong>
 
-                                            <?= esc($student['Nationality']) ?>
+                                            <?= esc($student['Nationality'] ?? '') ?>
 
                                         </div>
 
@@ -307,7 +344,20 @@
 
                                             <strong>Address:</strong>
 
-                                            <?= esc($student['Address']) ?>
+                                            <?= esc($student['Address'] ?? '') ?>
+
+                                        </div>
+
+
+                                        <!-- =============================== -->
+                                        <!-- CASTE MOVED TO PERSONAL -->
+                                        <!-- =============================== -->
+
+                                        <div class="col-md-6 mb-2">
+
+                                            <strong>Caste:</strong>
+
+                                            <?= esc($student['Student_Caste'] ?? '') ?>
 
                                         </div>
 
@@ -316,7 +366,7 @@
 
                                             <strong>Remarks:</strong>
 
-                                            <?= esc($student['Remarks']) ?>
+                                            <?= esc($student['Remarks'] ?? '') ?>
 
                                         </div>
 
@@ -326,44 +376,22 @@
                                 </div>
 
 
-
                                 <!-- ===================================== -->
                                 <!-- EDUCATION -->
                                 <!-- ===================================== -->
 
                                 <div class="tab-pane fade"
-                                    id="veducation">
+                                    id="veducation"
+                                    role="tabpanel">
 
                                     <div class="row view-details">
 
 
                                         <div class="col-md-6 mb-2">
 
-                                            <strong>Current Education:</strong>
-
-                                            <?= esc(
-                                                $student['Current_Education_level']
-                                            ) ?>
-
-                                        </div>
-
-
-                                        <div class="col-md-6 mb-2">
-
-                                            <strong>Highest Education:</strong>
-
-                                            <?= esc(
-                                                $student['Highest_Education_Completed']
-                                            ) ?>
-
-                                        </div>
-
-
-                                        <div class="col-md-6 mb-2">
-
                                             <strong>Student Class:</strong>
 
-                                            <?= esc($student['Student_Class']) ?>
+                                            <?= esc($student['Student_Class'] ?? '') ?>
 
                                         </div>
 
@@ -372,7 +400,7 @@
 
                                             <strong>School Name:</strong>
 
-                                            <?= esc($student['School_Name']) ?>
+                                            <?= esc($student['School_Name'] ?? '') ?>
 
                                         </div>
 
@@ -381,7 +409,7 @@
 
                                             <strong>School Type:</strong>
 
-                                            <?= esc($student['School_Type']) ?>
+                                            <?= esc($student['School_Type'] ?? '') ?>
 
                                         </div>
 
@@ -390,16 +418,7 @@
 
                                             <strong>School Medium:</strong>
 
-                                            <?= esc($student['School_Medium']) ?>
-
-                                        </div>
-
-
-                                        <div class="col-md-6 mb-2">
-
-                                            <strong>Caste:</strong>
-
-                                            <?= esc($student['Student_Caste']) ?>
+                                            <?= esc($student['School_Medium'] ?? '') ?>
 
                                         </div>
 
@@ -426,13 +445,13 @@
                                 </div>
 
 
-
                                 <!-- ===================================== -->
                                 <!-- PROGRAM -->
                                 <!-- ===================================== -->
 
                                 <div class="tab-pane fade"
-                                    id="vprogram">
+                                    id="vprogram"
+                                    role="tabpanel">
 
                                     <div class="row view-details">
 
@@ -441,7 +460,7 @@
 
                                             <strong>Program:</strong>
 
-                                            <?= esc($student['Program_Name']) ?>
+                                            <?= esc($student['Program_Name'] ?? '') ?>
 
                                         </div>
 
@@ -450,7 +469,7 @@
 
                                             <strong>Center:</strong>
 
-                                            <?= esc($student['Center_Name']) ?>
+                                            <?= esc($student['Center_Name'] ?? '') ?>
 
                                         </div>
 
@@ -459,7 +478,7 @@
 
                                             <strong>Batch:</strong>
 
-                                            <?= esc($student['Batch_Name']) ?>
+                                            <?= esc($student['Batch_Name'] ?? '') ?>
 
                                         </div>
 
@@ -468,7 +487,7 @@
 
                                             <strong>Enrollment Date:</strong>
 
-                                            <?= esc($student['Enrollment_Date']) ?>
+                                            <?= esc($student['Enrollment_Date'] ?? '') ?>
 
                                         </div>
 
@@ -477,7 +496,7 @@
 
                                             <strong>Completion Date:</strong>
 
-                                            <?= esc($student['Completion_Date']) ?>
+                                            <?= esc($student['Completion_Date'] ?? '') ?>
 
                                         </div>
 
@@ -488,7 +507,7 @@
 
                                             <span class="badge bg-primary">
 
-                                                <?= esc($student['SS_Status']) ?>
+                                                <?= esc($student['SS_Status'] ?? '') ?>
 
                                             </span>
 
@@ -500,105 +519,130 @@
                                 </div>
 
 
-
                                 <!-- ===================================== -->
                                 <!-- FAMILY -->
                                 <!-- ===================================== -->
 
                                 <div class="tab-pane fade"
-                                    id="vfamily">
+                                    id="vfamily"
+                                    role="tabpanel">
 
                                     <div class="row view-details">
 
 
+                                        <!-- =============================== -->
+                                        <!-- GUARDIAN -->
+                                        <!-- =============================== -->
+
                                         <div class="col-md-6 mb-2">
 
-                                            <strong>Father's Name:</strong>
+                                            <strong>Guardian's Name:</strong>
 
-                                            <?= esc($student['Fathers_Name']) ?>
+                                            <?= esc($student['Fathers_Name'] ?? '') ?>
 
                                         </div>
 
 
                                         <div class="col-md-6 mb-2">
 
-                                            <strong>Father Contact:</strong>
+                                            <strong>Relation with Guardian:</strong>
 
-                                            <?= esc($student['Father_Contact_Number']) ?>
-
-                                        </div>
-
-
-                                        <div class="col-md-6 mb-2">
-
-                                            <strong>Father Email:</strong>
-
-                                            <?= esc($student['Father_Email_ID']) ?>
+                                            <?= esc($student['Guardian_Relation'] ?? '') ?>
 
                                         </div>
 
 
                                         <div class="col-md-6 mb-2">
 
-                                            <strong>Father Occupation:</strong>
+                                            <strong>Guardian Contact:</strong>
 
-                                            <?= esc($student['Father_Occupation']) ?>
+                                            <?= esc($student['Father_Contact_Number'] ?? '') ?>
 
                                         </div>
 
+
+                                        <div class="col-md-6 mb-2">
+
+                                            <strong>Guardian Email:</strong>
+
+                                            <?= esc($student['Father_Email_ID'] ?? '') ?>
+
+                                        </div>
+
+
+                                        <div class="col-md-6 mb-2">
+
+                                            <strong>Guardian Occupation:</strong>
+
+                                            <?= esc($student['Father_Occupation'] ?? '') ?>
+
+                                        </div>
+
+
+                                        <!-- =============================== -->
+                                        <!-- MOTHER -->
+                                        <!-- =============================== -->
 
                                         <div class="col-md-6 mb-2">
 
                                             <strong>Mother's Name:</strong>
 
-                                            <?= esc($student['Mothers_Name']) ?>
+                                            <?= esc($student['Mothers_Name'] ?? '') ?>
 
                                         </div>
 
 
                                         <div class="col-md-6 mb-2">
 
-                                            <strong>Mother Contact:</strong>
+                                            <strong>Mother's Contact:</strong>
 
-                                            <?= esc($student['Mother_Contact_Number']) ?>
-
-                                        </div>
-
-
-                                        <div class="col-md-6 mb-2">
-
-                                            <strong>Mother Email:</strong>
-
-                                            <?= esc($student['Mother_Email_ID']) ?>
+                                            <?= esc($student['Mother_Contact_Number'] ?? '') ?>
 
                                         </div>
 
 
                                         <div class="col-md-6 mb-2">
 
-                                            <strong>Mother Occupation:</strong>
+                                            <strong>Mother's Email:</strong>
 
-                                            <?= esc($student['Mother_Occupation']) ?>
+                                            <?= esc($student['Mother_Email_ID'] ?? '') ?>
 
                                         </div>
 
+
+                                        <div class="col-md-6 mb-2">
+
+                                            <strong>Mother's Occupation:</strong>
+
+                                            <?= esc($student['Mother_Occupation'] ?? '') ?>
+
+                                        </div>
+
+
+                                        <!-- =============================== -->
+                                        <!-- FAMILY INCOME -->
+                                        <!-- =============================== -->
 
                                         <div class="col-md-6 mb-2">
 
                                             <strong>Family Monthly Income:</strong>
 
                                             ₹<?= number_format(
-                                                    (float) $student['User_Family_MonthlyIncome']
+                                                    (float) ($student['User_Family_MonthlyIncome'] ?? 0)
                                                 ) ?>
 
                                         </div>
 
 
+                                        <!-- =============================== -->
+                                        <!-- SIBLINGS -->
+                                        <!-- =============================== -->
+
                                         <div class="col-md-6 mb-2">
 
                                             <strong>Number of Siblings:</strong>
 
-                                            <?= esc($student['User_Siblings']) ?>
+                                            <?= esc($student['User_Siblings'] ?? '') ?>
 
                                         </div>
 
@@ -609,7 +653,6 @@
 
 
                             </div>
-
 
 
                             <!-- =============================== -->
@@ -658,7 +701,6 @@
             </div>
 
         </div>
-        ```
 
     </div>
 

@@ -127,13 +127,17 @@ class SchoolSahyog extends BaseController
         $validation = \Config\Services::validation();
 
         $validation->setRules([
+
             'photo' => [
-                'rules' => 'permit_empty|is_image[photo]|max_size[photo,2048]|mime_in[photo,image/jpg,image/jpeg,image/png]',
+                'rules' =>
+                'permit_empty|is_image[photo]|max_size[photo,2048]|mime_in[photo,image/jpg,image/jpeg,image/png]',
             ],
 
             'aadhar_photo' => [
-                'rules' => 'permit_empty|is_image[aadhar_photo]|max_size[aadhar_photo,2048]|mime_in[aadhar_photo,image/jpg,image/jpeg,image/png]',
+                'rules' =>
+                'permit_empty|is_image[aadhar_photo]|max_size[aadhar_photo,2048]|mime_in[aadhar_photo,image/jpg,image/jpeg,image/png]',
             ],
+
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -141,7 +145,10 @@ class SchoolSahyog extends BaseController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', implode('<br>', $validation->getErrors()));
+                ->with(
+                    'error',
+                    implode('<br>', $validation->getErrors())
+                );
         }
 
 
@@ -153,7 +160,11 @@ class SchoolSahyog extends BaseController
 
         $photo = $this->request->getFile('photo');
 
-        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+        if (
+            $photo &&
+            $photo->isValid() &&
+            !$photo->hasMoved()
+        ) {
 
             $photoName = $photo->getRandomName();
 
@@ -170,11 +181,17 @@ class SchoolSahyog extends BaseController
 
         $aadharPhotoName = null;
 
-        $aadharPhoto = $this->request->getFile('aadhar_photo');
+        $aadharPhoto =
+            $this->request->getFile('aadhar_photo');
 
-        if ($aadharPhoto && $aadharPhoto->isValid() && !$aadharPhoto->hasMoved()) {
+        if (
+            $aadharPhoto &&
+            $aadharPhoto->isValid() &&
+            !$aadharPhoto->hasMoved()
+        ) {
 
-            $aadharPhotoName = $aadharPhoto->getRandomName();
+            $aadharPhotoName =
+                $aadharPhoto->getRandomName();
 
             $aadharPhoto->move(
                 FCPATH . 'uploads/students/aadhar',
@@ -191,40 +208,72 @@ class SchoolSahyog extends BaseController
 
             'Student_Id' => $studentId,
 
-            'First_Name' => $this->request->getPost('first_name'),
-            'Last_Name'  => $this->request->getPost('last_name'),
+            'First_Name' =>
+            $this->request->getPost('first_name'),
 
-            'Gender' => $this->request->getPost('gender'),
-            'DOB'    => $this->request->getPost('dob'),
+            'Last_Name' =>
+            $this->request->getPost('last_name'),
 
-            'Aadhar_No' => $this->request->getPost('aadhar_no'),
+            'Gender' =>
+            $this->request->getPost('gender'),
 
-            'Phone_No' => $this->request->getPost('phone'),
-            'Email_Id' => $this->request->getPost('email'),
+            'DOB' =>
+            $this->request->getPost('dob'),
 
-            'Village_City' => $this->request->getPost('city'),
-            'District'     => $this->request->getPost('district'),
-            'State'        => $this->request->getPost('state'),
-            'Pincode'      => $this->request->getPost('pincode'),
+            'Aadhar_No' =>
+            $this->request->getPost('aadhar_no'),
 
-            'Nationality' => $this->request->getPost('nationality'),
-            'Address'     => $this->request->getPost('address'),
+            'Phone_No' =>
+            $this->request->getPost('phone'),
 
-            'Photo_URL' => $photoName,
+            'Email_Id' =>
+            $this->request->getPost('email'),
 
-            'Aadhar_Photo_URL' => $aadharPhotoName,
+            'Village_City' =>
+            $this->request->getPost('city'),
+
+            'District' =>
+            $this->request->getPost('district'),
+
+            'State' =>
+            $this->request->getPost('state'),
+
+            'Pincode' =>
+            $this->request->getPost('pincode'),
+
+            'Nationality' =>
+            $this->request->getPost('nationality'),
+
+            'Address' =>
+            $this->request->getPost('address'),
+
+            //-------------------------------------
+            // Caste
+            //-------------------------------------
+
+            'Student_Caste' =>
+            $this->request->getPost('caste'),
+
+            //-------------------------------------
+            // Photos
+            //-------------------------------------
+
+            'Photo_URL' =>
+            $photoName,
+
+            'Aadhar_Photo_URL' =>
+            $aadharPhotoName,
+
+            //-------------------------------------
+            // Enrollment
+            //-------------------------------------
 
             'Enrollment_Date' =>
             $this->request->getPost('enroll_date'),
 
-            'Current_Education_level' =>
-            $this->request->getPost('current_edu'),
-
-            'Highest_Education_Completed' =>
-            $this->request->getPost('highest_edu'),
-
-            'Student_Caste' =>
-            $this->request->getPost('caste'),
+            //-------------------------------------
+            // Student Status
+            //-------------------------------------
 
             'Student_Status' =>
             $this->request->getPost('status'),
@@ -232,8 +281,17 @@ class SchoolSahyog extends BaseController
             'Remarks' =>
             $this->request->getPost('remarks'),
 
+            //-------------------------------------
+            // GUARDIAN
+            // Existing Father_* DB fields are
+            // being used for Guardian information.
+            //-------------------------------------
+
             'Fathers_Name' =>
             $this->request->getPost('father_name'),
+
+            'Guardian_Relation' =>
+            $this->request->getPost('Guardian_Relation'),
 
             'Father_Contact_Number' =>
             $this->request->getPost('father_contact'),
@@ -243,6 +301,10 @@ class SchoolSahyog extends BaseController
 
             'Father_Occupation' =>
             $this->request->getPost('father_occupation'),
+
+            //-------------------------------------
+            // MOTHER
+            //-------------------------------------
 
             'Mothers_Name' =>
             $this->request->getPost('mother_name'),
@@ -256,16 +318,27 @@ class SchoolSahyog extends BaseController
             'Mother_Occupation' =>
             $this->request->getPost('mother_occupation'),
 
+            //-------------------------------------
+            // FAMILY
+            //-------------------------------------
+
             'Family_Monthly_Income' =>
             $this->request->getPost('income'),
 
             'Sibling_Number' =>
             $this->request->getPost('siblings'),
 
-            'Rec_Added_By' => 'Admin',
+            //-------------------------------------
+            // RECORD
+            //-------------------------------------
 
-            'Rec_Added_On' => date('Y-m-d')
+            'Rec_Added_By' =>
+            'Admin',
+
+            'Rec_Added_On' =>
+            date('Y-m-d')
         ];
+
 
         $this->studentModel->insert($studentData);
 
@@ -276,11 +349,14 @@ class SchoolSahyog extends BaseController
 
         $this->schoolSahyogModel->insert([
 
-            'SS_Stu_Id' => $ssId,
+            'SS_Stu_Id' =>
+            $ssId,
 
-            'Student_Id' => $studentId,
+            'Student_Id' =>
+            $studentId,
 
-            'Program_Id' => CorePrograms::SCHOOL_SAHYOG,
+            'Program_Id' =>
+            CorePrograms::SCHOOL_SAHYOG,
 
             'Center_Id' =>
             $this->request->getPost('center_id'),
@@ -323,7 +399,8 @@ class SchoolSahyog extends BaseController
 
             'Rec_Added_By' => null,
 
-            'Rec_Added_On' => date('Y-m-d')
+            'Rec_Added_On' =>
+            date('Y-m-d')
         ]);
 
 
@@ -331,15 +408,19 @@ class SchoolSahyog extends BaseController
         // STUDENT PROGRAM TABLE
         //-------------------------------------
 
-        $studentProgramModel = new StudentProgramModel();
+        $studentProgramModel =
+            new StudentProgramModel();
 
         $studentProgramModel->insert([
 
-            'Student_Program_Id' => $spId,
+            'Student_Program_Id' =>
+            $spId,
 
-            'Student_Id' => $studentId,
+            'Student_Id' =>
+            $studentId,
 
-            'Program_Id' => CorePrograms::SCHOOL_SAHYOG,
+            'Program_Id' =>
+            CorePrograms::SCHOOL_SAHYOG,
 
             'Center_Id' =>
             $this->request->getPost('center_id'),
@@ -366,8 +447,12 @@ class SchoolSahyog extends BaseController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to save student');
+                ->with(
+                    'error',
+                    'Failed to save student'
+                );
         }
+
 
         return redirect()
             ->to('/students/school_sahyog')
@@ -418,19 +503,45 @@ class SchoolSahyog extends BaseController
         // Get School Sahyog Record
         //------------------------------------------------
 
-        $ssStudent = $this->schoolSahyogModel->find($id);
+        $ssStudent =
+            $this->schoolSahyogModel->find($id);
 
         if (!$ssStudent) {
 
             return redirect()
                 ->back()
-                ->with('error', 'Student not found');
+                ->with(
+                    'error',
+                    'Student not found'
+                );
         }
 
-        $studentId = $ssStudent['Student_Id'];
+
+        $studentId =
+            $ssStudent['Student_Id'];
 
 
-        $currentStudent = $this->studentModel->find($studentId);
+        //------------------------------------------------
+        // Get Existing Student
+        //------------------------------------------------
+
+        $currentStudent =
+            $this->studentModel->find($studentId);
+
+        if (!$currentStudent) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Student record not found'
+                );
+        }
+
+
+        //------------------------------------------------
+        // Existing Photos
+        //------------------------------------------------
 
         $photoName =
             $currentStudent['Photo_URL'];
@@ -443,9 +554,14 @@ class SchoolSahyog extends BaseController
         // Update Student Photo
         //-------------------------------------
 
-        $photo = $this->request->getFile('photo');
+        $photo =
+            $this->request->getFile('photo');
 
-        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+        if (
+            $photo &&
+            $photo->isValid() &&
+            !$photo->hasMoved()
+        ) {
 
             if (!empty($photoName)) {
 
@@ -455,11 +571,15 @@ class SchoolSahyog extends BaseController
                     $photoName;
 
                 if (file_exists($oldPhoto)) {
+
                     unlink($oldPhoto);
                 }
             }
 
-            $photoName = $photo->getRandomName();
+
+            $photoName =
+                $photo->getRandomName();
+
 
             $photo->move(
                 FCPATH . 'uploads/students/photos/',
@@ -475,6 +595,7 @@ class SchoolSahyog extends BaseController
         $aadharPhoto =
             $this->request->getFile('aadhar_photo');
 
+
         if (
             $aadharPhoto &&
             $aadharPhoto->isValid() &&
@@ -489,12 +610,15 @@ class SchoolSahyog extends BaseController
                     $aadharPhotoName;
 
                 if (file_exists($oldAadhar)) {
+
                     unlink($oldAadhar);
                 }
             }
 
+
             $aadharPhotoName =
                 $aadharPhoto->getRandomName();
+
 
             $aadharPhoto->move(
                 FCPATH . 'uploads/students/aadhar/',
@@ -507,151 +631,222 @@ class SchoolSahyog extends BaseController
         // UPDATE STUDENT TABLE
         //------------------------------------------------
 
-        $this->studentModel->update($studentId, [
+        $this->studentModel->update(
+            $studentId,
+            [
 
-            'First_Name' =>
-            $this->request->getPost('first_name'),
+                'First_Name' =>
+                $this->request->getPost('first_name'),
 
-            'Last_Name' =>
-            $this->request->getPost('last_name'),
+                'Last_Name' =>
+                $this->request->getPost('last_name'),
 
-            'Gender' =>
-            $this->request->getPost('gender'),
+                'Gender' =>
+                $this->request->getPost('gender'),
 
-            'DOB' =>
-            $this->request->getPost('dob'),
+                'DOB' =>
+                $this->request->getPost('dob'),
 
-            'Aadhar_No' =>
-            $this->request->getPost('aadhar_no'),
+                'Aadhar_No' =>
+                $this->request->getPost('aadhar_no'),
 
-            'Phone_No' =>
-            $this->request->getPost('phone'),
+                'Phone_No' =>
+                $this->request->getPost('phone'),
 
-            'Email_Id' =>
-            $this->request->getPost('email'),
+                'Email_Id' =>
+                $this->request->getPost('email'),
 
-            'Village_City' =>
-            $this->request->getPost('city'),
+                'Village_City' =>
+                $this->request->getPost('city'),
 
-            'District' =>
-            $this->request->getPost('district'),
+                'District' =>
+                $this->request->getPost('district'),
 
-            'State' =>
-            $this->request->getPost('state'),
+                'State' =>
+                $this->request->getPost('state'),
 
-            'Pincode' =>
-            $this->request->getPost('pincode'),
+                'Pincode' =>
+                $this->request->getPost('pincode'),
 
-            'Nationality' =>
-            $this->request->getPost('nationality'),
+                'Nationality' =>
+                $this->request->getPost('nationality'),
 
-            'Address' =>
-            $this->request->getPost('address'),
+                'Address' =>
+                $this->request->getPost('address'),
 
-            'Photo_URL' =>
-            $photoName,
+                //-------------------------------------
+                // Caste
+                //-------------------------------------
 
-            'Aadhar_Photo_URL' =>
-            $aadharPhotoName,
+                'Student_Caste' =>
+                $this->request->getPost('caste'),
 
-            'Current_Education_level' =>
-            $this->request->getPost('current_edu'),
+                //-------------------------------------
+                // Photos
+                //-------------------------------------
 
-            'Highest_Education_Completed' =>
-            $this->request->getPost('highest_edu'),
+                'Photo_URL' =>
+                $photoName,
 
-            'Student_Caste' =>
-            $this->request->getPost('caste'),
+                'Aadhar_Photo_URL' =>
+                $aadharPhotoName,
 
-            'Student_Status' =>
-            $this->request->getPost('status'),
+                //-------------------------------------
+                // Student Status
+                //-------------------------------------
 
-            'Remarks' =>
-            $this->request->getPost('remarks'),
+                'Student_Status' =>
+                $this->request->getPost('status'),
 
-            'Fathers_Name' =>
-            $this->request->getPost('father_name'),
+                'Remarks' =>
+                $this->request->getPost('remarks'),
 
-            'Father_Contact_Number' =>
-            $this->request->getPost('father_contact'),
+                //-------------------------------------
+                // GUARDIAN
+                //-------------------------------------
 
-            'Father_Email_ID' =>
-            $this->request->getPost('father_email'),
+                'Fathers_Name' =>
+                $this->request->getPost('father_name'),
 
-            'Father_Occupation' =>
-            $this->request->getPost('father_occupation'),
+                'Guardian_Relation' =>
+                $this->request->getPost('Guardian_Relation'),
 
-            'Mothers_Name' =>
-            $this->request->getPost('mother_name'),
+                'Father_Contact_Number' =>
+                $this->request->getPost('father_contact'),
 
-            'Mother_Contact_Number' =>
-            $this->request->getPost('mother_contact'),
+                'Father_Email_ID' =>
+                $this->request->getPost('father_email'),
 
-            'Mother_Email_ID' =>
-            $this->request->getPost('mother_email'),
+                'Father_Occupation' =>
+                $this->request->getPost('father_occupation'),
 
-            'Mother_Occupation' =>
-            $this->request->getPost('mother_occupation'),
+                //-------------------------------------
+                // MOTHER
+                //-------------------------------------
 
-            'Family_Monthly_Income' =>
-            $this->request->getPost('income'),
+                'Mothers_Name' =>
+                $this->request->getPost('mother_name'),
 
-            'Sibling_Number' =>
-            $this->request->getPost('siblings'),
+                'Mother_Contact_Number' =>
+                $this->request->getPost('mother_contact'),
 
-            'Rec_Last_Updated_On' =>
-            date('Y-m-d')
-        ]);
+                'Mother_Email_ID' =>
+                $this->request->getPost('mother_email'),
+
+                'Mother_Occupation' =>
+                $this->request->getPost('mother_occupation'),
+
+                //-------------------------------------
+                // FAMILY
+                //-------------------------------------
+
+                'Family_Monthly_Income' =>
+                $this->request->getPost('income'),
+
+                'Sibling_Number' =>
+                $this->request->getPost('siblings'),
+
+                //-------------------------------------
+                // RECORD
+                //-------------------------------------
+
+                'Rec_Last_Updated_On' =>
+                date('Y-m-d')
+            ]
+        );
 
 
         //------------------------------------------------
         // UPDATE SCHOOL SAHYOG TABLE
         //------------------------------------------------
 
-        $this->schoolSahyogModel->update($id, [
+        $this->schoolSahyogModel->update(
+            $id,
+            [
 
-            'Center_Id' =>
-            $this->request->getPost('center_id'),
+                'Center_Id' =>
+                $this->request->getPost('center_id'),
 
-            'Batch_Id' =>
-            $this->request->getPost('batch_id'),
+                'Batch_Id' =>
+                $this->request->getPost('batch_id'),
 
-            'Student_Class' =>
-            $this->request->getPost('student_class'),
+                'Student_Class' =>
+                $this->request->getPost('student_class'),
 
-            'School_Name' =>
-            $this->request->getPost('school_name'),
+                'School_Name' =>
+                $this->request->getPost('school_name'),
 
-            'School_Type' =>
-            $this->request->getPost('school_type'),
+                'School_Type' =>
+                $this->request->getPost('school_type'),
 
-            'School_Medium' =>
-            $this->request->getPost('school_medium'),
+                'School_Medium' =>
+                $this->request->getPost('school_medium'),
 
-            'User_Siblings' =>
-            $this->request->getPost('siblings'),
+                'User_Siblings' =>
+                $this->request->getPost('siblings'),
 
-            'User_Family_MonthlyIncome' =>
-            $this->request->getPost('income'),
+                'User_Family_MonthlyIncome' =>
+                $this->request->getPost('income'),
 
-            'Student_Caste' =>
-            $this->request->getPost('caste'),
+                'Student_Caste' =>
+                $this->request->getPost('caste'),
 
-            'Enrollment_Date' =>
-            $this->request->getPost('enroll_date'),
+                'Enrollment_Date' =>
+                $this->request->getPost('enroll_date'),
 
-            'Completion_Date' =>
-            $this->request->getPost('prog_till'),
+                'Completion_Date' =>
+                $this->request->getPost('prog_till'),
 
-            'SS_Status' =>
-            $this->request->getPost('program_status'),
+                'SS_Status' =>
+                $this->request->getPost('program_status'),
 
-            'Remarks' =>
-            $this->request->getPost('remarks'),
+                'Remarks' =>
+                $this->request->getPost('remarks'),
 
-            'Rec_Last_Updated_On' =>
-            date('Y-m-d')
-        ]);
+                'Rec_Last_Updated_On' =>
+                date('Y-m-d')
+            ]
+        );
+
+
+        //------------------------------------------------
+        // UPDATE STUDENT PROGRAM TABLE
+        //------------------------------------------------
+
+        $studentProgramModel =
+            new StudentProgramModel();
+
+
+        $studentProgram =
+            $studentProgramModel
+            ->where('Student_Id', $studentId)
+            ->where(
+                'Program_Id',
+                CorePrograms::SCHOOL_SAHYOG
+            )
+            ->first();
+
+
+        if ($studentProgram) {
+
+            $studentProgramModel->update(
+                $studentProgram['Student_Program_Id'],
+                [
+
+                    'Center_Id' =>
+                    $this->request->getPost('center_id'),
+
+                    'Batch_Id' =>
+                    $this->request->getPost('batch_id'),
+
+                    'Enrollment_Date' =>
+                    $this->request->getPost('enroll_date'),
+
+                    'Student_Status' =>
+                    $this->request->getPost('program_status')
+                ]
+            );
+        }
 
 
         //------------------------------------------------
@@ -660,13 +855,18 @@ class SchoolSahyog extends BaseController
 
         $db->transComplete();
 
+
         if ($db->transStatus() === false) {
 
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Update failed');
+                ->with(
+                    'error',
+                    'Update failed'
+                );
         }
+
 
         return redirect()
             ->to('/students/school_sahyog')

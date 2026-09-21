@@ -9,7 +9,6 @@
     <div class="main-panel">
         <div class="content-wrapper">
 
-            ```
             <div class="row">
 
                 <div class="col-12 grid-margin stretch-card">
@@ -199,6 +198,14 @@
                                                     required>
                                             </div>
 
+                                            <div class="col-md-4 mb-3">
+                                                <label>Caste</label>
+                                                <input
+                                                    type="text"
+                                                    name="caste"
+                                                    class="form-control">
+                                            </div>
+
                                             <div class="col-md-12 mb-3">
                                                 <label>Address *</label>
                                                 <textarea
@@ -265,33 +272,7 @@
 
                                         <div class="row">
 
-                                            <div class="col-md-6 mb-3">
-
-                                                <label>
-                                                    Current Education Level *
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="current_edu"
-                                                    class="form-control"
-                                                    required>
-
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-
-                                                <label>
-                                                    Highest Education Completed
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="highest_edu"
-                                                    class="form-control">
-
-                                            </div>
-
+                                            <!-- Student Class -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -306,6 +287,7 @@
 
                                             </div>
 
+                                            <!-- School Name -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -320,6 +302,7 @@
 
                                             </div>
 
+                                            <!-- School Type -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -347,6 +330,7 @@
 
                                             </div>
 
+                                            <!-- School Medium -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -386,20 +370,7 @@
 
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
-
-                                                <label>
-                                                    Caste *
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="caste"
-                                                    class="form-control"
-                                                    required>
-
-                                            </div>
-
+                                            <!-- Student Status -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -446,7 +417,6 @@
                                         </div>
 
                                     </div>
-
                                     <!-- ===================================== -->
                                     <!-- PROGRAM TAB -->
                                     <!-- ===================================== -->
@@ -627,10 +597,11 @@
 
                                         <div class="row">
 
+                                            <!-- Guardian's Name -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Father's Name
+                                                    Guardian's Name
                                                 </label>
 
                                                 <input
@@ -640,10 +611,68 @@
 
                                             </div>
 
+                                            <!-- Relation with Guardian -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Father's Contact
+                                                    Relation with Guardian
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Guardian_Relation"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">
+                                                        -- Select Relation --
+                                                    </option>
+
+                                                    <option value="Father">
+                                                        Father
+                                                    </option>
+
+                                                    <option value="Mother">
+                                                        Mother
+                                                    </option>
+
+                                                    <option value="Guardian">
+                                                        Guardian
+                                                    </option>
+
+                                                    <option value="Uncle">
+                                                        Uncle
+                                                    </option>
+
+                                                    <option value="Aunt">
+                                                        Aunt
+                                                    </option>
+
+                                                    <option value="Grandfather">
+                                                        Grandfather
+                                                    </option>
+
+                                                    <option value="Grandmother">
+                                                        Grandmother
+                                                    </option>
+
+                                                    <option value="Sibling">
+                                                        Sibling
+                                                    </option>
+
+                                                    <option value="Other">
+                                                        Other
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <!-- Guardian's Contact -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Guardian's Contact
                                                 </label>
 
                                                 <input
@@ -653,10 +682,11 @@
 
                                             </div>
 
+                                            <!-- Guardian's Email -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Father's Email
+                                                    Guardian's Email
                                                 </label>
 
                                                 <input
@@ -666,10 +696,11 @@
 
                                             </div>
 
+                                            <!-- Guardian's Occupation -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Father's Occupation
+                                                    Guardian's Occupation
                                                 </label>
 
                                                 <input
@@ -679,6 +710,9 @@
 
                                             </div>
 
+                                            <div class="w-100"></div>
+
+                                            <!-- Mother's Name -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -692,6 +726,7 @@
 
                                             </div>
 
+                                            <!-- Mother's Contact -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -705,6 +740,7 @@
 
                                             </div>
 
+                                            <!-- Mother's Email -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -718,6 +754,7 @@
 
                                             </div>
 
+                                            <!-- Mother's Occupation -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
@@ -731,30 +768,37 @@
 
                                             </div>
 
+                                            <!-- Family Monthly Income -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Family Monthly Income *
+                                                    Family Monthly Income
+                                                    <span class="text-danger">*</span>
                                                 </label>
 
                                                 <input
                                                     type="number"
                                                     name="income"
                                                     class="form-control"
+                                                    min="0"
+                                                    step="1"
                                                     required>
 
                                             </div>
 
+                                            <!-- Number of Siblings -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Number Of Siblings *
+                                                    Number of Siblings
+                                                    <span class="text-danger">*</span>
                                                 </label>
 
                                                 <input
                                                     type="number"
                                                     name="siblings"
                                                     class="form-control"
+                                                    min="0"
                                                     required>
 
                                             </div>
@@ -771,7 +815,8 @@
 
                                             <div>
 
-                                                <a href="<?= base_url('students/school_sahyog') ?>"
+                                                <a
+                                                    href="<?= base_url('students/school_sahyog') ?>"
                                                     class="btn btn-light">
 
                                                     Cancel
@@ -793,16 +838,17 @@
                                     </div>
 
                                 </div>
-                            </form>
 
                         </div>
+                        </form>
+
                     </div>
                 </div>
-
             </div>
-        </div>
-        ```
 
+        </div>
     </div>
 
-    <?= view('includes/footer'); ?>
+</div>
+
+<?= view('includes/footer'); ?>
