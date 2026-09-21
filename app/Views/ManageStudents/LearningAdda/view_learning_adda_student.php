@@ -167,6 +167,11 @@
                       <?= esc($student['Nationality']) ?>
                     </div>
 
+                    <div class="col-md-6 mb-2">
+                      <strong>Caste:</strong>
+                      <?= esc($student['Student_Caste'] ?? '') ?>
+                    </div>
+
                     <div class="col-md-12 mb-2">
                       <strong>Address:</strong>
                       <?= esc($student['Address']) ?>
@@ -186,45 +191,30 @@
                   <div class="row view-details">
 
                     <div class="col-md-6 mb-2">
-                      <strong>Current Education:</strong>
-                      <?= esc($student['Current_Education_level']) ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Highest Education:</strong>
-                      <?= esc($student['Highest_Education_Completed']) ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
                       <strong>Student Class:</strong>
-                      <?= esc($student['Student_Class']) ?>
+                      <?= esc($student['Student_Class'] ?? '') ?>
                     </div>
 
                     <div class="col-md-6 mb-2">
                       <strong>School Name:</strong>
-                      <?= esc($student['School_Name']) ?>
+                      <?= esc($student['School_Name'] ?? '') ?>
                     </div>
 
                     <div class="col-md-6 mb-2">
                       <strong>School Type:</strong>
-                      <?= esc($student['School_Type']) ?>
+                      <?= esc($student['School_Type'] ?? '') ?>
                     </div>
 
                     <div class="col-md-6 mb-2">
                       <strong>School Medium:</strong>
-                      <?= esc($student['School_Medium']) ?>
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-                      <strong>Caste:</strong>
-                      <?= esc($student['Student_Caste']) ?>
+                      <?= esc($student['School_Medium'] ?? '') ?>
                     </div>
 
                     <div class="col-md-6 mb-2">
                       <strong>Status:</strong>
 
                       <span class="badge bg-success">
-                        <?= esc($student['Student_Status']) ?>
+                        <?= esc($student['Student_Status'] ?? '') ?>
                       </span>
                     </div>
 
@@ -275,54 +265,70 @@
                 <div class="tab-pane fade" id="vfamily">
                   <div class="row view-details">
 
+                    <!-- Guardian's Name -->
                     <div class="col-md-6 mb-2">
-                      <strong>Father's Name:</strong>
-                      <?= esc($student['Fathers_Name']) ?>
+                      <strong>Guardian's Name:</strong>
+                      <?= esc($student['Fathers_Name'] ?? '') ?>
                     </div>
 
+                    <!-- Guardian Relation -->
                     <div class="col-md-6 mb-2">
-                      <strong>Father Contact:</strong>
-                      <?= esc($student['Father_Contact_Number']) ?>
+                      <strong>Relation with Guardian:</strong>
+                      <?= esc($student['Guardian_Relation'] ?? '') ?>
                     </div>
 
+                    <!-- Guardian Contact -->
                     <div class="col-md-6 mb-2">
-                      <strong>Father Email:</strong>
-                      <?= esc($student['Father_Email_ID']) ?>
+                      <strong>Guardian Contact:</strong>
+                      <?= esc($student['Father_Contact_Number'] ?? '') ?>
                     </div>
 
+                    <!-- Guardian Email -->
                     <div class="col-md-6 mb-2">
-                      <strong>Father Occupation:</strong>
-                      <?= esc($student['Father_Occupation']) ?>
+                      <strong>Guardian Email:</strong>
+                      <?= esc($student['Father_Email_ID'] ?? '') ?>
                     </div>
 
+                    <!-- Guardian Occupation -->
+                    <div class="col-md-6 mb-2">
+                      <strong>Guardian Occupation:</strong>
+                      <?= esc($student['Father_Occupation'] ?? '') ?>
+                    </div>
+
+                    <!-- Mother's Name -->
                     <div class="col-md-6 mb-2">
                       <strong>Mother's Name:</strong>
-                      <?= esc($student['Mothers_Name']) ?>
+                      <?= esc($student['Mothers_Name'] ?? '') ?>
                     </div>
 
+                    <!-- Mother's Contact -->
                     <div class="col-md-6 mb-2">
-                      <strong>Mother Contact:</strong>
-                      <?= esc($student['Mother_Contact_Number']) ?>
+                      <strong>Mother's Contact:</strong>
+                      <?= esc($student['Mother_Contact_Number'] ?? '') ?>
                     </div>
 
+                    <!-- Mother's Email -->
                     <div class="col-md-6 mb-2">
-                      <strong>Mother Email:</strong>
-                      <?= esc($student['Mother_Email_ID']) ?>
+                      <strong>Mother's Email:</strong>
+                      <?= esc($student['Mother_Email_ID'] ?? '') ?>
                     </div>
 
+                    <!-- Mother's Occupation -->
                     <div class="col-md-6 mb-2">
-                      <strong>Mother Occupation:</strong>
-                      <?= esc($student['Mother_Occupation']) ?>
+                      <strong>Mother's Occupation:</strong>
+                      <?= esc($student['Mother_Occupation'] ?? '') ?>
                     </div>
 
+                    <!-- Family Monthly Income -->
                     <div class="col-md-6 mb-2">
                       <strong>Family Monthly Income:</strong>
-                      ₹<?= number_format((float)$student['User_Family_MonthlyIncome']) ?>
+                      ₹<?= number_format((float)($student['User_Family_MonthlyIncome'] ?? 0)) ?>
                     </div>
 
+                    <!-- Number of Siblings -->
                     <div class="col-md-6 mb-2">
                       <strong>Number of Siblings:</strong>
-                      <?= esc($student['User_Siblings']) ?>
+                      <?= esc($student['User_Siblings'] ?? '') ?>
                     </div>
 
                   </div>

@@ -202,15 +202,11 @@ class LearningAdda extends BaseController
             'Enrollment_Date' =>
             $this->request->getPost('enroll_date'),
 
-            'Current_Education_level' =>
-            $this->request->getPost('current_edu'),
-
-            'Highest_Education_Completed' =>
-            $this->request->getPost('highest_edu'),
-
             'Student_Caste' =>
             $this->request->getPost('caste'),
 
+            'Guardian_Relation' =>
+            $this->request->getPost('Guardian_Relation'),
             'Student_Status' =>
             $this->request->getPost('status'),
 
@@ -497,15 +493,12 @@ class LearningAdda extends BaseController
 
             'Aadhar_Photo_URL' => $aadharPhotoName,
 
-            'Current_Education_level' =>
-            $this->request->getPost('current_edu'),
-
-            'Highest_Education_Completed' =>
-            $this->request->getPost('highest_edu'),
-
             'Student_Caste' =>
             $this->request->getPost('caste'),
 
+            'Guardian_Relation' =>
+            $this->request->getPost('Guardian_Relation'),
+            
             'Student_Status' =>
             $this->request->getPost('status'),
 

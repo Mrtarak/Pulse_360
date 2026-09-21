@@ -178,6 +178,16 @@
                           value="<?= esc($student['Nationality']) ?>">
                       </div>
 
+                      <div class="col-md-4 mb-3">
+                        <label>Caste</label>
+
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="caste"
+                          value="<?= esc($student['Student_Caste'] ?? '') ?>">
+                      </div>
+
                       <div class="col-md-12 mb-3">
                         <label>Address</label>
                         <textarea class="form-control"
@@ -313,22 +323,6 @@
                     <div class="row">
 
                       <div class="col-md-6 mb-3">
-                        <label>Current Education Level</label>
-                        <input type="text"
-                          class="form-control"
-                          name="current_edu"
-                          value="<?= esc($student['Current_Education_level']) ?>">
-                      </div>
-
-                      <div class="col-md-6 mb-3">
-                        <label>Highest Education Completed</label>
-                        <input type="text"
-                          class="form-control"
-                          name="highest_edu"
-                          value="<?= esc($student['Highest_Education_Completed']) ?>">
-                      </div>
-
-                      <div class="col-md-6 mb-3">
                         <label>Student Class</label>
                         <input type="number"
                           class="form-control"
@@ -398,14 +392,6 @@
                           </option>
 
                         </select>
-                      </div>
-
-                      <div class="col-md-6 mb-3">
-                        <label>Caste</label>
-                        <input type="text"
-                          class="form-control"
-                          name="caste"
-                          value="<?= esc($student['Student_Caste']) ?>">
                       </div>
 
                       <div class="col-md-6 mb-3">
@@ -571,109 +557,248 @@
                   </div>
 
 
+                  <!-- ===================================== -->
                   <!-- FAMILY TAB -->
+                  <!-- ===================================== -->
+
                   <div class="tab-pane fade"
-                    id="family">
+                    id="family"
+                    role="tabpanel">
 
                     <div class="row">
 
+                      <!-- ================================= -->
+                      <!-- GUARDIAN DETAILS -->
+                      <!-- ================================= -->
+
+                      <!-- Guardian's Name -->
                       <div class="col-md-6 mb-3">
-                        <label>Father's Name</label>
-                        <input type="text"
+                        <label>Guardian's Name</label>
+
+                        <input
+                          type="text"
                           class="form-control"
                           name="father_name"
-                          value="<?= esc($student['Fathers_Name']) ?>">
+                          value="<?= esc($student['Fathers_Name'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Relation with Guardian -->
                       <div class="col-md-6 mb-3">
-                        <label>Father's Contact</label>
-                        <input type="text"
+                        <label>
+                          Relation with Guardian
+                          <span class="text-danger">*</span>
+                        </label>
+
+                        <select
+                          name="Guardian_Relation"
+                          class="form-control"
+                          required>
+
+                          <option value="">
+                            -- Select Relation --
+                          </option>
+
+                          <option value="Father"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Father' ? 'selected' : '' ?>>
+                            Father
+                          </option>
+
+                          <option value="Mother"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Mother' ? 'selected' : '' ?>>
+                            Mother
+                          </option>
+
+                          <option value="Guardian"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Guardian' ? 'selected' : '' ?>>
+                            Guardian
+                          </option>
+
+                          <option value="Uncle"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Uncle' ? 'selected' : '' ?>>
+                            Uncle
+                          </option>
+
+                          <option value="Aunt"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Aunt' ? 'selected' : '' ?>>
+                            Aunt
+                          </option>
+
+                          <option value="Grandfather"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Grandfather' ? 'selected' : '' ?>>
+                            Grandfather
+                          </option>
+
+                          <option value="Grandmother"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Grandmother' ? 'selected' : '' ?>>
+                            Grandmother
+                          </option>
+
+                          <option value="Sibling"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Sibling' ? 'selected' : '' ?>>
+                            Sibling
+                          </option>
+
+                          <option value="Other"
+                            <?= ($student['Guardian_Relation'] ?? '') === 'Other' ? 'selected' : '' ?>>
+                            Other
+                          </option>
+
+                        </select>
+                      </div>
+
+
+                      <!-- Guardian's Contact -->
+                      <div class="col-md-6 mb-3">
+                        <label>Guardian's Contact</label>
+
+                        <input
+                          type="text"
                           class="form-control"
                           name="father_contact"
-                          value="<?= esc($student['Father_Contact_Number']) ?>">
+                          value="<?= esc($student['Father_Contact_Number'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Guardian's Email -->
                       <div class="col-md-6 mb-3">
-                        <label>Father's Email</label>
-                        <input type="email"
+                        <label>Guardian's Email</label>
+
+                        <input
+                          type="email"
                           class="form-control"
                           name="father_email"
-                          value="<?= esc($student['Father_Email_ID']) ?>">
+                          value="<?= esc($student['Father_Email_ID'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Guardian's Occupation -->
                       <div class="col-md-6 mb-3">
-                        <label>Father's Occupation</label>
-                        <input type="text"
+                        <label>Guardian's Occupation</label>
+
+                        <input
+                          type="text"
                           class="form-control"
                           name="father_occupation"
-                          value="<?= esc($student['Father_Occupation']) ?>">
+                          value="<?= esc($student['Father_Occupation'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Force Mother Name to next row -->
+                      <div class="w-100"></div>
+
+
+                      <!-- ================================= -->
+                      <!-- MOTHER DETAILS -->
+                      <!-- ================================= -->
+
+                      <!-- Mother's Name -->
                       <div class="col-md-6 mb-3">
                         <label>Mother's Name</label>
-                        <input type="text"
+
+                        <input
+                          type="text"
                           class="form-control"
                           name="mother_name"
-                          value="<?= esc($student['Mothers_Name']) ?>">
+                          value="<?= esc($student['Mothers_Name'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Mother's Contact -->
                       <div class="col-md-6 mb-3">
                         <label>Mother's Contact</label>
-                        <input type="text"
+
+                        <input
+                          type="text"
                           class="form-control"
                           name="mother_contact"
-                          value="<?= esc($student['Mother_Contact_Number']) ?>">
+                          value="<?= esc($student['Mother_Contact_Number'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Mother's Email -->
                       <div class="col-md-6 mb-3">
                         <label>Mother's Email</label>
-                        <input type="email"
+
+                        <input
+                          type="email"
                           class="form-control"
                           name="mother_email"
-                          value="<?= esc($student['Mother_Email_ID']) ?>">
+                          value="<?= esc($student['Mother_Email_ID'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Mother's Occupation -->
                       <div class="col-md-6 mb-3">
                         <label>Mother's Occupation</label>
-                        <input type="text"
+
+                        <input
+                          type="text"
                           class="form-control"
                           name="mother_occupation"
-                          value="<?= esc($student['Mother_Occupation']) ?>">
+                          value="<?= esc($student['Mother_Occupation'] ?? '') ?>">
                       </div>
 
+
+                      <!-- Family Monthly Income -->
                       <div class="col-md-6 mb-3">
-                        <label>Family Monthly Income</label>
-                        <input type="text"
+                        <label>
+                          Family Monthly Income
+                          <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                          type="number"
                           class="form-control"
                           name="income"
-                          value="<?= esc($student['Family_Monthly_Income']) ?>">
+                          value="<?= esc($student['Family_Monthly_Income'] ?? '') ?>"
+                          min="0"
+                          step="1"
+                          required>
                       </div>
 
+
+                      <!-- Number of Siblings -->
                       <div class="col-md-6 mb-3">
-                        <label>Number of Siblings</label>
-                        <input type="number"
+                        <label>
+                          Number of Siblings
+                          <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                          type="number"
                           class="form-control"
                           name="siblings"
-                          value="<?= esc($student['User_Siblings']) ?>">
+                          value="<?= esc($student['Sibling_Number'] ?? '') ?>"
+                          min="0"
+                          required>
                       </div>
 
                     </div>
 
+
+                    <!-- ================================= -->
+                    <!-- FAMILY NAVIGATION -->
+                    <!-- ================================= -->
+
                     <div class="d-flex justify-content-between">
 
-                      <button type="button"
+                      <button
+                        type="button"
                         class="btn btn-secondary prev-tab">
                         Previous
                       </button>
 
                       <div>
 
-                        <a href="<?= base_url('students/learning_adda') ?>"
+                        <a
+                          href="<?= base_url('students/learning_adda') ?>"
                           class="btn btn-light">
                           Cancel
                         </a>
 
-                        <button type="submit"
+                        <button
+                          type="submit"
                           class="btn btn-primary">
                           Update Student
                         </button>
@@ -685,14 +810,16 @@
                   </div>
 
                 </div>
-              </form>
 
             </div>
+            </form>
+
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <?= view('includes/footer'); ?>

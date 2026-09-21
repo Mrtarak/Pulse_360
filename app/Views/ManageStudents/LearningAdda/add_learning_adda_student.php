@@ -197,6 +197,15 @@
                           required>
                       </div>
 
+                      <div class="col-md-4 mb-3">
+                        <label>Caste *</label>
+                        <input
+                          type="text"
+                          name="caste"
+                          class="form-control"
+                          required>
+                      </div>
+
                       <div class="col-md-12 mb-3">
                         <label>Address *</label>
                         <textarea
@@ -262,33 +271,6 @@
                     id="education">
 
                     <div class="row">
-
-                      <div class="col-md-6 mb-3">
-
-                        <label>
-                          Current Education Level *
-                        </label>
-
-                        <input
-                          type="text"
-                          name="current_edu"
-                          class="form-control"
-                          required>
-
-                      </div>
-
-                      <div class="col-md-6 mb-3">
-
-                        <label>
-                          Highest Education Completed
-                        </label>
-
-                        <input
-                          type="text"
-                          name="highest_edu"
-                          class="form-control">
-
-                      </div>
 
                       <div class="col-md-6 mb-3">
 
@@ -381,20 +363,6 @@
                           </option>
 
                         </select>
-
-                      </div>
-
-                      <div class="col-md-6 mb-3">
-
-                        <label>
-                          Caste *
-                        </label>
-
-                        <input
-                          type="text"
-                          name="caste"
-                          class="form-control"
-                          required>
 
                       </div>
 
@@ -614,7 +582,6 @@
                     </div>
 
                   </div>
-
                   <!-- ===================================== -->
                   <!-- FAMILY TAB -->
                   <!-- ===================================== -->
@@ -624,139 +591,235 @@
 
                     <div class="row">
 
-                      <div class="col-md-6 mb-3">
+                      <!-- ================================= -->
+                      <!-- GUARDIAN DETAILS -->
+                      <!-- ================================= -->
 
+                      <!-- Guardian's Name -->
+                      <div class="col-md-6 mb-3">
                         <label>
-                          Father's Name
+                          Guardian's Name
                         </label>
 
                         <input
                           type="text"
+                          class="form-control"
                           name="father_name"
-                          class="form-control">
-
+                          value="<?= old('father_name') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Relation with Guardian -->
+                      <div class="col-md-6 mb-3">
                         <label>
-                          Father's Contact
+                          Relation with Guardian
+                          <span class="text-danger">*</span>
+                        </label>
+
+                        <select
+                          name="Guardian_Relation"
+                          class="form-control"
+                          required>
+
+                          <option value="">
+                            -- Select Relation --
+                          </option>
+
+                          <option value="Father"
+                            <?= old('Guardian_Relation') === 'Father' ? 'selected' : '' ?>>
+                            Father
+                          </option>
+
+                          <option value="Mother"
+                            <?= old('Guardian_Relation') === 'Mother' ? 'selected' : '' ?>>
+                            Mother
+                          </option>
+
+                          <option value="Guardian"
+                            <?= old('Guardian_Relation') === 'Guardian' ? 'selected' : '' ?>>
+                            Guardian
+                          </option>
+
+                          <option value="Uncle"
+                            <?= old('Guardian_Relation') === 'Uncle' ? 'selected' : '' ?>>
+                            Uncle
+                          </option>
+
+                          <option value="Aunt"
+                            <?= old('Guardian_Relation') === 'Aunt' ? 'selected' : '' ?>>
+                            Aunt
+                          </option>
+
+                          <option value="Grandfather"
+                            <?= old('Guardian_Relation') === 'Grandfather' ? 'selected' : '' ?>>
+                            Grandfather
+                          </option>
+
+                          <option value="Grandmother"
+                            <?= old('Guardian_Relation') === 'Grandmother' ? 'selected' : '' ?>>
+                            Grandmother
+                          </option>
+
+                          <option value="Sibling"
+                            <?= old('Guardian_Relation') === 'Sibling' ? 'selected' : '' ?>>
+                            Sibling
+                          </option>
+
+                          <option value="Other"
+                            <?= old('Guardian_Relation') === 'Other' ? 'selected' : '' ?>>
+                            Other
+                          </option>
+
+                        </select>
+                      </div>
+
+
+                      <!-- Guardian's Contact -->
+                      <div class="col-md-6 mb-3">
+                        <label>
+                          Guardian's Contact
                         </label>
 
                         <input
                           type="text"
+                          class="form-control"
                           name="father_contact"
-                          class="form-control">
-
+                          value="<?= old('father_contact') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Guardian's Email -->
+                      <div class="col-md-6 mb-3">
                         <label>
-                          Father's Email
+                          Guardian's Email
                         </label>
 
                         <input
                           type="email"
+                          class="form-control"
                           name="father_email"
-                          class="form-control">
-
+                          value="<?= old('father_email') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Guardian's Occupation -->
+                      <div class="col-md-6 mb-3">
                         <label>
-                          Father's Occupation
+                          Guardian's Occupation
                         </label>
 
                         <input
                           type="text"
+                          class="form-control"
                           name="father_occupation"
-                          class="form-control">
-
+                          value="<?= old('father_occupation') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Force Mother Name to next row -->
+                      <div class="w-100"></div>
+
+
+                      <!-- ================================= -->
+                      <!-- MOTHER DETAILS -->
+                      <!-- ================================= -->
+
+                      <!-- Mother's Name -->
+                      <div class="col-md-6 mb-3">
                         <label>
                           Mother's Name
                         </label>
 
                         <input
                           type="text"
+                          class="form-control"
                           name="mother_name"
-                          class="form-control">
-
+                          value="<?= old('mother_name') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Mother's Contact -->
+                      <div class="col-md-6 mb-3">
                         <label>
                           Mother's Contact
                         </label>
 
                         <input
                           type="text"
+                          class="form-control"
                           name="mother_contact"
-                          class="form-control">
-
+                          value="<?= old('mother_contact') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Mother's Email -->
+                      <div class="col-md-6 mb-3">
                         <label>
                           Mother's Email
                         </label>
 
                         <input
                           type="email"
+                          class="form-control"
                           name="mother_email"
-                          class="form-control">
-
+                          value="<?= old('mother_email') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Mother's Occupation -->
+                      <div class="col-md-6 mb-3">
                         <label>
                           Mother's Occupation
                         </label>
 
                         <input
                           type="text"
+                          class="form-control"
                           name="mother_occupation"
-                          class="form-control">
-
+                          value="<?= old('mother_occupation') ?>">
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Family Monthly Income -->
+                      <div class="col-md-6 mb-3">
                         <label>
-                          Family Monthly Income *
+                          Family Monthly Income
+                          <span class="text-danger">*</span>
                         </label>
 
                         <input
                           type="number"
+                          class="form-control"
                           name="income"
-                          class="form-control"
+                          value="<?= old('income') ?>"
+                          min="0"
+                          step="1"
                           required>
-
                       </div>
 
-                      <div class="col-md-6 mb-3">
 
+                      <!-- Number of Siblings -->
+                      <div class="col-md-6 mb-3">
                         <label>
-                          Number Of Siblings *
+                          Number of Siblings
+                          <span class="text-danger">*</span>
                         </label>
 
                         <input
                           type="number"
-                          name="siblings"
                           class="form-control"
+                          name="siblings"
+                          value="<?= old('siblings') ?>"
+                          min="0"
                           required>
-
                       </div>
 
                     </div>
+
+
+                    <!-- ================================= -->
+                    <!-- FAMILY NAVIGATION -->
+                    <!-- ================================= -->
 
                     <div class="d-flex justify-content-between">
 
@@ -768,19 +831,16 @@
 
                       <div>
 
-                        <a href="<?= base_url('students/learning_adda') ?>"
+                        <a
+                          href="<?= base_url('students/learning_adda') ?>"
                           class="btn btn-light">
-
                           Cancel
-
                         </a>
 
                         <button
                           type="submit"
                           class="btn btn-primary">
-
                           Save Student
-
                         </button>
 
                       </div>
@@ -790,14 +850,16 @@
                   </div>
 
                 </div>
-              </form>
 
             </div>
+            </form>
+
           </div>
         </div>
-
       </div>
+
     </div>
   </div>
+</div>
 
-  <?= view('includes/footer'); ?>
+<?= view('includes/footer'); ?>
