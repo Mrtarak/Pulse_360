@@ -30,13 +30,22 @@ $routes->get('users/view/(:any)', 'Users::view/$1');
 $routes->get('users/edit/(:any)', 'Users::edit/$1');
 $routes->post('users/update/(:any)', 'Users::update/$1');
 $routes->get('users/delete/(:segment)', 'Users::delete/$1');
-// Manage Role Routes
+// =========================================================
+// MANAGE ROLE & RIGHTS
+// =========================================================
+
 $routes->get('roles', 'Role::index');
-$routes->get('roles/manage', 'Role::index');
+
 $routes->get('roles/add', 'Role::add');
+
 $routes->post('roles/store', 'Role::store');
+
+$routes->get('roles/view/(:any)', 'Role::view/$1');
+
 $routes->get('roles/edit/(:any)', 'Role::edit/$1');
+
 $routes->post('roles/update/(:any)', 'Role::update/$1');
+
 $routes->get('roles/delete/(:any)', 'Role::delete/$1');
 // manage Rights Routes 
 $routes->get('rights', 'Rights::index');

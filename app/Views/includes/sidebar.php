@@ -128,6 +128,46 @@ use Config\CorePrograms;
 
     </li>
 
+    <!-- =========================================================
+     MANAGE ROLE & RIGHTS
+========================================================== -->
+    <li class="nav-item">
+
+      <a class="nav-link"
+        data-bs-toggle="collapse"
+        href="#roleRights"
+        aria-expanded="false">
+
+        <i class="mdi mdi-shield-account menu-icon"></i>
+        <span class="menu-title">Role & Rights </span>
+        <i class="menu-arrow"></i>
+
+      </a>
+
+      <div class="collapse" id="roleRights">
+
+        <ul class="nav flex-column sub-menu">
+
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= site_url('roles') ?>">
+              Role
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link"
+              href="<?= site_url('roles/assign-rights') ?>">
+              Assign Right
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+    </li>
+
 
     <!-- =========================================================
      MANAGE USERS

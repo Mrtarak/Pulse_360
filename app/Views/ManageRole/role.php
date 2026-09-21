@@ -4,89 +4,404 @@
 <div class="container-fluid page-body-wrapper">
   <?= view('includes/sidebar'); ?>
 
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="row">
+  <div class="main-panel">
+    <div class="content-wrapper">
+
       <div class="col-lg-12 grid-margin stretch-card">
+
         <div class="card">
+
           <div class="card-body">
 
-            <!-- Back Button -->
-            <button class="btn btn-secondary mb-3" onclick="window.history.back()">
-              <i class="mdi mdi-arrow-left"></i> Back
-            </button>
+            <?= view('includes/breadcrumb'); ?>
 
-            <!-- Breadcrumb Navigation -->
-            <nav aria-label="breadcrumb" class="mb-3">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= site_url('/') ?>">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Manage Role & Rights</li>
-                <li class="breadcrumb-item active" aria-current="page">Manage Role </li>
-              </ol>
-            </nav>
-
-            <!-- Header -->
+            <!-- PAGE HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h4 class="card-title mb-0"><i class="mdi mdi-book-open-page-variant me-2"></i>Roles List</h4>
-              <a href="<?php echo base_url ('roles/add'); ?>" class="btn btn-primary btn-sm">
-                <i class="mdi mdi-plus-circle-outline me-1"></i> Add New Role
-              </a>
+
+              <h4 class="card-title mb-0">
+                <i class="mdi mdi-shield-account-outline me-2"></i>Role List
+              </h4>
+
+              <?= view('includes/messages'); ?>
+
+              <div class="d-flex align-items-center">
+
+                <a href="<?= site_url('roles/add'); ?>"
+                  class="btn btn-primary btn-sm">
+
+                  <i class="mdi mdi-plus-circle-outline me-1"></i>
+                  Add New Role
+
+                </a>
+
+              </div>
+
             </div>
+
+
+            <!-- INNER CARD -->
             <div class="card">
+
               <div class="card-body">
-            <div class="table-responsive ">
-              <table id="rolesTable" class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Role ID</th>
-                    <th>Role Name</th>
-                    <th>Description</th>
-                    <th>Rights</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php if (!empty($roles)): ?>
-                  <?php $i=1; foreach ($roles as $role): ?>
-                    <tr>
-                      <td><?= esc($role['Role_Id']) ?></td>
-                      <td><?= esc($role['Role_Name']) ?></td>
-                      <td><?= esc($role['Role_Description']) ?></td>
-                      <td><?= esc($role['Rights_Summary'] ?? 'No Summary') ?></td>
-                      <td>
-                        <a href="<?= site_url('roles/edit/' . $role['Role_Id']) ?>" class="btn btn-warning btn-sm">
-                          <i class="mdi mdi-pencil"></i> 
-                        </a>
-                        <a href="<?= site_url('roles/delete/' . $role['Role_Id']) ?>" onclick="return confirm('Delete role?')" class="btn btn-danger btn-sm">
-                          <i class="mdi mdi-delete"></i> 
-                        </a>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                  <?php else: ?>
-                    <tr>
-                      <td colspan="5" class="text-center">No roles found.</td>
-                    </tr>
-                  <?php endif; ?>
-                </tbody>
-              </table>
-            </div>
-            </div>
+
+                <!-- FILTER SECTION -->
+                <div class="row mb-4">
+
+                  <!-- SEARCH ROLE -->
+                  <div class="col-md-5">
+
+                    <label class="form-label fw-bold">
+
+                      <i class="mdi mdi-magnify"></i>
+                      Search Role
+
+                    </label>
+
+                    <input
+                      type="text"
+                      id="roleSearch"
+                      class="form-control"
+                      placeholder="Search by Role Name">
+
                   </div>
 
-  <?= view('includes/footer'); ?>
 
-               <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+                  <!-- STATUS -->
+                  <div class="col-md-3">
+
+                    <label class="form-label fw-bold">
+
+                      <i class="mdi mdi-filter"></i>
+                      Status
+
+                    </label>
+
+                    <select
+                      id="statusFilter"
+                      class="form-select">
+
+                      <option value="">
+                        All Status
+                      </option>
+
+                      <option value="Active">
+                        Active
+                      </option>
+
+                      <option value="Inactive">
+                        Inactive
+                      </option>
+
+                    </select>
+
+                  </div>
+
+
+                  <!-- EMPTY SPACE -->
+                  <div class="col-md-2">
+                  </div>
+
+
+                  <!-- RESET -->
+                  <div class="col-md-2 d-flex align-items-end">
+
+                    <button
+                      id="resetFilters"
+                      type="button"
+                      class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+
+                      <i class="mdi mdi-refresh me-1"></i>
+
+                      Reset
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+
+                <!-- ROLE TABLE -->
+                <div class="table-responsive">
+
+                  <table
+                    id="roleTable"
+                    class="table table-striped">
+
+                    <thead>
+
+                      <tr>
+
+                        <th>#</th>
+
+                        <th>Role Name</th>
+
+                        <th>Description</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                      </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                      <?php if (!empty($roles)): ?>
+
+                        <?php
+                        $i = 1;
+
+                        foreach ($roles as $role):
+                        ?>
+
+                          <tr>
+
+                            <!-- SERIAL NUMBER -->
+                            <td>
+                              <?= $i++ ?>
+                            </td>
+
+
+                            <!-- ROLE NAME -->
+                            <td>
+                              <?= esc($role['Role_Name']) ?>
+                            </td>
+
+
+                            <!-- DESCRIPTION -->
+                            <td>
+
+                              <?php
+                              $description = trim(
+                                $role['Role_Description'] ?? ''
+                              );
+                              ?>
+
+                              <?php if ($description !== ''): ?>
+
+                                <?= esc($description) ?>
+
+                              <?php else: ?>
+
+                                <span class="text-muted">
+                                  —
+                                </span>
+
+                              <?php endif; ?>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+                            <td>
+
+                              <?php
+
+                              $status = $role['Role_Status'] ?? '';
+
+                              $color = '';
+
+                              switch ($status) {
+
+                                case 'Active':
+                                  $color = '#28a745';
+                                  break;
+
+                                case 'Inactive':
+                                  $color = '#dc3545';
+                                  break;
+
+                                default:
+                                  $color = '#6c757d';
+                                  break;
+                              }
+
+                              ?>
+
+                              <span
+                                style="
+                                  background-color: <?= $color ?>;
+                                  color: white;
+                                  padding: 5px 10px;
+                                  border-radius: 5px;
+                                  display: inline-block;
+                                ">
+
+                                <?= esc($status) ?>
+
+                              </span>
+
+                            </td>
+
+
+                            <!-- ACTIONS -->
+                            <td>
+
+                              <!-- VIEW -->
+                              <a
+                                href="<?= site_url('roles/view/' . $role['Role_Id']); ?>"
+                                class="btn btn-info btn-sm"
+                                title="View Role">
+
+                                <i class="mdi mdi-eye"></i>
+
+                              </a>
+
+
+                              <!-- EDIT -->
+                              <a
+                                href="<?= site_url('roles/edit/' . $role['Role_Id']); ?>"
+                                class="btn btn-warning btn-sm"
+                                title="Edit Role">
+
+                                <i class="mdi mdi-pencil"></i>
+
+                              </a>
+
+                            </td>
+
+                          </tr>
+
+                        <?php endforeach; ?>
+
+                      <?php else: ?>
+
+                        <tr>
+
+                          <td
+                            colspan="5"
+                            class="text-center">
+
+                            No roles found.
+
+                          </td>
+
+                        </tr>
+
+                      <?php endif; ?>
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <?= view('includes/footer'); ?>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     DATATABLE
+========================================================= -->
+
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
 <script>
   $(document).ready(function() {
-    $('#rolesTable').DataTable({
+
+    var table = $('#roleTable').DataTable({
+
+      dom: 'lrtip',
+
       paging: true,
-      searching: true,
+
       ordering: true,
-      info: true
+
+      info: true,
+
+      pageLength: 10,
+
+      columnDefs: [{
+        targets: 3,
+
+        render: function(data, type) {
+
+          if (type === 'filter' || type === 'sort') {
+
+            return $('<div>')
+              .html(data)
+              .text()
+              .trim();
+
+          }
+
+          return data;
+
+        }
+
+      }]
+
     });
+
+
+    // SEARCH ROLE
+    $('#roleSearch').keyup(function() {
+
+      table
+        .search($(this).val())
+        .draw();
+
+    });
+
+
+    // STATUS FILTER
+    $('#statusFilter').change(function() {
+
+      let status = $(this).val();
+
+      table
+        .column(3)
+        .search(
+          status ?
+          '^' + status + '$' :
+          '',
+          true,
+          false
+        )
+        .draw();
+
+    });
+
+
+    // RESET FILTERS
+    $('#resetFilters').click(function() {
+
+      $('#roleSearch').val('');
+
+      $('#statusFilter').val('');
+
+      table.search('');
+
+      table.column(3).search('');
+
+      table.draw();
+
+    });
+
   });
 </script>
-

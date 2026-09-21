@@ -11,71 +11,92 @@
           <div class="card">
             <div class="card-body">
 
-              <!-- Back Button -->
-              <button class="btn btn-secondary mb-3" onclick="window.history.back()">
-                <i class="mdi mdi-arrow-left"></i> Back
-              </button>
+              <?= view('includes/breadcrumb'); ?>
 
-              <!-- Breadcrumb -->
-              <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="<?= site_url('dashboard') ?>">Dashboard</a></li>
-                <li class="breadcrumb-item" aria-current="page">Manage Role & Rights</li>
-                <li class="breadcrumb-item"><a href="<?php echo base_url('roles'); ?>">Manage Roles</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add New Role</li>
-                </ol>
-              </nav>
+              <h4 class="card-title">Roles</h4>
+              <p class="card-description">Add Role</p>
 
-               <h4 class="card-title">Roles</h4>
-               <p class="card-description">Add New Role</p>
+              <form class="forms-sample"
+                action="<?= base_url('roles/store') ?>"
+                method="post">
 
-        <form method="post" action="<?= site_url('roles/store') ?>">
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label>Role ID</label>
-              <input type="text" name="Role_Id" class="form-control" id="role_id" placeholder="Enter Role ID" required>
+                <div class="row">
+
+                  <!-- ROLE NAME -->
+                  <div class="col-md-6 form-group">
+                    <label>
+                      Role Name <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="text"
+                      id="role_name"
+                      name="Role_Name"
+                      class="form-control"
+                      value="<?= old('Role_Name') ?>"
+                      placeholder="Enter Role Name"
+                      required>
+                  </div>
+
+                  <!-- STATUS -->
+                  <div class="col-md-6 form-group">
+                    <label>
+                      Status <span class="text-danger">*</span>
+                    </label>
+
+                    <select id="role_status"
+                      class="form-select"
+                      name="Role_Status"
+                      required>
+
+                      <option value="">Select Status</option>
+
+                      <option value="Active"
+                        <?= old('Role_Status', 'Active') == 'Active' ? 'selected' : '' ?>>
+                        Active
+                      </option>
+
+                      <option value="Inactive"
+                        <?= old('Role_Status') == 'Inactive' ? 'selected' : '' ?>>
+                        Inactive
+                      </option>
+
+                    </select>
+                  </div>
+
+                  <!-- ROLE DESCRIPTION -->
+                  <div class="col-md-12 form-group">
+                    <label>Role Description</label>
+
+                    <textarea
+                      id="role_description"
+                      name="Role_Description"
+                      class="form-control"
+                      rows="5"
+                      placeholder="Enter Role Description"><?= old('Role_Description') ?></textarea>
+                  </div>
+
+                  <!-- BUTTONS -->
+                  <div class="mt-4 d-flex justify-content-center flex-wrap gap-3">
+
+                    <a href="<?= site_url('roles') ?>"
+                      class="btn btn-light">
+                      Cancel
+                    </a>
+
+                    <button type="submit"
+                      class="btn btn-primary me-2">
+                      Save
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </form>
+
             </div>
-
-            <div class="col-md-6 form-group">
-              <label >Role Name</label>
-              <input type="text" name="Role_Name" class="form-control" id="role_name" placeholder="Enter Role Name" required>
-            </div>
-
-            <div class="col-md-12 form-group">
-              <label >Role Description</label>
-              <textarea name="Role_Description" class="form-control" id="role_desc" rows="3" placeholder="Enter Description"></textarea>
-            </div>
-            
-            <div class="col-md-12 form-group">
-              <label >Assign Rights</label>
-              <select name="Right_Id" class="form-select" required>
-                <option value="">-- Select Rights --</option>
-                <?php foreach ($rights as $right): ?>
-                  <option value="<?= $right['Right_Id'] ?>"><?= $right['Rights_Summary'] ?></option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-
-                <div class="col-md-6 form-group">
-      <label>Recorded By</label>
-      <input type="text" name="Record_Added_By" class="form-control" value="<?= old('Record_Added_By') ?>" placeholder="Enter Who Recorded Record" >
-    </div>
-
-    <div class="col-md-6 form-group">
-      <label>Recorded On</label>
-      <input type="date" name="Rec_Added_On" class="form-control" value="<?= old('Rec_Added_On') ?>">
-    </div>
-
-  <div class="mt-4">
-    <a href="<?= site_url('roles') ?>" class="btn btn-light">Cancel</a>
-    <button type="submit" class="btn btn-primary me-2">Save</button>
-  </div>
-                  </form>
-        <!-- Form End -->
-
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-  <?= view('includes/footer'); ?>
+      <?= view('includes/footer'); ?>
