@@ -108,49 +108,259 @@
 
                                     <!-- Education Info -->
                                     <div class="tab-pane fade" id="education">
+
                                         <div class="row">
+
+                                            <!-- ========================= -->
+                                            <!-- CURRENT EDUCATION -->
+                                            <!-- ========================= -->
+
+                                            <div class="col-12 mb-3">
+                                                <h5 class="text-primary">Current Education</h5>
+                                                <hr>
+                                            </div>
+
+                                            <!-- Current Education Level -->
                                             <div class="col-md-6 mb-3">
-                                                <label>Course Enrolled In <span class="text-danger">*</span></label>
-                                                <select name="Course_Enrolled" class="form-control" required>
-                                                    <option value="">-- Select Course --</option>
-                                                    <option <?= old('Course_Enrolled', 'B.Sc') ?>>B.Sc</option>
-                                                    <option <?= old('Course_Enrolled', 'B.A') ?>>B.A</option>
-                                                    <option <?= old('Course_Enrolled', 'B.Com') ?>>B.Com</option>
-                                                    <option <?= old('Course_Enrolled', 'Engineering') ?>>Engineering</option>
-                                                    <option <?= old('Course_Enrolled', 'Diploma') ?>>Diploma</option>
-                                                    <option <?= old('Course_Enrolled', 'Other') ?>>Other</option>
+                                                <label>
+                                                    Current Education Level
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Current_Education_Level"
+                                                    id="currentEducationLevel"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Education Level --</option>
+
+                                                    <?php foreach ($educationLevels as $level): ?>
+
+                                                        <option
+                                                            value="<?= esc($level['name']) ?>"
+                                                            data-id="<?= esc($level['id']) ?>"
+                                                            <?= old('Current_Education_Level') == $level['name'] ? 'selected' : '' ?>>
+
+                                                            <?= esc($level['name']) ?>
+
+                                                        </option>
+
+                                                    <?php endforeach; ?>
+
                                                 </select>
                                             </div>
+
+
+                                            <!-- Current Qualification -->
                                             <div class="col-md-6 mb-3">
-                                                <label>Current Education Level <span class="text-danger">*</span></label>
-                                                <input type="text" name="Current_Education_level" class="form-control" value="<?= old('Current_Education_level') ?>">
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label>Highest Education Completed</label>
-                                                <input type="text" name="Highest_Education_Completed" class="form-control" value="<?= old('Highest_Education_Completed') ?>">
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label>Student Status <span class="text-danger">*</span></label>
-                                                <select name="Student_Status" class="form-control">
-                                                    <option value="">-- Select --</option>
-                                                    <option <?= old('Student_Status', 'Active') ?>>Active</option>
-                                                    <option <?= old('Student_Status', 'Inactive') ?>>Inactive</option>
-                                                    <option <?= old('Student_Status', 'Completed') ?>>Completed</option>
+
+                                                <label>
+                                                    Current Qualification / Class
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Current_Qualification"
+                                                    id="currentQualification"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Qualification / Class --</option>
+
                                                 </select>
+
                                             </div>
+
+
+                                            <!-- Current Specialization / Subject -->
                                             <div class="col-md-6 mb-3">
-                                                <label>Course Status <span class="text-danger">*</span></label>
-                                                <select name="Course_Status" class="form-control">
-                                                    <option value="">-- Select --</option>
-                                                    <option <?= old('Course_Status', 'Ongoing') ?>>Ongoing</option>
-                                                    <option <?= old('Course_Status', 'Completed') ?>>Completed</option>
-                                                </select>
+
+                                                <label>
+                                                    Current Specialization / Subject
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="Current_Specialization_Subject"
+                                                    class="form-control"
+                                                    placeholder="Enter specialization or subject"
+                                                    value="<?= old('Current_Specialization_Subject') ?>">
+
                                             </div>
+
+
+                                            <!-- Current Education Status -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Current Education Status
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Current_Education_Status"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Status --</option>
+
+                                                    <option value="Ongoing"
+                                                        <?= old('Current_Education_Status') == 'Ongoing' ? 'selected' : '' ?>>
+                                                        Ongoing
+                                                    </option>
+
+                                                    <option value="Completed"
+                                                        <?= old('Current_Education_Status') == 'Completed' ? 'selected' : '' ?>>
+                                                        Completed
+                                                    </option>
+
+                                                    <option value="Discontinued"
+                                                        <?= old('Current_Education_Status') == 'Discontinued' ? 'selected' : '' ?>>
+                                                        Discontinued
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- ========================= -->
+                                            <!-- HIGHEST EDUCATION -->
+                                            <!-- ========================= -->
+
+                                            <div class="col-12 mt-3 mb-3">
+                                                <h5 class="text-primary">Highest Education Completed</h5>
+                                                <hr>
+                                            </div>
+
+
+                                            <!-- Highest Education Level -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Highest Education Level
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Highest_Education_Level"
+                                                    id="highestEducationLevel"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Education Level --</option>
+
+                                                    <?php foreach ($educationLevels as $level): ?>
+
+                                                        <option
+                                                            value="<?= esc($level['name']) ?>"
+                                                            data-id="<?= esc($level['id']) ?>"
+                                                            <?= old('Highest_Education_Level') == $level['name'] ? 'selected' : '' ?>>
+
+                                                            <?= esc($level['name']) ?>
+
+                                                        </option>
+
+                                                    <?php endforeach; ?>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- Highest Qualification -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Highest Qualification / Class
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Highest_Qualification"
+                                                    id="highestQualification"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Qualification / Class --</option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- Highest Specialization / Subject -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Highest Specialization / Subject
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="Highest_Specialization_Subject"
+                                                    class="form-control"
+                                                    placeholder="Enter specialization or subject"
+                                                    value="<?= old('Highest_Specialization_Subject') ?>">
+
+                                            </div>
+
+
+                                            <!-- Student Status -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Student Status
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Student_Status"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Status --</option>
+
+                                                    <option value="Active"
+                                                        <?= old('Student_Status') == 'Active' ? 'selected' : '' ?>>
+                                                        Active
+                                                    </option>
+
+                                                    <option value="Inactive"
+                                                        <?= old('Student_Status') == 'Inactive' ? 'selected' : '' ?>>
+                                                        Inactive
+                                                    </option>
+
+                                                    <option value="Completed"
+                                                        <?= old('Student_Status') == 'Completed' ? 'selected' : '' ?>>
+                                                        Completed
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
                                         </div>
+
+
+                                        <!-- Navigation Buttons -->
                                         <div class="d-flex justify-content-between">
-                                            <button type="button" class="btn btn-secondary prev-tab">Previous</button>
-                                            <button type="button" class="btn btn-primary next-tab">Next</button>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary prev-tab">
+                                                Previous
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary next-tab">
+                                                Next
+                                            </button>
+
                                         </div>
+
                                     </div>
 
                                     <!-- Program Info -->

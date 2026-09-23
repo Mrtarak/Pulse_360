@@ -216,21 +216,90 @@
                   <div class="tab-pane fade"
                     id="education">
 
+                    <!-- Current Education -->
+                    <h5 class="text-primary mb-3">
+                      <i class="mdi mdi-school"></i>
+                      Current Education
+                    </h5>
+
+                    <table class="table table-bordered mb-4">
+
+                      <tr>
+                        <th style="width: 35%;">Education Level</th>
+                        <td>
+                          <?= esc($student['Current_Education_Level'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>Qualification / Class</th>
+                        <td>
+                          <?= esc($student['Current_Qualification'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>Education Status</th>
+                        <td>
+                          <?= esc($student['Current_Education_Status'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>Specialization / Subject</th>
+                        <td>
+                          <?= esc($student['Current_Specialization_Subject'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                    </table>
+
+
+                    <!-- Highest Education -->
+                    <h5 class="text-primary mb-3">
+                      <i class="mdi mdi-school-outline"></i>
+                      Highest Education Completed
+                    </h5>
+
+                    <table class="table table-bordered mb-4">
+
+                      <tr>
+                        <th style="width: 35%;">Education Level</th>
+                        <td>
+                          <?= esc($student['Highest_Education_Level'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>Qualification / Class</th>
+                        <td>
+                          <?= esc($student['Highest_Qualification'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th>Specialization / Subject</th>
+                        <td>
+                          <?= esc($student['Highest_Specialization_Subject'] ?? '') ?>
+                        </td>
+                      </tr>
+
+                    </table>
+
+
+                    <!-- Student Status -->
+                    <h5 class="text-primary mb-3">
+                      <i class="mdi mdi-account-check"></i>
+                      Student Status
+                    </h5>
+
                     <table class="table table-bordered">
 
                       <tr>
-                        <th>Current Education</th>
-                        <td><?= esc($student['Current_Education_level']) ?></td>
-                      </tr>
-
-                      <tr>
-                        <th>Highest Education</th>
-                        <td><?= esc($student['Highest_Education_Completed']) ?></td>
-                      </tr>
-
-                      <tr>
-                        <th>Status</th>
-                        <td><?= esc($student['Student_Status']) ?></td>
+                        <th style="width: 35%;">Student Status</th>
+                        <td>
+                          <?= esc($student['Student_Status'] ?? '') ?>
+                        </td>
                       </tr>
 
                     </table>

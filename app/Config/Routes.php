@@ -131,6 +131,12 @@ $routes->group('students/vijetaas', function ($routes) {
     $routes->get('goals/delete/(:any)', 'ManageStudents\VijetaasGoals::deleteGoal/$1');
 });
 
+//Education level 
+$routes->get(
+    'students/vijetaas/getQualifications/(:num)',
+    'ManageStudents\Vijetaas::getQualifications/$1'
+);
+
 // Manage Students - Learning Adda
 $routes->group('students/learning_adda', function ($routes) {
 

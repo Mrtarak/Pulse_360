@@ -32,7 +32,9 @@ class Vijetaas extends BaseController
         student.Last_Name,
         student.Email_Id,
         student.Phone_No,
-        student.Current_Education_level,
+        vijetaas_stu.Highest_Education_Level,
+        vijetaas_stu.Highest_Qualification,
+        vijetaas_stu.Highest_Specialization_Subject,
         student.Student_Status,
         student.Village_City,
         student.State
@@ -135,9 +137,31 @@ class Vijetaas extends BaseController
 
     public function add()
     {
+        $educationLevelModel = new \App\Models\EducationLevelModel();
+
+        $data['educationLevels'] = $educationLevelModel
+            ->where('status', 1)
+            ->orderBy('name', 'ASC')
+            ->findAll();
+
         return view(
-            'ManageStudents/vijetaas/add'
+            'ManageStudents/vijetaas/add',
+            $data
         );
+    }
+
+    public function getQualifications($levelId)
+    {
+        $qualificationModel =
+            new \App\Models\EducationQualificationModel();
+
+        $qualifications = $qualificationModel
+            ->where('education_level_id', $levelId)
+            ->where('status', 1)
+            ->orderBy('name', 'ASC')
+            ->findAll();
+
+        return $this->response->setJSON($qualifications);
     }
 
 
@@ -238,12 +262,6 @@ class Vijetaas extends BaseController
 
             'Aadhar_Photo_URL' => $aadharPhotoName,
 
-            'Current_Education_level'
-            => $this->request->getPost('Current_Education_level'),
-
-            'Highest_Education_Completed'
-            => $this->request->getPost('Highest_Education_Completed'),
-
             'Student_Status'
             => $this->request->getPost('Student_Status'),
 
@@ -311,8 +329,26 @@ class Vijetaas extends BaseController
             'Vijetas_Mail_Id'
             => $this->request->getPost('Email_Id'),
 
-            'Education'
-            => $this->request->getPost('Current_Education_level'),
+            'Current_Education_Level'
+            => $this->request->getPost('Current_Education_Level'),
+
+            'Current_Qualification'
+            => $this->request->getPost('Current_Qualification'),
+
+            'Current_Education_Status'
+            => $this->request->getPost('Current_Education_Status'),
+
+            'Current_Specialization_Subject'
+            => $this->request->getPost('Current_Specialization_Subject'),
+
+            'Highest_Education_Level'
+            => $this->request->getPost('Highest_Education_Level'),
+
+            'Highest_Qualification'
+            => $this->request->getPost('Highest_Qualification'),
+
+            'Highest_Specialization_Subject'
+            => $this->request->getPost('Highest_Specialization_Subject'),
 
             'Enrollment_Date'
             => $this->request->getPost('Enrollment_Date'),
@@ -381,6 +417,9 @@ class Vijetaas extends BaseController
     {
         $vijetaasModel = new VijetaasModel();
 
+        $educationLevelModel =
+            new \App\Models\EducationLevelModel();
+
         /*
     |--------------------------------------------------------------------------
     | Current Student Record
@@ -412,6 +451,22 @@ class Vijetaas extends BaseController
                 'Student not found'
             );
         }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Education Levels
+    |--------------------------------------------------------------------------
+    */
+
+        $data['educationLevels'] = $educationLevelModel
+
+            ->where('status', 1)
+
+            ->orderBy('name', 'ASC')
+
+            ->findAll();
+
 
         return view(
             'ManageStudents/vijetaas/edit',
@@ -556,12 +611,6 @@ class Vijetaas extends BaseController
 
             'Aadhar_Photo_URL' => $aadharPhotoName,
 
-            'Current_Education_level'
-            => $this->request->getPost('current_edu'),
-
-            'Highest_Education_Completed'
-            => $this->request->getPost('highest_edu'),
-
             'Student_Status'
             => $this->request->getPost('student_status'),
 
@@ -616,8 +665,26 @@ class Vijetaas extends BaseController
             'Vijetas_Mail_Id'
             => $this->request->getPost('vijetaas_email'),
 
-            'Education'
-            => $this->request->getPost('current_edu'),
+            'Current_Education_Level'
+            => $this->request->getPost('Current_Education_Level'),
+
+            'Current_Qualification'
+            => $this->request->getPost('Current_Qualification'),
+
+            'Current_Education_Status'
+            => $this->request->getPost('Current_Education_Status'),
+
+            'Current_Specialization_Subject'
+            => $this->request->getPost('Current_Specialization_Subject'),
+
+            'Highest_Education_Level'
+            => $this->request->getPost('Highest_Education_Level'),
+
+            'Highest_Qualification'
+            => $this->request->getPost('Highest_Qualification'),
+
+            'Highest_Specialization_Subject'
+            => $this->request->getPost('Highest_Specialization_Subject'),
 
             'Enrollment_Date'
             => $this->request->getPost('enroll_date'),

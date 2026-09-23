@@ -323,57 +323,241 @@
 
                                     <!-- EDUCATION TAB -->
 
-                                    <div class="tab-pane fade"
-                                        id="education">
+                                    <div class="tab-pane fade" id="education">
 
                                         <div class="row">
 
+                                            <!-- ========================= -->
+                                            <!-- CURRENT EDUCATION -->
+                                            <!-- ========================= -->
+
+                                            <div class="col-12 mb-3">
+                                                <h5 class="text-primary">Current Education</h5>
+                                                <hr>
+                                            </div>
+
+
+                                            <!-- Current Education Level -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
                                                     Current Education Level
+                                                    <span class="text-danger">*</span>
                                                 </label>
 
-                                                <input type="text"
-                                                    name="current_edu"
+                                                <select
+                                                    name="Current_Education_Level"
+                                                    id="currentEducationLevel"
                                                     class="form-control"
-                                                    value="<?= esc($student['Current_Education_level']) ?>">
+                                                    required>
+
+                                                    <option value="">-- Select Education Level --</option>
+
+                                                    <?php foreach ($educationLevels as $level): ?>
+
+                                                        <option
+                                                            value="<?= esc($level['name']) ?>"
+                                                            data-id="<?= esc($level['id']) ?>"
+                                                            <?= ($student['Current_Education_Level'] ?? '') == $level['name'] ? 'selected' : '' ?>>
+
+                                                            <?= esc($level['name']) ?>
+
+                                                        </option>
+
+                                                    <?php endforeach; ?>
+
+                                                </select>
 
                                             </div>
 
+
+                                            <!-- Current Qualification -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
-                                                    Highest Education Completed
+                                                    Current Qualification / Class
+                                                    <span class="text-danger">*</span>
                                                 </label>
 
-                                                <input type="text"
-                                                    name="highest_edu"
+                                                <select
+                                                    name="Current_Qualification"
+                                                    id="currentQualification"
                                                     class="form-control"
-                                                    value="<?= esc($student['Highest_Education_Completed']) ?>">
+                                                    required>
+
+                                                    <option value="">-- Select Qualification / Class --</option>
+
+                                                </select>
 
                                             </div>
 
+
+                                            <!-- Current Specialization -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Current Specialization / Subject
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="Current_Specialization_Subject"
+                                                    class="form-control"
+                                                    placeholder="Enter specialization or subject"
+                                                    value="<?= esc($student['Current_Specialization_Subject'] ?? '') ?>">
+
+                                            </div>
+
+
+                                            <!-- Current Education Status -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Current Education Status
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Current_Education_Status"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Status --</option>
+
+                                                    <option value="Ongoing"
+                                                        <?= ($student['Current_Education_Status'] ?? '') == 'Ongoing' ? 'selected' : '' ?>>
+                                                        Ongoing
+                                                    </option>
+
+                                                    <option value="Completed"
+                                                        <?= ($student['Current_Education_Status'] ?? '') == 'Completed' ? 'selected' : '' ?>>
+                                                        Completed
+                                                    </option>
+
+                                                    <option value="Discontinued"
+                                                        <?= ($student['Current_Education_Status'] ?? '') == 'Discontinued' ? 'selected' : '' ?>>
+                                                        Discontinued
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- ========================= -->
+                                            <!-- HIGHEST EDUCATION -->
+                                            <!-- ========================= -->
+
+                                            <div class="col-12 mt-3 mb-3">
+
+                                                <h5 class="text-primary">
+                                                    Highest Education Completed
+                                                </h5>
+
+                                                <hr>
+
+                                            </div>
+
+
+                                            <!-- Highest Education Level -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Highest Education Level
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Highest_Education_Level"
+                                                    id="highestEducationLevel"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Education Level --</option>
+
+                                                    <?php foreach ($educationLevels as $level): ?>
+
+                                                        <option
+                                                            value="<?= esc($level['name']) ?>"
+                                                            data-id="<?= esc($level['id']) ?>"
+                                                            <?= ($student['Highest_Education_Level'] ?? '') == $level['name'] ? 'selected' : '' ?>>
+
+                                                            <?= esc($level['name']) ?>
+
+                                                        </option>
+
+                                                    <?php endforeach; ?>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- Highest Qualification -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Highest Qualification / Class
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select
+                                                    name="Highest_Qualification"
+                                                    id="highestQualification"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Qualification / Class --</option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- Highest Specialization -->
+                                            <div class="col-md-6 mb-3">
+
+                                                <label>
+                                                    Highest Specialization / Subject
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="Highest_Specialization_Subject"
+                                                    class="form-control"
+                                                    placeholder="Enter specialization or subject"
+                                                    value="<?= esc($student['Highest_Specialization_Subject'] ?? '') ?>">
+
+                                            </div>
+
+
+                                            <!-- Student Status -->
                                             <div class="col-md-6 mb-3">
 
                                                 <label>
                                                     Student Status
+                                                    <span class="text-danger">*</span>
                                                 </label>
 
-                                                <select name="student_status" class="form-select">
+                                                <select
+                                                    name="student_status"
+                                                    class="form-control"
+                                                    required>
+
+                                                    <option value="">-- Select Status --</option>
 
                                                     <option value="Active"
-                                                        <?= $student['Student_Status'] == 'Active' ? 'selected' : '' ?>>
+                                                        <?= ($student['Student_Status'] ?? '') == 'Active' ? 'selected' : '' ?>>
                                                         Active
                                                     </option>
 
                                                     <option value="Inactive"
-                                                        <?= $student['Student_Status'] == 'Inactive' ? 'selected' : '' ?>>
+                                                        <?= ($student['Student_Status'] ?? '') == 'Inactive' ? 'selected' : '' ?>>
                                                         Inactive
                                                     </option>
 
                                                     <option value="Completed"
-                                                        <?= $student['Student_Status'] == 'Completed' ? 'selected' : '' ?>>
+                                                        <?= ($student['Student_Status'] ?? '') == 'Completed' ? 'selected' : '' ?>>
                                                         Completed
                                                     </option>
 
@@ -383,14 +567,19 @@
 
                                         </div>
 
+
+                                        <!-- Navigation -->
+
                                         <div class="d-flex justify-content-between">
 
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 class="btn btn-secondary prev-tab">
                                                 Previous
                                             </button>
 
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 class="btn btn-primary next-tab">
                                                 Next
                                             </button>

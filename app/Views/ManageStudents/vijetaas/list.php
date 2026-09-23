@@ -1,93 +1,90 @@
 <?= view('includes/header'); ?>
+
 <?= view('includes/navbar'); ?>
 
 <div class="container-fluid page-body-wrapper">
+
     <?= view('includes/sidebar'); ?>
 
     <div class="main-panel">
+
         <div class="content-wrapper">
 
+            <div class="col-lg-12 grid-margin stretch-card">
 
+                <div class="card">
 
+                    <div class="card-body">
 
-            <!-- Header with Status Filter -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title mb-0">
-                    <i class="mdi mdi-account-group menu-icon"></i>  Vijetaas List
-                </h4>
+                        <?= view(
+                            'includes/breadcrumb',
+                            [
+                                'main' => 'Dashboard',
+                                'sub'  => 'Vijetaas Students',
+                                'sub_url' => base_url('students/vijetaas')
+                            ]
+                        ); ?>
 
-                <?= view('includes/messages'); ?>
-                <div class="d-flex align-items-center">
-                    <label for="statusFilter" class="me-2">Status:</label>
-                    <select id="statusFilter" class="form-select me-3" style="width: 150px;">
-                        <option value="">All</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                        <option value="Completed">Completed</option>
-                    </select>
-                    <a href="<?= site_url('students/vijetaas/add') ?>" class="btn btn-primary btn-sm">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i> Add Vijetaas
-                    </a>
-                </div>
-            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <!-- Table -->
-            <div class="card">
-                <ul class="nav nav-tabs" id="vijetaasTabs">
+                            <h4 class="card-title mb-0">
 
-                    <li class="nav-item">
-                        <a class="nav-link active"
-                            data-bs-toggle="tab"
-                            href="#personalTab">
-                            Personal Details
-                        </a>
-                    </li>
+                                <i class="mdi mdi-account-group me-2"></i>
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                            data-bs-toggle="tab"
-                            href="#goalTab">
-                            Goal Details
-                        </a>
-                    </li>
+                                Vijetaas
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                            data-bs-toggle="tab"
-                            href="#mentorTab">
-                            Mentor Details
-                        </a>
-                    </li>
+                            </h4>
 
-                </ul>
-                <div class="tab-content mt-3">
-                    <div class="tab-pane fade show active"
-                        id="personalTab">
+                            <?= view('includes/messages'); ?>
+
+                            <a href="<?= base_url('students/vijetaas/add') ?>"
+                                class="btn btn-primary btn-sm">
+
+                                <i class="mdi mdi-plus-circle-outline me-1"></i>
+
+                                Add New Student
+
+                            </a>
+
+                        </div>
+
+                        <p class="card-description">
+
+                            Manage Vijetaas Students
+
+                        </p>
+
 
                         <div class="table-responsive">
 
-                            <table id="personalTable"
-                                class="table table-bordered table-striped">
+                            <table
+                                id="studentTable"
+                                class="table table-striped">
 
                                 <thead>
+
                                     <tr>
 
                                         <th>#</th>
 
+                                        <th>Student ID</th>
+
                                         <th>Name</th>
 
-                                        <th>Education</th>
+                                        <th>Highest Qualification</th>
 
                                         <th>Email</th>
 
-                                        <th>Location</th>
+                                        <th>Phone</th>
 
                                         <th>Status</th>
 
-                                        <th>Actions</th>
+                                        <th width="160">Actions</th>
 
                                     </tr>
+
                                 </thead>
+
 
                                 <tbody>
 
@@ -95,100 +92,145 @@
 
                                         <?php $i = 1; ?>
 
-                                        <?php foreach ($personalDetails as $row): ?>
+                                        <?php foreach ($personalDetails as $student): ?>
 
                                             <tr>
 
-                                                <td><?= $i++ ?></td>
+                                                <!-- Serial Number -->
+                                                <td>
+                                                    <?= $i++ ?>
+                                                </td>
 
+
+                                                <!-- Student ID -->
+                                                <td>
+
+                                                    <?= esc(
+                                                        $student['Vijetaas_Stu_Id'] ?? ''
+                                                    ) ?>
+
+                                                </td>
+
+
+                                                <!-- Name -->
+                                                <td>
+
+                                                    <?= esc(
+                                                        trim(
+                                                            ($student['First_Name'] ?? '') .
+                                                                ' ' .
+                                                                ($student['Last_Name'] ?? '')
+                                                        )
+                                                    ) ?>
+
+                                                </td>
+
+
+                                                <!-- Highest Education -->
                                                 <td>
                                                     <?= esc(
-                                                        $row['First_Name']
-                                                            . ' ' .
-                                                            $row['Last_Name']
+                                                        trim(
+                                                            ($student['Highest_Qualification'] ?? '') .
+                                                                (
+                                                                    !empty($student['Highest_Specialization_Subject'])
+                                                                    ? ' - ' . $student['Highest_Specialization_Subject']
+                                                                    : ''
+                                                                )
+                                                        )
                                                     ) ?>
                                                 </td>
 
+
+                                                <!-- Email -->
                                                 <td>
+
                                                     <?= esc(
-                                                        $row['Current_Education_level']
+                                                        $student['Email_Id'] ?? ''
                                                     ) ?>
+
                                                 </td>
 
+
+                                                <!-- Location -->
                                                 <td>
-                                                    <?= esc(
-                                                        $row['Email_Id']
-                                                    ) ?>
+                                                    <?= esc($student['Phone_No'] ?? '') ?>
                                                 </td>
 
+
+                                                <!-- Status -->
                                                 <td>
-                                                    <?= esc(
-                                                        $row['Village_City']
-                                                            . ', ' .
-                                                            $row['State']
-                                                    ) ?>
+
+                                                    <?php if (($student['Student_Status'] ?? '') == 'Active'): ?>
+
+                                                        <span class="badge badge-success">
+
+                                                            Active
+
+                                                        </span>
+
+                                                    <?php elseif (($student['Student_Status'] ?? '') == 'Completed'): ?>
+
+                                                        <span class="badge badge-info">
+
+                                                            Completed
+
+                                                        </span>
+
+                                                    <?php else: ?>
+
+                                                        <span class="badge badge-danger">
+
+                                                            Inactive
+
+                                                        </span>
+
+                                                    <?php endif; ?>
+
                                                 </td>
 
-                                                <td>
-                                                    <?php
-                                                    $status = $row['Student_Status'];
-                                                    $color = '';
 
-                                                    switch ($status) {
-                                                        case 'Active':
-                                                            $color = '#28a745';
-                                                            break;
-
-                                                        case 'Inactive':
-                                                        case 'Inactive':
-                                                            $color = '#dc3545';
-                                                            break;
-
-                                                        case 'Completed':
-                                                            $color = '#ffc107';
-                                                            break;
-
-                                                        default:
-                                                            $color = '#6c757d';
-                                                            break;
-                                                    }
-                                                    ?>
-
-                                                    <span style="
-                                                        background-color: <?= $color ?>;
-                                                        color: white;
-                                                        padding: 5px 10px;
-                                                        border-radius: 5px;
-                                                        display: inline-block;
-                                                        font-weight: 500;
-                                                        min-width: 90px;
-                                                        text-align: center;
-                                                    ">
-                                                        <?= esc($status) ?>
-                                                    </span>
-                                                </td>
-
+                                                <!-- Actions -->
                                                 <td>
 
-                                                    <a href="<?= site_url('students/vijetaas/view/' . $row['Vijetaas_Stu_Id']) ?>"
-                                                        class="btn btn-info btn-sm"
-                                                        title="View">
+                                                    <a href="<?= base_url(
+                                                                    'students/vijetaas/view/' .
+                                                                        $student['Vijetaas_Stu_Id']
+                                                                ) ?>"
+                                                        class="btn btn-info btn-sm">
+
                                                         <i class="mdi mdi-eye"></i>
+
                                                     </a>
 
-                                                    <a href="<?= site_url('students/vijetaas/edit/' . $row['Vijetaas_Stu_Id']) ?>"
-                                                        class="btn btn-warning btn-sm"
-                                                        title="Edit">
+
+                                                    <a href="<?= base_url(
+                                                                    'students/vijetaas/edit/' .
+                                                                        $student['Vijetaas_Stu_Id']
+                                                                ) ?>"
+                                                        class="btn btn-warning btn-sm">
+
                                                         <i class="mdi mdi-pencil"></i>
+
                                                     </a>
-
-
 
                                                 </td>
 
                                             </tr>
 
                                         <?php endforeach; ?>
+
+                                    <?php else: ?>
+
+                                        <tr>
+
+                                            <td colspan="8"
+                                                class="text-center">
+
+                                                No Vijetaas students found
+
+                                            </td>
+
+                                        </tr>
 
                                     <?php endif; ?>
 
@@ -199,273 +241,48 @@
                         </div>
 
                     </div>
-                    <div class="tab-pane fade"
-                        id="goalTab">
 
-                        <div class="table-responsive">
-
-                            <table id="goalTable"
-                                class="table table-bordered table-striped">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>#</th>
-
-                                        <th>Name</th>
-
-                                        <th>Goal</th>
-
-                                        <th>Target</th>
-
-                                        <th>Achieved</th>
-
-                                        <th>Self Progress</th>
-
-                                        <th>Mentor Progress</th>
-
-                                        <th>Actions</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <?php if (!empty($goalDetails)): ?>
-
-                                        <?php $i = 1; ?>
-
-                                        <?php foreach ($goalDetails as $row): ?>
-
-                                            <tr>
-
-                                                <td><?= $i++ ?></td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['First_Name']
-                                                            . ' ' .
-                                                            $row['Last_Name']
-                                                    ) ?>
-                                                </td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['Goal_Title']
-                                                    ) ?>
-                                                </td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['Target_Value']
-                                                    ) ?>
-                                                </td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['Achieved_Value']
-                                                    ) ?>
-                                                </td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['Self_Progress']
-                                                    ) ?>%
-                                                </td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['Mentor_Progress']
-                                                    ) ?>%
-                                                </td>
-
-                                                <td>
-
-                                                    <a href="<?= site_url('students/vijetaas/view/' . $row['Vijetaas_Stu_Id']) ?>"
-                                                        class="btn btn-info btn-sm"
-                                                        title="View">
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </a>
-
-                                                    <a href="<?= site_url('students/vijetaas/edit/' . $row['Vijetaas_Stu_Id']) ?>"
-                                                        class="btn btn-warning btn-sm"
-                                                        title="Edit">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
-
-
-
-                                                </td>
-
-                                            </tr>
-
-                                        <?php endforeach; ?>
-
-                                    <?php endif; ?>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
-                    <div class="tab-pane fade"
-                        id="mentorTab">
-
-                        <div class="table-responsive">
-
-                            <table id="mentorTable"
-                                class="table table-bordered table-striped">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>#</th>
-
-                                        <th>Name</th>
-
-                                        <th>Mentor</th>
-
-                                        <th>Status</th>
-
-                                        <th>Enrollment Date</th>
-
-                                        <th>Actions</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <?php if (!empty($mentorDetails)): ?>
-
-                                        <?php $i = 1; ?>
-
-                                        <?php foreach ($mentorDetails as $row): ?>
-
-                                            <tr>
-
-                                                <td><?= $i++ ?></td>
-
-                                                <td>
-                                                    <?= esc(
-                                                        $row['First_Name']
-                                                            . ' ' .
-                                                            $row['Last_Name']
-                                                    ) ?>
-                                                </td>
-
-                                                <td>
-
-                                                    <?= esc(
-                                                        $row['User_FirstName']
-                                                            . ' ' .
-                                                            $row['User_LastName']
-                                                    ) ?>
-
-                                                </td>
-
-                                                <td>
-                                                    <?php
-                                                    $status = $row['Vijeta_Status'];
-                                                    $color = '';
-
-                                                    switch ($status) {
-                                                        case 'Active':
-                                                            $color = '#28a745';
-                                                            break;
-
-                                                        case 'Inactive':
-                                                        case 'Inactive':
-                                                            $color = '#dc3545';
-                                                            break;
-
-                                                        case 'Completed':
-                                                            $color = '#ffc107';
-                                                            break;
-
-                                                        default:
-                                                            $color = '#6c757d';
-                                                            break;
-                                                    }
-                                                    ?>
-
-                                                    <span style="
-                                                        background-color: <?= $color ?>;
-                                                        color: white;
-                                                        padding: 5px 10px;
-                                                        border-radius: 5px;
-                                                        display: inline-block;
-                                                        font-weight: 500;
-                                                        min-width: 90px;
-                                                        text-align: center;
-                                                    ">
-                                                        <?= esc($status) ?>
-                                                    </span>
-                                                </td>
-
-                                                <td>
-
-                                                    <?= esc(
-                                                        $row['Enrollment_Date']
-                                                    ) ?>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <a href="<?= site_url('students/vijetaas/view/' . $row['Vijetaas_Stu_Id']) ?>"
-                                                        class="btn btn-info btn-sm"
-                                                        title="View">
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </a>
-
-                                                    <a href="<?= site_url('students/vijetaas/edit/' . $row['Vijetaas_Stu_Id']) ?>"
-                                                        class="btn btn-warning btn-sm"
-                                                        title="Edit">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
-
-
-
-                                                </td>
-
-                                            </tr>
-
-                                        <?php endforeach; ?>
-
-                                    <?php endif; ?>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
                 </div>
 
             </div>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-            <script>
-                $(document).ready(function() {
 
-                    $('#personalTable').DataTable();
+        </div>
 
-                    $('#goalTable').DataTable();
+    </div>
 
-                    $('#mentorTable').DataTable();
+</div>
 
-                });
-            </script>
 
-            <?= view('includes/footer'); ?>
+<?= view('includes/footer'); ?>
 
-            <!-- DataTables -->
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+
+        $('#studentTable').DataTable({
+
+            paging: true,
+
+            searching: true,
+
+            ordering: true,
+
+            info: true,
+
+            language: {
+
+                search: "_INPUT_",
+
+                searchPlaceholder: "Search student..."
+
+            }
+
+        });
+
+    });
+</script>

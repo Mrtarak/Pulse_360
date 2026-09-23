@@ -170,6 +170,356 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+<script>
+    /*
+    |--------------------------------------------------------------------------
+    | Load Qualifications
+    |--------------------------------------------------------------------------
+    */
+
+    function loadQualifications(levelId, qualificationSelect, selectedValue = '') {
+
+        if (!levelId) {
+
+            qualificationSelect.innerHTML =
+                '<option value="">-- Select Qualification / Class --</option>';
+
+            return;
+        }
+
+        fetch(
+                "<?= site_url('students/vijetaas/getQualifications') ?>/" + levelId
+            )
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                qualificationSelect.innerHTML =
+                    '<option value="">-- Select Qualification / Class --</option>';
+
+                data.forEach(function(item) {
+
+                    let option = document.createElement('option');
+
+                    option.value = item.name;
+                    option.textContent = item.name;
+
+                    if (item.name === selectedValue) {
+                        option.selected = true;
+                    }
+
+                    qualificationSelect.appendChild(option);
+
+                });
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    'Error loading qualifications:',
+                    error
+                );
+
+            });
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Current Education Qualification
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .getElementById('currentEducationLevel')
+        .addEventListener('change', function() {
+
+            let selectedOption =
+                this.options[this.selectedIndex];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+            loadQualifications(
+                levelId,
+                document.getElementById('currentQualification')
+            );
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Highest Education Qualification
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .getElementById('highestEducationLevel')
+        .addEventListener('change', function() {
+
+            let selectedOption =
+                this.options[this.selectedIndex];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+            loadQualifications(
+                levelId,
+                document.getElementById('highestQualification')
+            );
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load Old Values After Validation Error
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        let currentLevel =
+            document.getElementById('currentEducationLevel');
+
+        let highestLevel =
+            document.getElementById('highestEducationLevel');
+
+
+        // Current Education
+        if (currentLevel.value) {
+
+            let selectedOption =
+                currentLevel.options[currentLevel.selectedIndex];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+            loadQualifications(
+                levelId,
+                document.getElementById('currentQualification'),
+                "<?= esc(old('Current_Qualification')) ?>"
+            );
+        }
+
+
+        // Highest Education
+        if (highestLevel.value) {
+
+            let selectedOption =
+                highestLevel.options[highestLevel.selectedIndex];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+            loadQualifications(
+                levelId,
+                document.getElementById('highestQualification'),
+                "<?= esc(old('Highest_Qualification')) ?>"
+            );
+        }
+
+    });
+</script>
+
+
+<script>
+    /*
+    |--------------------------------------------------------------------------
+    | Load Qualifications
+    |--------------------------------------------------------------------------
+    */
+
+    function loadQualifications(
+        levelId,
+        qualificationSelect,
+        selectedValue = ''
+    ) {
+
+        if (!levelId) {
+
+            qualificationSelect.innerHTML =
+                '<option value="">-- Select Qualification / Class --</option>';
+
+            return;
+        }
+
+
+        fetch(
+                "<?= site_url('students/vijetaas/getQualifications') ?>/" + levelId
+            )
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                qualificationSelect.innerHTML =
+                    '<option value="">-- Select Qualification / Class --</option>';
+
+
+                data.forEach(function(item) {
+
+                    let option = document.createElement('option');
+
+                    option.value = item.name;
+
+                    option.textContent = item.name;
+
+
+                    if (item.name === selectedValue) {
+
+                        option.selected = true;
+
+                    }
+
+
+                    qualificationSelect.appendChild(option);
+
+                });
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    'Error loading qualifications:',
+                    error
+                );
+
+            });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Current Education Level Change
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .getElementById('currentEducationLevel')
+        .addEventListener('change', function() {
+
+            let selectedOption =
+                this.options[this.selectedIndex];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+
+            loadQualifications(
+                levelId,
+                document.getElementById('currentQualification')
+            );
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Highest Education Level Change
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .getElementById('highestEducationLevel')
+        .addEventListener('change', function() {
+
+            let selectedOption =
+                this.options[this.selectedIndex];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+
+            loadQualifications(
+                levelId,
+                document.getElementById('highestQualification')
+            );
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load Existing Values When Edit Page Opens
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Current Education
+        |--------------------------------------------------------------------------
+        */
+
+        let currentLevel =
+            document.getElementById('currentEducationLevel');
+
+        let currentQualification =
+            document.getElementById('currentQualification');
+
+
+        if (currentLevel && currentLevel.value) {
+
+            let selectedOption =
+                currentLevel.options[
+                    currentLevel.selectedIndex
+                ];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+
+            loadQualifications(
+                levelId,
+                currentQualification,
+                "<?= esc($student['Current_Qualification'] ?? '') ?>"
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Highest Education
+        |--------------------------------------------------------------------------
+        */
+
+        let highestLevel =
+            document.getElementById('highestEducationLevel');
+
+        let highestQualification =
+            document.getElementById('highestQualification');
+
+
+        if (highestLevel && highestLevel.value) {
+
+            let selectedOption =
+                highestLevel.options[
+                    highestLevel.selectedIndex
+                ];
+
+            let levelId =
+                selectedOption.getAttribute('data-id');
+
+
+            loadQualifications(
+                levelId,
+                highestQualification,
+                "<?= esc($student['Highest_Qualification'] ?? '') ?>"
+            );
+
+        }
+
+    });
+</script>
+
 </body>
 
 </html>
