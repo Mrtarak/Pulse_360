@@ -153,6 +153,9 @@
 
                                                 foreach ($roles as $role):
 
+                                                    $isSystemRole =
+                                                        ((int) ($role['Is_System_Role'] ?? 0) === 1);
+
                                                 ?>
 
                                                     <tr>
@@ -168,7 +171,22 @@
                                                         <!-- ROLE NAME -->
                                                         <td>
 
-                                                            <?= esc($role['Role_Name']) ?>
+                                                            <strong>
+                                                                <?= esc($role['Role_Name']) ?>
+                                                            </strong>
+
+                                                            <?php if ($isSystemRole): ?>
+
+                                                                <span
+                                                                    class="badge bg-primary ms-2">
+
+                                                                    <i class="mdi mdi-shield-check me-1"></i>
+
+                                                                    System Role
+
+                                                                </span>
+
+                                                            <?php endif; ?>
 
                                                         </td>
 
@@ -233,12 +251,12 @@
 
                                                             <span
                                                                 style="
-                                  background-color: <?= $color ?>;
-                                  color: white;
-                                  padding: 5px 10px;
-                                  border-radius: 5px;
-                                  display: inline-block;
-                                ">
+                                                                    background-color: <?= $color ?>;
+                                                                    color: white;
+                                                                    padding: 5px 10px;
+                                                                    border-radius: 5px;
+                                                                    display: inline-block;
+                                                                ">
 
                                                                 <?= esc($status) ?>
 
@@ -261,15 +279,32 @@
                                                             </a>
 
 
-                                                            <!-- EDIT RIGHTS -->
-                                                            <a
-                                                                href="<?= site_url('roles/assign-rights/edit/' . $role['Role_Id']); ?>"
-                                                                class="btn btn-warning btn-sm"
-                                                                title="Edit Assigned Rights">
+                                                            <?php if (!$isSystemRole): ?>
 
-                                                                <i class="mdi mdi-pencil"></i>
+                                                                <!-- EDIT RIGHTS -->
+                                                                <a
+                                                                    href="<?= site_url('roles/assign-rights/edit/' . $role['Role_Id']); ?>"
+                                                                    class="btn btn-warning btn-sm"
+                                                                    title="Edit Assigned Rights">
 
-                                                            </a>
+                                                                    <i class="mdi mdi-pencil"></i>
+
+                                                                </a>
+
+                                                            <?php else: ?>
+
+                                                                <!-- PROTECTED SYSTEM ROLE -->
+                                                                <span
+                                                                    class="badge bg-primary ms-1"
+                                                                    title="Super Admin automatically has all active rights">
+
+                                                                    <i class="mdi mdi-shield-check me-1"></i>
+
+                                                                    Protected
+
+                                                                </span>
+
+                                                            <?php endif; ?>
 
                                                         </td>
 

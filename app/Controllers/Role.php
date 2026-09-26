@@ -15,24 +15,33 @@ class Role extends BaseController
 
     public function __construct()
     {
-        $this->roleModel = new RoleModel();
-        $this->rightModel = new RightModel();
+        $this->roleModel     = new RoleModel();
+        $this->rightModel    = new RightModel();
         $this->roleRightModel = new RoleRightRelModel();
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROLE MANAGEMENT
+    |--------------------------------------------------------------------------
+    */
+
     /**
      * Role List
      */
     public function index()
     {
-        $data['roles'] = $this->roleModel
+        $roles = $this->roleModel
             ->orderBy('Role_Name', 'ASC')
             ->findAll();
 
-        return view('ManageRole/role', $data);
+        return view('ManageRole/role', [
+            'roles' => $roles
+        ]);
     }
 
     /**
-     * Role Add Page
+     * Add Role Page
      */
     public function add()
     {
@@ -44,69 +53,107 @@ class Role extends BaseController
      */
     public function store()
     {
-        $roleName = trim($this->request->getPost('Role_Name'));
+        $roleName    = trim($this->request->getPost('Role_Name'));
         $description = trim($this->request->getPost('Role_Description'));
-        $status = $this->request->getPost('Role_Status');
+        $status      = $this->request->getPost('Role_Status');
 
-        $rules = [
-            'Role_Name' => 'required|min_length[3]|max_length[200]',
-            'Role_Status' => 'required|in_list[Active,Inactive]'
-        ];
+        /*
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
 
-        if (!$this->validate($rules)) {
-            return redirect()
-                ->back()
+        if ($roleName === '') {
+            return redirect()->back()
                 ->withInput()
-                ->with('error', $this->validator->listErrors());
+                ->with('error', 'Role name is required.');
         }
 
-        // Check duplicate role name
+        if ($status === '') {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Role status is required.');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Duplicate Role Name Check
+        |--------------------------------------------------------------------------
+        */
+
         $existingRole = $this->roleModel
             ->where('Role_Name', $roleName)
             ->first();
 
         if ($existingRole) {
-            return redirect()
-                ->back()
+            return redirect()->back()
                 ->withInput()
                 ->with('error', 'Role name already exists.');
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Create Role ID
+        |--------------------------------------------------------------------------
+        */
+
         $roleId = 'ROLE_' . strtoupper(substr(uniqid(), -8));
 
-        $data = [
-            'Role_Id' => $roleId,
-            'Role_Name' => $roleName,
-            'Role_Description' => $description,
-            'Role_Status' => $status,
+        /*
+        |--------------------------------------------------------------------------
+        | Insert Role
+        |--------------------------------------------------------------------------
+        |
+        | Is_System_Role is NOT taken from the form.
+        |
+        | Every newly created role is a NORMAL role.
+        | Database default = 0.
+        |
+        */
 
-            'Record_Added_By' => session()->get('User_Id') ?? 'system',
-            'Rec_Added_On' => date('Y-m-d H:i:s')
+        $data = [
+            'Role_Id'          => $roleId,
+            'Role_Name'        => $roleName,
+            'Role_Description' => $description,
+            'Role_Status'      => $status,
+            'Record_Added_By'  => 'Admin',
+            'Rec_Added_On'     => date('Y-m-d H:i:s')
         ];
 
         if (!$this->roleModel->insert($data)) {
-            return redirect()
-                ->back()
+            return redirect()->back()
                 ->withInput()
-                ->with('error', 'Unable to create role.');
+                ->with('error', 'Failed to create role.');
         }
 
-        return redirect()
-            ->to(site_url('roles'))
+        return redirect()->to('roles')
             ->with('success', 'Role created successfully.');
     }
 
     /**
-     * Role Edit Page
+     * Edit Role Page
      */
     public function edit($id)
     {
         $role = $this->roleModel->find($id);
 
         if (!$role) {
-            return redirect()
-                ->to(site_url('roles'))
+            return redirect()->to('roles')
                 ->with('error', 'Role not found.');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUPER ADMIN PROTECTION
+        |--------------------------------------------------------------------------
+        */
+
+        if ((int) $role['Is_System_Role'] === 1) {
+            return redirect()->to('roles/view/' . $id)
+                ->with(
+                    'error',
+                    'Super Admin is a protected system role and cannot be edited.'
+                );
         }
 
         return view('ManageRole/edit_role', [
@@ -119,74 +166,123 @@ class Role extends BaseController
      */
     public function update($id)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Get Existing Role
+        |--------------------------------------------------------------------------
+        */
+
         $role = $this->roleModel->find($id);
 
         if (!$role) {
-            return redirect()
-                ->to(site_url('roles'))
+            return redirect()->to('roles')
                 ->with('error', 'Role not found.');
         }
 
-        $roleName = trim($this->request->getPost('Role_Name'));
-        $description = trim($this->request->getPost('Role_Description'));
-        $status = $this->request->getPost('Role_Status');
+        /*
+        |--------------------------------------------------------------------------
+        | SUPER ADMIN PROTECTION
+        |--------------------------------------------------------------------------
+        |
+        | This is important because somebody can manually POST:
+        |
+        | roles/update/ROLE001
+        |
+        | even if the Edit button is hidden.
+        |
+        */
 
-        $rules = [
-            'Role_Name' => 'required|min_length[3]|max_length[200]',
-            'Role_Status' => 'required|in_list[Active,Inactive]'
-        ];
-
-        if (!$this->validate($rules)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', $this->validator->listErrors());
+        if ((int) $role['Is_System_Role'] === 1) {
+            return redirect()->to('roles/view/' . $id)
+                ->with(
+                    'error',
+                    'Super Admin is a protected system role and cannot be modified.'
+                );
         }
 
-        // Check duplicate role name excluding current role
+        /*
+        |--------------------------------------------------------------------------
+        | Get Form Data
+        |--------------------------------------------------------------------------
+        */
+
+        $roleName    = trim($this->request->getPost('Role_Name'));
+        $description = trim($this->request->getPost('Role_Description'));
+        $status      = $this->request->getPost('Role_Status');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
+
+        if ($roleName === '') {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Role name is required.');
+        }
+
+        if ($status === '') {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Role status is required.');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Duplicate Role Name Check
+        |--------------------------------------------------------------------------
+        */
+
         $existingRole = $this->roleModel
             ->where('Role_Name', $roleName)
             ->where('Role_Id !=', $id)
             ->first();
 
         if ($existingRole) {
-            return redirect()
-                ->back()
+            return redirect()->back()
                 ->withInput()
-                ->with('error', 'Another role with this name already exists.');
+                ->with('error', 'Role name already exists.');
         }
 
-        $data = [
-            'Role_Name' => $roleName,
-            'Role_Description' => $description,
-            'Role_Status' => $status,
+        /*
+        |--------------------------------------------------------------------------
+        | Update Role
+        |--------------------------------------------------------------------------
+        |
+        | IMPORTANT:
+        |
+        | We do NOT update Is_System_Role here.
+        |
+        */
 
-            'Rec_Updated_By' => session()->get('User_Id') ?? 'system',
+        $data = [
+            'Role_Name'           => $roleName,
+            'Role_Description'    => $description,
+            'Role_Status'         => $status,
+            'Rec_Updated_By'      => 'Admin',
             'Rec_Last_Updated_On' => date('Y-m-d H:i:s')
         ];
 
         if (!$this->roleModel->update($id, $data)) {
-            return redirect()
-                ->back()
+            return redirect()->back()
                 ->withInput()
-                ->with('error', 'Unable to update role.');
+                ->with('error', 'Failed to update role.');
         }
 
-        return redirect()
-            ->to(site_url('roles'))
+        return redirect()->to('roles')
             ->with('success', 'Role updated successfully.');
     }
 
     /**
-     * Role View
+     * View Role
      */
     public function view($id)
     {
         $role = $this->roleModel->find($id);
 
         if (!$role) {
-            return redirect()
-                ->to(site_url('roles'))
+            return redirect()->to('roles')
                 ->with('error', 'Role not found.');
         }
 
@@ -195,6 +291,59 @@ class Role extends BaseController
         ]);
     }
 
+    /**
+     * Delete Role
+     */
+    public function delete($id)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Get Existing Role
+        |--------------------------------------------------------------------------
+        */
+
+        $role = $this->roleModel->find($id);
+
+        if (!$role) {
+            return redirect()->to('roles')
+                ->with('error', 'Role not found.');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUPER ADMIN PROTECTION
+        |--------------------------------------------------------------------------
+        */
+
+        if ((int) $role['Is_System_Role'] === 1) {
+            return redirect()->to('roles/view/' . $id)
+                ->with(
+                    'error',
+                    'Super Admin is a protected system role and cannot be deleted.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Role
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$this->roleModel->delete($id)) {
+            return redirect()->to('roles')
+                ->with('error', 'Failed to delete role.');
+        }
+
+        return redirect()->to('roles')
+            ->with('success', 'Role deleted successfully.');
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGN RIGHTS MODULE
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * Assign Rights - Role List
@@ -210,27 +359,80 @@ class Role extends BaseController
         ]);
     }
 
-
     /**
      * Assign Rights Page
+     *
+     * Normal Role:
+     *      Existing assigned rights are checked.
+     *      Page is editable.
+     *
+     * Super Admin:
+     *      All active rights are checked.
+     *      All checkboxes are disabled.
+     *      Save button is hidden.
      */
     public function assignRights($roleId)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Get Role
+        |--------------------------------------------------------------------------
+        */
+
         $role = $this->roleModel->find($roleId);
 
         if (!$role) {
-            return redirect()
-                ->to(site_url('roles'))
+            return redirect()->to('roles/assign-rights')
                 ->with('error', 'Role not found.');
         }
 
-        // Get all active rights
+        /*
+        |--------------------------------------------------------------------------
+        | Get All Active Rights
+        |--------------------------------------------------------------------------
+        */
+
         $rights = $this->rightModel
             ->where('Right_Status', 'Active')
             ->orderBy('Right_Id', 'ASC')
             ->findAll();
 
-        // Get rights already assigned to this role
+        /*
+        |--------------------------------------------------------------------------
+        | SUPER ADMIN
+        |--------------------------------------------------------------------------
+        |
+        | Super Admin automatically has every active right.
+        |
+        | We do NOT read role_right_rel.
+        |
+        */
+
+        if ((int) $role['Is_System_Role'] === 1) {
+
+            $assignedRightIds = [];
+
+            foreach ($rights as $right) {
+                $assignedRightIds[] = $right['Right_Id'];
+            }
+
+            return view('ManageRole/assign_rights', [
+                'role'             => $role,
+                'rights'           => $rights,
+                'assignedRightIds' => $assignedRightIds,
+                'readOnly'         => true
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | NORMAL ROLE
+        |--------------------------------------------------------------------------
+        |
+        | Read manually assigned rights from role_right_rel.
+        |
+        */
+
         $assignedRows = $this->roleRightModel
             ->where('Role_Id', $roleId)
             ->findAll();
@@ -242,10 +444,10 @@ class Role extends BaseController
         }
 
         return view('ManageRole/assign_rights', [
-            'role' => $role,
-            'rights' => $rights,
+            'role'             => $role,
+            'rights'           => $rights,
             'assignedRightIds' => $assignedRightIds,
-            'readOnly' => false
+            'readOnly'         => false
         ]);
     }
 
@@ -257,15 +459,48 @@ class Role extends BaseController
         $role = $this->roleModel->find($roleId);
 
         if (!$role) {
-            return redirect()
-                ->to(site_url('roles/assign-rights'))
+            return redirect()->to('roles/assign-rights')
                 ->with('error', 'Role not found.');
         }
 
         /*
-     * STEP 1:
-     * Get ONLY the rights actually assigned to this role.
+     * =====================================================
+     * SUPER ADMIN / SYSTEM ROLE
+     * =====================================================
+     * Super Admin automatically has ALL active rights.
      */
+        if ((int) $role['Is_System_Role'] === 1) {
+
+            $rights = $this->rightModel
+                ->where('Right_Status', 'Active')
+                ->orderBy('Right_Id', 'ASC')
+                ->findAll();
+
+            /*
+         * Super Admin has every active right,
+         * so populate assignedRightIds with all active Right IDs.
+         */
+            $assignedRightIds = [];
+
+            foreach ($rights as $right) {
+                $assignedRightIds[] = $right['Right_Id'];
+            }
+
+            return view('ManageRole/view_assigned_rights', [
+                'role'             => $role,
+                'rights'           => $rights,
+                'assignedRightIds' => $assignedRightIds,
+                'readOnly'         => true,
+                'isSystemRole'     => true
+            ]);
+        }
+
+        /*
+     * =====================================================
+     * NORMAL ROLE
+     * =====================================================
+     */
+
         $assignedRows = $this->roleRightModel
             ->where('Role_Id', $roleId)
             ->findAll();
@@ -276,135 +511,135 @@ class Role extends BaseController
             $assignedRightIds[] = $row['Right_Id'];
         }
 
-
         /*
-     * STEP 2:
-     * If nothing is assigned, show empty page.
+     * No rights assigned
      */
         if (empty($assignedRightIds)) {
-
             return view('ManageRole/view_assigned_rights', [
-                'role' => $role,
-                'rights' => [],
-                'assignedRightIds' => []
+                'role'             => $role,
+                'rights'            => [],
+                'assignedRightIds' => [],
+                'readOnly'          => true,
+                'isSystemRole'      => false
             ]);
         }
 
+        /*
+     * Get assigned active rights
+     */
+        $rights = $this->rightModel
+            ->whereIn('Right_Id', $assignedRightIds)
+            ->where('Right_Status', 'Active')
+            ->orderBy('Right_Id', 'ASC')
+            ->findAll();
 
         /*
-     * STEP 3:
-     * Get the assigned rights.
+     * Get all active rights so that parent rights
+     * can also be displayed in the hierarchy.
      */
-        $assignedRights = $this->rightModel
-            ->whereIn('Right_Id', $assignedRightIds)
+        $allRights = $this->rightModel
             ->where('Right_Status', 'Active')
             ->findAll();
 
+        $rightsById = [];
+
+        foreach ($allRights as $right) {
+            $rightsById[$right['Right_Id']] = $right;
+        }
 
         /*
-     * STEP 4:
-     * We also need the parent rights only to show
-     * the hierarchy/path.
-     *
-     * Example:
-     *
-     * Manage Programs
-     *     Programs
-     *
-     * If only "Programs" is assigned, we still
-     * show "Manage Programs" as its parent.
+     * Add assigned rights + their parent rights
      */
-        $allDisplayRights = [];
+        $displayRights = [];
 
-        foreach ($assignedRights as $right) {
+        foreach ($rights as $right) {
 
-            $allDisplayRights[$right['Right_Id']] = $right;
+            $displayRights[$right['Right_Id']] = $right;
 
             $parentId = $right['Parent_Right_Id'] ?? null;
 
             while (!empty($parentId)) {
 
-                /*
-             * Stop if parent is already loaded.
-             */
-                if (isset($allDisplayRights[$parentId])) {
-                    $parentId =
-                        $allDisplayRights[$parentId]['Parent_Right_Id']
-                        ?? null;
-
-                    continue;
-                }
-
-
-                /*
-             * Find parent.
-             */
-                $parent = $this->rightModel
-                    ->where('Right_Id', $parentId)
-                    ->where('Right_Status', 'Active')
-                    ->first();
-
-
-                /*
-             * Parent does not exist.
-             */
-                if (!$parent) {
+                if (!isset($rightsById[$parentId])) {
                     break;
                 }
 
+                $parent = $rightsById[$parentId];
 
-                /*
-             * Add parent only for display hierarchy.
-             */
-                $allDisplayRights[$parent['Right_Id']] = $parent;
+                $displayRights[$parent['Right_Id']] = $parent;
 
-
-                /*
-             * Continue upward.
-             */
                 $parentId = $parent['Parent_Right_Id'] ?? null;
             }
         }
 
+        $rights = array_values($displayRights);
 
         /*
-     * Convert associative array back to normal array.
-     */
-        $rights = array_values($allDisplayRights);
-
-
-        /*
-     * Sort by Right_Id so hierarchy remains consistent.
+     * Keep the same Right_Id ordering
      */
         usort($rights, function ($a, $b) {
-
             return strcmp(
                 $a['Right_Id'],
                 $b['Right_Id']
             );
         });
 
-
         return view('ManageRole/view_assigned_rights', [
-            'role' => $role,
-            'rights' => $rights,
-            'assignedRightIds' => $assignedRightIds
+            'role'             => $role,
+            'rights'           => $rights,
+            'assignedRightIds' => $assignedRightIds,
+            'readOnly'         => true,
+            'isSystemRole'     => false
         ]);
     }
 
 
     /**
-     * Save / Update Role Rights
+     * Save Assigned Rights
      */
     public function saveRights($roleId)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Get Role
+        |--------------------------------------------------------------------------
+        */
+
         $role = $this->roleModel->find($roleId);
 
         if (!$role) {
-            return redirect()
-                ->to(site_url('roles'))
+            return redirect()->to('roles/assign-rights')
                 ->with('error', 'Role not found.');
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUPER ADMIN PROTECTION
+        |--------------------------------------------------------------------------
+        |
+        | Even if someone manually submits:
+        |
+        | roles/assign-rights/save/ROLE001
+        |
+        | Super Admin rights cannot be changed.
+        |
+        */
+
+        if ((int) $role['Is_System_Role'] === 1) {
+
+            return redirect()->to(
+                'roles/assign-rights/view/' . $roleId
+            )->with(
+                'error',
+                'Super Admin rights are managed automatically and cannot be changed.'
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Get Submitted Rights
+        |--------------------------------------------------------------------------
+        */
 
         $rightIds = $this->request->getPost('right_ids');
 
@@ -412,71 +647,89 @@ class Role extends BaseController
             $rightIds = [];
         }
 
-        // Remove duplicate IDs
+        /*
+        |--------------------------------------------------------------------------
+        | Remove Duplicate IDs
+        |--------------------------------------------------------------------------
+        */
+
         $rightIds = array_unique($rightIds);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Database Connection
+        |--------------------------------------------------------------------------
+        */
+
         $db = \Config\Database::connect();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Start Transaction
+        |--------------------------------------------------------------------------
+        */
 
         $db->transStart();
 
         /*
-     * Remove existing rights
-     */
+        |--------------------------------------------------------------------------
+        | Delete Existing Rights
+        |--------------------------------------------------------------------------
+        */
+
         $this->roleRightModel
             ->where('Role_Id', $roleId)
             ->delete();
 
         /*
-     * Insert currently selected rights
-     */
+        |--------------------------------------------------------------------------
+        | Insert New Rights
+        |--------------------------------------------------------------------------
+        */
+
         foreach ($rightIds as $rightId) {
 
             $this->roleRightModel->insert([
-                'Role_Id' => $roleId,
-                'Right_Id' => $rightId,
-                'Record_Added_By' => session()->get('User_Id') ?? 'system',
-                'Rec_Added_On' => date('Y-m-d H:i:s')
+                'Role_Id'         => $roleId,
+                'Right_Id'        => $rightId,
+                'Record_Added_By' => 'Admin',
+                'Rec_Added_On'    => date('Y-m-d H:i:s')
             ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Complete Transaction
+        |--------------------------------------------------------------------------
+        */
+
         $db->transComplete();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Check Transaction
+        |--------------------------------------------------------------------------
+        */
 
         if ($db->transStatus() === false) {
 
-            return redirect()
-                ->to(site_url('roles/assign-rights/edit/' . $roleId))
-                ->with('error', 'Unable to save rights.');
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Failed to save rights.'
+                );
         }
 
-        return redirect()
-            ->to(site_url('roles/assign-rights'))
-            ->with('success', 'Rights updated successfully.');
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | Success
+        |--------------------------------------------------------------------------
+        */
 
-    /**
-     * Delete Role
-     */
-    public function delete($id)
-    {
-        $role = $this->roleModel->find($id);
-
-        if (!$role) {
-            return redirect()
-                ->to(site_url('roles'))
-                ->with('error', 'Role not found.');
-        }
-
-        // We will later add a check here to prevent deleting
-        // a role that is already assigned to users.
-
-        if (!$this->roleModel->delete($id)) {
-            return redirect()
-                ->back()
-                ->with('error', 'Unable to delete role.');
-        }
-
-        return redirect()
-            ->to(site_url('roles'))
-            ->with('success', 'Role deleted successfully.');
+        return redirect()->to('roles/assign-rights')
+            ->with(
+                'success',
+                'Rights updated successfully.'
+            );
     }
 }

@@ -404,7 +404,7 @@
 
                             <a
                                 href="<?= base_url(
-                                            'roles/edit/' .
+                                            'roles/assign-rights/edit/' .
                                                 $role['Role_Id']
                                         ) ?>"
                                 class="btn btn-warning btn-sm">
