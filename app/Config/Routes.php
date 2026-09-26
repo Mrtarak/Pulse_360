@@ -47,6 +47,32 @@ $routes->get('roles/edit/(:any)', 'Role::edit/$1');
 $routes->post('roles/update/(:any)', 'Role::update/$1');
 
 $routes->get('roles/delete/(:any)', 'Role::delete/$1');
+
+
+// =========================================================
+// ASSIGN RIGHTS
+// =========================================================
+
+$routes->get(
+    'roles/assign-rights',
+    'Role::assignRightsIndex'
+);
+
+$routes->get(
+    'roles/assign-rights/view/(:any)',
+    'Role::viewRights/$1'
+);
+
+$routes->get(
+    'roles/assign-rights/edit/(:any)',
+    'Role::assignRights/$1'
+);
+
+$routes->post(
+    'roles/assign-rights/save/(:any)',
+    'Role::saveRights/$1'
+);
+
 // manage Rights Routes 
 $routes->get('rights', 'Rights::index');
 $routes->get('rights/manage', 'Rights::index');
