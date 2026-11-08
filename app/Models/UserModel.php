@@ -7,7 +7,11 @@ use CodeIgniter\Model;
 class UserModel extends Model
 {
     protected $table = 'user_m';
+
     protected $primaryKey = 'User_Id';
+
+    protected $returnType = 'array';
+
     public $useAutoIncrement = false;
 
     protected $allowedFields = [
@@ -31,7 +35,6 @@ class UserModel extends Model
         'User_Photo_URL',
         'User_Aadhar_Photo_URL',
         'User_Status',
-        'Program_Id',
         'Role_Id',
         'Record_Added_By',
         'Rec_Added_On',
@@ -40,11 +43,18 @@ class UserModel extends Model
     ];
 
     protected $useTimestamps = false;
-    public function getUsersWithRoleAndProgram()
+
+    /**
+     * Get users along with their assigned role.
+     */
+    public function getUsersWithRole()
     {
-        return $this->select('user_m.*, role_m.Role_Name, program_m.Program_Name')
-            ->join('role_m', 'role_m.Role_Id = user_m.Role_Id', 'left')
-            ->join('program_m', 'program_m.Program_Id = user_m.Program_Id', 'left')
+        return $this->select('user_m.*, role_m.Role_Name')
+            ->join(
+                'role_m',
+                'role_m.Role_Id = user_m.Role_Id',
+                'left'
+            )
             ->findAll();
     }
 }
