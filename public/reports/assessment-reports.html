@@ -1,0 +1,810 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Reports | Pulse 360</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    background: #f3f4f6;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+.page-shell {
+    max-width: 1515px;
+    margin: 25px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 18px;
+    min-height: 600px;
+}
+.breadcrumb {font-size:14px;margin-bottom:22px;}
+.breadcrumb a {color:#1d477f;text-decoration:none;}
+.page-heading {color:#1d477f;font-weight:700;font-size:25px;}
+.page-subtitle {color:#777;font-size:14px;}
+.section-card {
+    border:1px solid #e5e9f0;
+    border-radius:12px;
+    padding:20px;
+    background:#fff;
+    margin-bottom:22px;
+}
+.section-title {
+    color:#1d477f;
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+.filter-label {font-size:13px;font-weight:600;color:#555;margin-bottom:7px;}
+.form-control,.form-select {
+    min-height:40px;
+    border-color:#dce2ea;
+    font-size:13px;
+}
+.form-control:focus,.form-select:focus {
+    border-color:#315b91;
+    box-shadow:0 0 0 .15rem rgba(49,91,145,.12);
+}
+.summary-card {
+    border:1px solid #e7ebf1;
+    border-radius:12px;
+    padding:18px;
+    height:100%;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+.summary-icon {
+    width:48px;height:48px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:23px;flex-shrink:0;
+}
+.summary-label {color:#777;font-size:13px;margin-bottom:5px;}
+.summary-value {color:#26384d;font-size:25px;font-weight:700;margin:0;}
+.chart-container {position:relative;height:300px;}
+.table thead th {
+    background:#f1f5fa;color:#344b68;
+    font-size:13px;font-weight:700;
+    white-space:nowrap;padding:13px 12px;
+}
+.table tbody td {font-size:13px;padding:12px;vertical-align:middle;}
+.table-responsive {border-radius:8px;}
+.btn-primary {background:#315b91;border-color:#315b91;}
+.btn-primary:hover {background:#244873;border-color:#244873;}
+.btn-outline-primary {color:#315b91;border-color:#315b91;}
+.btn-outline-primary:hover {background:#315b91;border-color:#315b91;}
+.badge-program {background:#eaf0f8;color:#315b91;font-weight:600;padding:6px 9px;}
+.badge-good {background:#e8f5ed;color:#318353;font-weight:600;padding:6px 9px;}
+.badge-pending {background:#fff3e3;color:#a56b1d;font-weight:600;padding:6px 9px;}
+.badge-na {background:#f0f0f0;color:#666;font-weight:600;padding:6px 9px;}
+.no-data {text-align:center;color:#888;padding:25px!important;}
+@media(max-width:768px) {
+    .page-shell {margin:10px;padding:17px;}
+    .page-heading {font-size:21px;}
+    .chart-container {height:260px;}
+}
+</style>
+</head>
+
+<body>
+<div class="page-shell">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="reports-dashboard.html">Reports</a></li>
+            <li class="breadcrumb-item active">Assessment Reports</li>
+        </ol>
+    </nav>
+
+    <!-- HEADING -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h3 class="page-heading mb-1">
+                <i class="mdi mdi-chart-box-outline me-2"></i>Assessment Reports
+            </h3>
+            <p class="page-subtitle mb-0">
+                Analyse student performance, learning improvement and certification.
+            </p>
+        </div>
+        <button class="btn btn-primary" onclick="exportCSV()">
+            <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+        </button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">
+                <i class="mdi mdi-filter-variant me-1"></i> Filter Assessments
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" onclick="resetFilters()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+            </button>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">From Date</label>
+                <input type="date" id="fromDate" class="form-control">
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">To Date</label>
+                <input type="date" id="toDate" class="form-control">
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Programme</label>
+                <select id="programmeFilter" class="form-select">
+                    <option value="">All Programmes</option>
+                    <option>Learning Adda</option>
+                    <option>Doosra Mauka</option>
+                    <option>Digital Shakti</option>
+                    <option>School Shyaog</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Centre</label>
+                <select id="centreFilter" class="form-select">
+                    <option value="">All Centres</option>
+                    <option>Siliguri Centre</option>
+                    <option>Matigara Centre</option>
+                    <option>Bagdogra Centre</option>
+                    <option>Jalpaiguri Centre</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Batch</label>
+                <select id="batchFilter" class="form-select">
+                    <option value="">All Batches</option>
+                    <option>Batch 2024-25</option>
+                    <option>Batch 2025-26</option>
+                    <option>Batch 2026-27</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Assessment Type</label>
+                <select id="assessmentFilter" class="form-select">
+                    <option value="">All Types</option>
+                    <option>Baseline</option>
+                    <option>Midline</option>
+                    <option>Endline</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    <i class="bi bi-search me-1"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#eaf0f8;color:#315b91;">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Students Assessed</div>
+                    <h4 class="summary-value" id="totalStudents">0</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#eaf5ee;color:#45a477;">
+                    <i class="mdi mdi-trending-up"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Students Improved</div>
+                    <h4 class="summary-value" id="improvedStudents">0</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#fff3e3;color:#e5a34b;">
+                    <i class="mdi mdi-certificate-outline"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Certified Students</div>
+                    <h4 class="summary-value" id="certifiedStudents">0</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#f1ebfa;color:#8767b5;">
+                    <i class="mdi mdi-clipboard-check-outline"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Endline Completed</div>
+                    <h4 class="summary-value" id="endlineStudents">0</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHART ROW 1 -->
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-bar me-1"></i> Subject-wise Average Marks
+                </h5>
+                <div class="chart-container">
+                    <canvas id="subjectChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-donut me-1"></i> Assessment Type Distribution
+                </h5>
+                <div class="chart-container">
+                    <canvas id="typeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHART ROW 2 -->
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-line me-1"></i> Baseline to Endline Improvement
+                </h5>
+                <div class="chart-container">
+                    <canvas id="improvementChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-certificate me-1"></i> Certification Status
+                </h5>
+                <div class="chart-container">
+                    <canvas id="certificationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROGRAMME PERFORMANCE TABLE -->
+    <div class="section-card">
+        <h5 class="section-title">
+            <i class="mdi mdi-table me-1"></i> Programme-wise Assessment Summary
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Programme</th>
+                        <th>Students Assessed</th>
+                        <th>Baseline Average</th>
+                        <th>Midline Average</th>
+                        <th>Endline Average</th>
+                        <th>Average Improvement</th>
+                    </tr>
+                </thead>
+                <tbody id="programmeSummaryBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PARTICIPANT DETAILS -->
+    <div class="section-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <div>
+                <h5 class="section-title mb-1">
+                    <i class="mdi mdi-account-details-outline me-1"></i> Participant Assessment Details
+                </h5>
+                <p class="text-muted small mb-0">
+                    Individual student assessment and certification records.
+                </p>
+            </div>
+            <div style="max-width:280px;width:100%;">
+                <input type="text" id="tableSearch" class="form-control"
+                       placeholder="Search student details...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Student Name</th>
+                        <th>Programme</th>
+                        <th>Centre</th>
+                        <th>Batch</th>
+                        <th>Baseline</th>
+                        <th>Midline</th>
+                        <th>Endline</th>
+                        <th>Improvement</th>
+                        <th>Certification</th>
+                    </tr>
+                </thead>
+                <tbody id="participantTableBody"></tbody>
+            </table>
+        </div>
+        <div class="mt-3">
+            <small class="text-muted" id="recordCount">Showing 0 records</small>
+        </div>
+    </div>
+
+    </div>
+
+<script>
+/* -----------------------------------
+   SAMPLE ASSESSMENT DATA
+   Marks are illustrative demo values.
+----------------------------------- */
+
+const assessmentData = [
+    {name:"Aarav Sharma",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-03-10",baseline:42,midline:58,endline:76,certification:"N/A"},
+    {name:"Priya Das",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-03-12",baseline:50,midline:65,endline:82,certification:"N/A"},
+    {name:"Riya Roy",programme:"Learning Adda",centre:"Matigara Centre",batch:"Batch 2024-25",date:"2026-02-15",baseline:38,midline:52,endline:68,certification:"N/A"},
+    {name:"Suman Ghosh",programme:"Learning Adda",centre:"Matigara Centre",batch:"Batch 2024-25",date:"2026-02-18",baseline:55,midline:61,endline:70,certification:"N/A"},
+
+    {name:"Rahul Das",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2025-26",date:"2026-03-15",baseline:35,midline:54,endline:73,certification:"Certified"},
+    {name:"Moumita Sen",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2025-26",date:"2026-03-18",baseline:48,midline:62,endline:80,certification:"Certified"},
+    {name:"Anjali Roy",programme:"Doosra Mauka",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-02-20",baseline:40,midline:55,endline:65,certification:"Not Certified"},
+    {name:"Rakesh Paul",programme:"Doosra Mauka",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-02-25",baseline:45,midline:57,endline:null,certification:"Pending"},
+
+    {name:"Sneha Gupta",programme:"Digital Shakti",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-03-20",baseline:30,midline:55,endline:78,certification:"Certified"},
+    {name:"Mita Roy",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2025-26",date:"2026-03-22",baseline:45,midline:60,endline:85,certification:"Certified"},
+    {name:"Pooja Sharma",programme:"Digital Shakti",centre:"Siliguri Centre",batch:"Batch 2024-25",date:"2026-02-22",baseline:52,midline:66,endline:80,certification:"Certified"},
+    {name:"Neha Das",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2024-25",date:"2026-02-26",baseline:40,midline:52,endline:null,certification:"Pending"},
+
+    {name:"Tina Roy",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2025-26",date:"2026-03-25",baseline:48,midline:63,endline:79,certification:"N/A"},
+    {name:"Ritika Das",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2025-26",date:"2026-03-27",baseline:55,midline:68,endline:84,certification:"N/A"},
+    {name:"Kavita Sen",programme:"School Shyaog",centre:"Bagdogra Centre",batch:"Batch 2024-25",date:"2026-02-27",baseline:35,midline:48,endline:62,certification:"N/A"},
+    {name:"Meena Paul",programme:"School Shyaog",centre:"Bagdogra Centre",batch:"Batch 2024-25",date:"2026-02-28",baseline:42,midline:55,endline:null,certification:"N/A"}
+];
+
+const subjectData = [
+    {name:"English",programme:"Learning Adda",baseline:45,midline:62,endline:78},
+    {name:"Mathematics",programme:"Learning Adda",baseline:48,midline:61,endline:74},
+    {name:"Computer Skills",programme:"Digital Shakti",baseline:38,midline:58,endline:81},
+    {name:"Digital Literacy",programme:"Digital Shakti",baseline:42,midline:63,endline:84},
+    {name:"Communication",programme:"Doosra Mauka",baseline:40,midline:57,endline:74},
+    {name:"Career Readiness",programme:"Doosra Mauka",baseline:44,midline:60,endline:79},
+    {name:"Science",programme:"School Shyaog",baseline:46,midline:59,endline:73},
+    {name:"General Studies",programme:"School Shyaog",baseline:50,midline:64,endline:80}
+];
+
+let filteredData = [...assessmentData];
+let charts = {};
+
+Chart.defaults.font.family = "Arial";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = "#666";
+
+const chartColors = ["#315b91","#45a477","#e5a34b","#8767b5","#d66c6c"];
+
+function createChart(id,config) {
+    if(charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id),config);
+}
+
+/* -----------------------------------
+   FILTERS
+----------------------------------- */
+
+function applyFilters() {
+    const from = document.getElementById("fromDate").value;
+    const to = document.getElementById("toDate").value;
+    const programme = document.getElementById("programmeFilter").value;
+    const centre = document.getElementById("centreFilter").value;
+    const batch = document.getElementById("batchFilter").value;
+    const type = document.getElementById("assessmentFilter").value;
+
+    filteredData = assessmentData.filter(item =>
+        (!from || item.date >= from) &&
+        (!to || item.date <= to) &&
+        (!programme || item.programme === programme) &&
+        (!centre || item.centre === centre) &&
+        (!batch || item.batch === batch)
+    );
+
+    renderReport(type);
+}
+
+function resetFilters() {
+    ["fromDate","toDate","programmeFilter","centreFilter",
+     "batchFilter","assessmentFilter","tableSearch"].forEach(id => {
+        document.getElementById(id).value = "";
+    });
+
+    filteredData = [...assessmentData];
+    renderReport("");
+}
+
+/* -----------------------------------
+   SUMMARY CARDS
+----------------------------------- */
+
+function renderSummary() {
+    const improved = filteredData.filter(x =>
+        x.endline !== null && x.endline > x.baseline
+    ).length;
+
+    const certified = filteredData.filter(x =>
+        x.certification === "Certified"
+    ).length;
+
+    const endline = filteredData.filter(x =>
+        x.endline !== null
+    ).length;
+
+    document.getElementById("totalStudents").textContent = filteredData.length;
+    document.getElementById("improvedStudents").textContent = improved;
+    document.getElementById("certifiedStudents").textContent = certified;
+    document.getElementById("endlineStudents").textContent = endline;
+}
+
+/* -----------------------------------
+   SUBJECT-WISE CHART
+----------------------------------- */
+
+function renderSubjectChart() {
+    const programme = document.getElementById("programmeFilter").value;
+    const data = subjectData.filter(x =>
+        !programme || x.programme === programme
+    );
+
+    createChart("subjectChart",{
+        type:"bar",
+        data:{
+            labels:data.map(x=>x.name),
+            datasets:[
+                {
+                    label:"Baseline",
+                    data:data.map(x=>x.baseline),
+                    backgroundColor:"#315b91",
+                    borderRadius:5
+                },
+                {
+                    label:"Midline",
+                    data:data.map(x=>x.midline),
+                    backgroundColor:"#e5a34b",
+                    borderRadius:5
+                },
+                {
+                    label:"Endline",
+                    data:data.map(x=>x.endline),
+                    backgroundColor:"#45a477",
+                    borderRadius:5
+                }
+            ]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{
+                legend:{position:"bottom",labels:{usePointStyle:true,padding:18}}
+            },
+            scales:{
+                y:{
+                    beginAtZero:true,
+                    max:100,
+                    grid:{color:"#edf0f4"}
+                },
+                x:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   ASSESSMENT TYPE CHART
+----------------------------------- */
+
+function renderTypeChart(type) {
+    let values;
+
+    if(type) {
+        values = [
+            type === "Baseline" ? filteredData.length : 0,
+            type === "Midline" ? filteredData.filter(x=>x.midline!==null).length : 0,
+            type === "Endline" ? filteredData.filter(x=>x.endline!==null).length : 0
+        ];
+    } else {
+        values = [
+            filteredData.length,
+            filteredData.filter(x=>x.midline!==null).length,
+            filteredData.filter(x=>x.endline!==null).length
+        ];
+    }
+
+    createChart("typeChart",{
+        type:"doughnut",
+        data:{
+            labels:["Baseline","Midline","Endline"],
+            datasets:[{
+                data:values,
+                backgroundColor:["#315b91","#e5a34b","#45a477"],
+                borderWidth:2,
+                borderColor:"#fff"
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            cutout:"62%",
+            plugins:{
+                legend:{
+                    position:"bottom",
+                    labels:{usePointStyle:true,padding:15}
+                }
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   BASELINE TO ENDLINE CHART
+----------------------------------- */
+
+function renderImprovementChart() {
+    const programmes = ["Learning Adda","Doosra Mauka","Digital Shakti","School Shyaog"];
+
+    const data = programmes.map(programme => {
+        const records = filteredData.filter(x =>
+            x.programme === programme && x.endline !== null
+        );
+
+        const average = key => records.length
+            ? records.reduce((sum,x)=>sum+x[key],0)/records.length
+            : 0;
+
+        return {
+            programme,
+            baseline:average("baseline"),
+            endline:average("endline")
+        };
+    });
+
+    createChart("improvementChart",{
+        type:"bar",
+        data:{
+            labels:data.map(x=>x.programme),
+            datasets:[
+                {
+                    label:"Baseline Average",
+                    data:data.map(x=>Number(x.baseline.toFixed(1))),
+                    backgroundColor:"#315b91",
+                    borderRadius:5
+                },
+                {
+                    label:"Endline Average",
+                    data:data.map(x=>Number(x.endline.toFixed(1))),
+                    backgroundColor:"#45a477",
+                    borderRadius:5
+                }
+            ]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{
+                legend:{position:"bottom",labels:{usePointStyle:true,padding:15}}
+            },
+            scales:{
+                y:{beginAtZero:true,max:100,grid:{color:"#edf0f4"}},
+                x:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   CERTIFICATION CHART
+----------------------------------- */
+
+function renderCertificationChart() {
+    const data = filteredData.filter(x =>
+        ["Digital Shakti","Doosra Mauka"].includes(x.programme)
+    );
+
+    const certified = data.filter(x=>x.certification==="Certified").length;
+    const notCertified = data.filter(x=>x.certification==="Not Certified").length;
+    const pending = data.filter(x=>x.certification==="Pending").length;
+
+    createChart("certificationChart",{
+        type:"doughnut",
+        data:{
+            labels:["Certified","Not Certified","Pending"],
+            datasets:[{
+                data:[certified,notCertified,pending],
+                backgroundColor:["#45a477","#d66c6c","#e5a34b"],
+                borderWidth:2,
+                borderColor:"#fff"
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            cutout:"62%",
+            plugins:{
+                legend:{
+                    position:"bottom",
+                    labels:{usePointStyle:true,padding:15}
+                }
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   PROGRAMME SUMMARY TABLE
+----------------------------------- */
+
+function renderProgrammeSummary() {
+    const programmes = [...new Set(filteredData.map(x=>x.programme))];
+    const tbody = document.getElementById("programmeSummaryBody");
+
+    if(!programmes.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data">No assessment records found.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = programmes.map(programme => {
+        const records = filteredData.filter(x=>x.programme===programme);
+
+        const avg = key => {
+            const values = records.filter(x=>x[key]!==null).map(x=>x[key]);
+            return values.length
+                ? (values.reduce((a,b)=>a+b,0)/values.length).toFixed(1)
+                : "N/A";
+        };
+
+        const baseline = avg("baseline");
+        const midline = avg("midline");
+        const endline = avg("endline");
+
+        const improvement = baseline !== "N/A" && endline !== "N/A"
+            ? (Number(endline)-Number(baseline)).toFixed(1)
+            : "N/A";
+
+        return `
+            <tr>
+                <td><span class="badge badge-program">${escapeHTML(programme)}</span></td>
+                <td>${records.length}</td>
+                <td>${baseline}</td>
+                <td>${midline}</td>
+                <td>${endline}</td>
+                <td class="fw-semibold">${improvement==="N/A" ? "N/A" : "+"+improvement+" marks"}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/* -----------------------------------
+   PARTICIPANT TABLE
+----------------------------------- */
+
+function renderParticipantTable() {
+    const search = document.getElementById("tableSearch").value.toLowerCase();
+
+    const data = filteredData.filter(item =>
+        Object.values(item).some(value =>
+            String(value ?? "").toLowerCase().includes(search)
+        )
+    );
+
+    const tbody = document.getElementById("participantTableBody");
+
+    if(!data.length) {
+        tbody.innerHTML = `<tr><td colspan="10" class="no-data">No assessment records found.</td></tr>`;
+        document.getElementById("recordCount").textContent = "Showing 0 records";
+        return;
+    }
+
+    tbody.innerHTML = data.map((item,index) => {
+        const improvement = item.endline !== null
+            ? item.endline-item.baseline
+            : null;
+
+        let certificationBadge = "badge-na";
+        if(item.certification==="Certified") certificationBadge="badge-good";
+        if(item.certification==="Pending") certificationBadge="badge-pending";
+
+        return `
+            <tr>
+                <td>${index+1}</td>
+                <td class="fw-semibold">${escapeHTML(item.name)}</td>
+                <td><span class="badge badge-program">${escapeHTML(item.programme)}</span></td>
+                <td>${escapeHTML(item.centre)}</td>
+                <td>${escapeHTML(item.batch)}</td>
+                <td>${item.baseline}</td>
+                <td>${item.midline}</td>
+                <td>${item.endline===null ? "N/A" : item.endline}</td>
+                <td class="fw-semibold ${improvement===null ? "" : improvement>=0 ? "text-success" : "text-danger"}">
+                    ${improvement===null ? "N/A" : (improvement>0?"+":"")+improvement}
+                </td>
+                <td><span class="badge ${certificationBadge}">${escapeHTML(item.certification)}</span></td>
+            </tr>
+        `;
+    }).join("");
+
+    document.getElementById("recordCount").textContent =
+        `Showing ${data.length} of ${filteredData.length} records`;
+}
+
+/* -----------------------------------
+   CSV EXPORT
+----------------------------------- */
+
+function exportCSV() {
+    const headers = [
+        "Student Name","Programme","Centre","Batch",
+        "Assessment Date","Baseline Marks","Midline Marks",
+        "Endline Marks","Improvement","Certification Status"
+    ];
+
+    const rows = filteredData.map(item => [
+        item.name,item.programme,item.centre,item.batch,item.date,
+        item.baseline,item.midline,
+        item.endline===null ? "N/A" : item.endline,
+        item.endline===null ? "N/A" : item.endline-item.baseline,
+        item.certification
+    ]);
+
+    const csv = [headers,...rows]
+        .map(row=>row.map(value=>
+            `"${String(value).replace(/"/g,'""')}"`
+        ).join(","))
+        .join("\n");
+
+    const blob = new Blob(["\uFEFF"+csv],{
+        type:"text/csv;charset=utf-8;"
+    });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "assessment-reports.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+/* -----------------------------------
+   HELPERS AND MAIN RENDER
+----------------------------------- */
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g,char=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    })[char]);
+}
+
+function renderReport(type="") {
+    renderSummary();
+    renderSubjectChart();
+    renderTypeChart(type);
+    renderImprovementChart();
+    renderCertificationChart();
+    renderProgrammeSummary();
+    renderParticipantTable();
+}
+
+document.getElementById("tableSearch").addEventListener("input",renderParticipantTable);
+
+renderReport();
+</script>
+</body>
+</html>

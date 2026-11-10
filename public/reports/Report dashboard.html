@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse 360 | Reports Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    background: #f3f4f6;
+    font-family: Arial, sans-serif;
+    color: #343a40;
+}
+
+.page-shell {
+    max-width: 1515px;
+    margin: 25px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 18px;
+    min-height: 600px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+
+.breadcrumb {
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.breadcrumb a {
+    color: #1d477f;
+    text-decoration: none;
+}
+
+.page-heading {
+    color: #1d477f;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+.page-subtitle {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.filter-card, .summary-card, .chart-card {
+    border: 1px solid #e1e6ed;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.filter-card {
+    padding: 18px;
+    margin: 22px 0;
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-select {
+    font-size: 14px;
+    min-height: 40px;
+}
+
+.summary-card {
+    padding: 19px;
+    height: 100%;
+    transition: .2s;
+}
+
+.summary-card:hover {
+    border-color: #9db5d5;
+    box-shadow: 0 4px 14px rgba(29,71,127,.08);
+    transform: translateY(-2px);
+}
+
+.summary-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 14px;
+}
+
+.icon-blue { background: #e8effa; color: #1d477f; }
+.icon-green { background: #e6f4ed; color: #218653; }
+.icon-orange { background: #fff1df; color: #c77b16; }
+.icon-purple { background: #f0eafd; color: #7650b5; }
+.icon-red { background: #fdeaea; color: #c34c4c; }
+
+.summary-label {
+    color: #6c757d;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.summary-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #26374a;
+}
+
+.section-heading {
+    color: #1d477f;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 30px 0 16px;
+}
+
+.chart-card {
+    padding: 20px;
+    height: 100%;
+}
+
+.chart-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #26374a;
+}
+
+.chart-subtitle {
+    font-size: 12px;
+    color: #89929c;
+    margin-top: 4px;
+}
+
+.chart-container {
+    position: relative;
+    height: 280px;
+    margin-top: 18px;
+}
+
+.chart-container.small {
+    height: 245px;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.chart-select {
+    width: auto;
+    min-width: 110px;
+    font-size: 12px;
+    min-height: 32px;
+}
+
+.insight-card {
+    border: 1px solid #e1e6ed;
+    border-radius: 12px;
+    padding: 18px;
+    background: #fafbfd;
+    height: 100%;
+}
+
+.insight-icon {
+    font-size: 23px;
+    color: #1d477f;
+}
+
+.insight-label {
+    color: #6c757d;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.insight-value {
+    color: #26374a;
+    font-size: 21px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+.insight-note {
+    font-size: 12px;
+    color: #218653;
+    margin-top: 5px;
+}
+
+.btn-reset {
+    border: 1px solid #cbd3dc;
+    color: #495057;
+    background: #fff;
+    font-size: 13px;
+    padding: 9px 15px;
+}
+
+.btn-reset:hover {
+    background: #f1f3f5;
+}
+
+@media(max-width: 768px) {
+    .page-shell {
+        padding: 18px;
+        margin: 10px;
+    }
+
+    .page-heading {
+        font-size: 21px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-shell">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Reports</li>
+        </ol>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h3 class="page-heading mb-1">
+                <i class="mdi mdi-chart-box-outline me-2"></i>Reports Dashboard
+            </h3>
+            <p class="page-subtitle mb-0">
+                Overview of student enrollment, attendance, programme performance and activities.
+            </p>
+        </div>
+
+        <span class="badge text-bg-light border px-3 py-2">
+            <i class="mdi mdi-calendar-range me-1"></i> Overall Report
+        </span>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0">
+                <i class="mdi mdi-filter-variant me-1"></i> Filter Reports
+            </h6>
+            <button class="btn btn-reset" onclick="resetFilters()">
+                <i class="mdi mdi-refresh me-1"></i> Reset
+            </button>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Report Year</label>
+                <select class="form-select" id="yearFilter">
+                    <option value="">All Years</option>
+                    <option>2024-25</option>
+                    <option>2025-26</option>
+                    <option selected>2026-27</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Programme</label>
+                <select class="form-select" id="programFilter">
+                    <option value="">All Programmes</option>
+                    <option>Vijetaas</option>
+                    <option>Learning Adda</option>
+                    <option>Doosra Mauka</option>
+                    <option>Digital Shakti</option>
+                    <option>School Sahyog</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Centre</label>
+                <select class="form-select" id="centerFilter">
+                    <option value="">All Centres</option>
+                    <option>Centre 1</option>
+                    <option>Centre 2</option>
+                    <option>Centre 3</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Report Period</label>
+                <select class="form-select" id="periodFilter">
+                    <option value="">Overall</option>
+                    <option>Monthly</option>
+                    <option>Quarterly</option>
+                    <option>Yearly</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <h5 class="section-heading mt-4">Overall Summary</h5>
+
+    <div class="row g-3">
+
+        <div class="col-xl col-md-4 col-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-blue">
+                    <i class="mdi mdi-account-group-outline"></i>
+                </div>
+                <div class="summary-label">Total Enrolled</div>
+                <div class="summary-value">2,450</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-green">
+                    <i class="mdi mdi-account-check-outline"></i>
+                </div>
+                <div class="summary-label">Active Students</div>
+                <div class="summary-value">1,890</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-orange">
+                    <i class="mdi mdi-calendar-check-outline"></i>
+                </div>
+                <div class="summary-label">Attendance</div>
+                <div class="summary-value">86%</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-purple">
+                    <i class="mdi mdi-cash-multiple"></i>
+                </div>
+                <div class="summary-label">Fees Collected</div>
+                <div class="summary-value">₹1.8L</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-red">
+                    <i class="mdi mdi-book-clock-outline"></i>
+                </div>
+                <div class="summary-label">Sessions Conducted</div>
+                <div class="summary-value">680</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <h5 class="section-heading">Programme Overview & Analytics</h5>
+
+    <div class="row g-3">
+
+        <!-- ENROLLMENT TREND -->
+        <div class="col-lg-8">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Student Enrollment Trend</div>
+                        <div class="chart-subtitle">Year-wise student enrollment growth</div>
+                    </div>
+                    <select class="form-select chart-select">
+                        <option>Yearly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="enrollmentChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRAMME DISTRIBUTION -->
+        <div class="col-lg-4">
+            <div class="chart-card">
+                <div class="chart-title">Programme-wise Students</div>
+                <div class="chart-subtitle">Distribution of enrolled students</div>
+                <div class="chart-container">
+                    <canvas id="programChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATTENDANCE -->
+        <div class="col-lg-7">
+            <div class="chart-card">
+                <div class="chart-title">Monthly Attendance Analysis</div>
+                <div class="chart-subtitle">Present and absent student comparison</div>
+                <div class="chart-container">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- GENDER -->
+        <div class="col-lg-5">
+            <div class="chart-card">
+                <div class="chart-title">Gender-wise Student Distribution</div>
+                <div class="chart-subtitle">Overall enrolled student distribution</div>
+                <div class="chart-container">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEES -->
+        <div class="col-lg-7">
+            <div class="chart-card">
+                <div class="chart-title">Monthly Fees Collection</div>
+                <div class="chart-subtitle">Monthly fee collection overview</div>
+                <div class="chart-container">
+                    <canvas id="feesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPLETION -->
+        <div class="col-lg-5">
+            <div class="chart-card">
+                <div class="chart-title">Programme Student Status</div>
+                <div class="chart-subtitle">Active and dropout student comparison</div>
+                <div class="chart-container">
+                    <canvas id="completionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QUICK INSIGHTS -->
+    <h5 class="section-heading">Key Highlights</h5>
+
+    <div class="row g-3">
+
+        <div class="col-md-3 col-6">
+            <div class="insight-card">
+                <i class="mdi mdi-account-multiple insight-icon"></i>
+                <div class="insight-label">Total Participants</div>
+                <div class="insight-value">2,450</div>
+                <div class="insight-note">Across all programmes</div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+            <div class="insight-card">
+                <i class="mdi mdi-account-remove-outline insight-icon"></i>
+                <div class="insight-label">Dropout Students</div>
+                <div class="insight-value">125</div>
+                <div class="insight-note">Across all programmes</div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+            <div class="insight-card">
+                <i class="mdi mdi-certificate-outline insight-icon"></i>
+                <div class="insight-label">Students Certified</div>
+                <div class="insight-value">340</div>
+                <div class="insight-note">DM and DS programmes</div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+            <div class="insight-card">
+                <i class="mdi mdi-briefcase-check-outline insight-icon"></i>
+                <div class="insight-label">Vijetaas Employed</div>
+                <div class="insight-value">86</div>
+                <div class="insight-note">Job and self-employment</div>
+            </div>
+        </div>
+
+    </div>
+
+   
+</div>
+
+<script>
+const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            position: 'bottom',
+            labels: {
+                usePointStyle: true,
+                padding: 18,
+                font: { size: 11 }
+            }
+        }
+    }
+};
+
+// ENROLLMENT TREND
+new Chart(document.getElementById('enrollmentChart'), {
+    type: 'bar',
+    data: {
+        labels: ['2022-23', '2023-24', '2024-25', '2025-26', '2026-27'],
+        datasets: [{
+            label: 'Students Enrolled',
+            data: [850, 1120, 1480, 1980, 2450],
+            backgroundColor: '#315b91',
+            borderRadius: 6,
+            barThickness: 34
+        }]
+    },
+    options: {
+        ...commonOptions,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: '#edf0f4' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+// PROGRAMME DISTRIBUTION
+new Chart(document.getElementById('programChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Vijetaas', 'Learning Adda', 'Doosra Mauka', 'Digital Shakti', 'School Sahyog'],
+        datasets: [{
+            data: [420, 680, 350, 600, 400],
+            backgroundColor: ['#315b91', '#45a477', '#e5a34b', '#8767b5', '#d66c6c'],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        ...commonOptions,
+        cutout: '65%'
+    }
+});
+
+// ATTENDANCE
+new Chart(document.getElementById('attendanceChart'), {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [
+            {
+                label: 'Present',
+                data: [820, 850, 880, 860, 900, 875, 910, 920, 890, 940, 950, 970],
+                borderColor: '#26966a',
+                backgroundColor: 'rgba(38,150,106,.10)',
+                fill: true,
+                tension: .35
+            },
+            {
+                label: 'Absent',
+                data: [150, 130, 120, 145, 110, 125, 100, 95, 115, 90, 85, 75],
+                borderColor: '#d66c6c',
+                backgroundColor: 'rgba(214,108,108,.08)',
+                fill: true,
+                tension: .35
+            }
+        ]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            y: { beginAtZero: true, grid: { color: '#edf0f4' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+// GENDER
+new Chart(document.getElementById('genderChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Female', 'Male', 'Other / Not specified'],
+        datasets: [{
+            data: [1450, 950, 50],
+            backgroundColor: ['#8767b5', '#315b91', '#e5a34b'],
+            borderColor: '#fff',
+            borderWidth: 2
+        }]
+    },
+    options: commonOptions
+});
+
+// FEES COLLECTION
+new Chart(document.getElementById('feesChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+            label: 'Fees Collected (₹)',
+            data: [12000, 14500, 13800, 16000, 15500, 18000, 17500, 19000, 16500, 21000, 22500, 24000],
+            backgroundColor: '#8767b5',
+            borderRadius: 5
+        }]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: '#edf0f4' },
+                ticks: {
+                    callback: value => '₹' + (value / 1000) + 'k'
+                }
+            },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+// ACTIVE VS DROPOUT
+new Chart(document.getElementById('completionChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Vijetaas', 'Learning Adda', 'Doosra Mauka', 'Digital Shakti', 'School Sahyog'],
+        datasets: [
+            {
+                label: 'Active',
+                data: [380, 550, 260, 470, 230],
+                backgroundColor: '#45a477',
+                borderRadius: 4
+            },
+            {
+                label: 'Dropout',
+                data: [15, 40, 25, 30, 15],
+                backgroundColor: '#d66c6c',
+                borderRadius: 4
+            }
+        ]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            x: { grid: { display: false } },
+            y: { beginAtZero: true, grid: { color: '#edf0f4' } }
+        }
+    }
+});
+
+function resetFilters() {
+    document.getElementById('yearFilter').value = '';
+    document.getElementById('programFilter').value = '';
+    document.getElementById('centerFilter').value = '';
+    document.getElementById('periodFilter').value = '';
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,669 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vijetaas Reports | Pulse 360</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{background:#f3f4f6;font-family:Arial,sans-serif;color:#333}
+.page-shell{max-width:1515px;margin:25px auto;padding:30px;background:#fff;border-radius:18px;min-height:600px}
+.breadcrumb{font-size:14px;margin-bottom:22px}
+.breadcrumb a{color:#1d477f;text-decoration:none}
+.page-heading{color:#1d477f;font-weight:700;font-size:25px}
+.page-subtitle{color:#777;font-size:14px}
+.section-card{border:1px solid #e5e9f0;border-radius:12px;padding:20px;background:#fff;margin-bottom:22px}
+.section-title{color:#1d477f;font-size:17px;font-weight:700;margin-bottom:18px}
+.filter-label{font-size:13px;font-weight:600;color:#555;margin-bottom:7px}
+.form-control,.form-select{min-height:40px;border-color:#dce2ea;font-size:13px}
+.form-control:focus,.form-select:focus{border-color:#315b91;box-shadow:0 0 0 .15rem rgba(49,91,145,.12)}
+.summary-card{border:1px solid #e7ebf1;border-radius:12px;padding:18px;height:100%;background:#fff;display:flex;align-items:center;gap:14px}
+.summary-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.summary-label{color:#777;font-size:13px;margin-bottom:5px}
+.summary-value{color:#26384d;font-size:25px;font-weight:700;margin:0}
+.chart-container{position:relative;height:300px}
+.table thead th{background:#f1f5fa;color:#344b68;font-size:13px;font-weight:700;white-space:nowrap;padding:13px 12px}
+.table tbody td{font-size:13px;padding:12px;vertical-align:middle}
+.table-responsive{border-radius:8px}
+.btn-primary{background:#315b91;border-color:#315b91}
+.btn-primary:hover{background:#244873;border-color:#244873}
+.btn-outline-primary{color:#315b91;border-color:#315b91}
+.btn-outline-primary:hover{background:#315b91;border-color:#315b91}
+.badge-program{background:#eaf0f8;color:#315b91;font-weight:600;padding:6px 9px}
+.badge-employed{background:#e8f5ed;color:#318353;font-weight:600;padding:6px 9px}
+.badge-internship{background:#fff3e3;color:#a56b1d;font-weight:600;padding:6px 9px}
+.badge-self{background:#f1ebfa;color:#7654a8;font-weight:600;padding:6px 9px}
+.badge-dropout{background:#fbeaea;color:#bd5555;font-weight:600;padding:6px 9px}
+.badge-studying{background:#eaf0f8;color:#315b91;font-weight:600;padding:6px 9px}
+.no-data{text-align:center;color:#888;padding:25px!important}
+@media(max-width:768px){.page-shell{margin:10px;padding:17px}.page-heading{font-size:21px}.chart-container{height:260px}}
+</style>
+</head>
+
+<body>
+<div class="page-shell">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="reports-dashboard.html">Reports</a></li>
+            <li class="breadcrumb-item active">Vijetaas Reports</li>
+        </ol>
+    </nav>
+
+    <!-- PAGE HEADING -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h3 class="page-heading mb-1">
+                <i class="mdi mdi-school-outline me-2"></i>Vijetaas Reports
+            </h3>
+            <p class="page-subtitle mb-0">
+                Track academic progress, employment outcomes and career development of Vijetaas students.
+            </p>
+        </div>
+        <button class="btn btn-primary" onclick="exportCSV()">
+            <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+        </button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">
+                <i class="mdi mdi-filter-variant me-1"></i> Filter Vijetaas Records
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" onclick="resetFilters()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+            </button>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Academic Year</label>
+                <select id="yearFilter" class="form-select">
+                    <option value="">All Years</option>
+                    <option>2023-24</option>
+                    <option>2024-25</option>
+                    <option>2025-26</option>
+                    <option>2026-27</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Degree</label>
+                <select id="degreeFilter" class="form-select">
+                    <option value="">All Degrees</option>
+                    <option>Graduation</option>
+                    <option>Post Graduation</option>
+                    <option>Diploma</option>
+                    <option>Professional Course</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Stream</label>
+                <select id="streamFilter" class="form-select">
+                    <option value="">All Streams</option>
+                    <option>Arts</option>
+                    <option>Science</option>
+                    <option>Commerce</option>
+                    <option>Management</option>
+                    <option>Computer Applications</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <label class="filter-label">Career Status</label>
+                <select id="careerFilter" class="form-select">
+                    <option value="">All Career Status</option>
+                    <option>Employed</option>
+                    <option>Self-employed</option>
+                    <option>Internship</option>
+                    <option>Studying</option>
+                    <option>Dropout</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="applyFilters()">
+                    <i class="bi bi-search me-1"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#eaf0f8;color:#315b91">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Total Vijetaas</div>
+                    <h4 class="summary-value" id="totalStudents">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#eaf5ee;color:#45a477">
+                    <i class="mdi mdi-briefcase-check-outline"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Employed</div>
+                    <h4 class="summary-value" id="employedStudents">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#fff3e3;color:#e5a34b">
+                    <i class="mdi mdi-account-clock-outline"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Internship</div>
+                    <h4 class="summary-value" id="internshipStudents">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#fbeaea;color:#d66c6c">
+                    <i class="mdi mdi-account-cancel-outline"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Dropouts</div>
+                    <h4 class="summary-value" id="dropoutStudents">0</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHART ROW 1 -->
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-bar me-1"></i> Academic Year-wise Student Distribution
+                </h5>
+                <div class="chart-container">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-donut me-1"></i> Career Outcome Distribution
+                </h5>
+                <div class="chart-container">
+                    <canvas id="careerChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHART ROW 2 -->
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-school-outline me-1"></i> Degree-wise Student Distribution
+                </h5>
+                <div class="chart-container">
+                    <canvas id="degreeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-line me-1"></i> Year-wise Employment Outcomes
+                </h5>
+                <div class="chart-container">
+                    <canvas id="employmentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STREAM SUMMARY -->
+    <div class="section-card">
+        <h5 class="section-title">
+            <i class="mdi mdi-book-open-variant me-1"></i> Stream-wise Student Summary
+        </h5>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Stream</th>
+                        <th>Total Students</th>
+                        <th>Employed</th>
+                        <th>Self-employed</th>
+                        <th>Internship</th>
+                        <th>Studying</th>
+                        <th>Dropout</th>
+                    </tr>
+                </thead>
+                <tbody id="streamSummaryBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- STUDENT DETAILS -->
+    <div class="section-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <div>
+                <h5 class="section-title mb-1">
+                    <i class="mdi mdi-account-details-outline me-1"></i> Vijetaas Student Details
+                </h5>
+                <p class="text-muted small mb-0">
+                    Academic and career outcome details of individual students.
+                </p>
+            </div>
+            <div style="max-width:280px;width:100%">
+                <input type="text" id="tableSearch" class="form-control"
+                       placeholder="Search student details...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Student Name</th>
+                        <th>Degree</th>
+                        <th>Stream</th>
+                        <th>Academic Year</th>
+                        <th>Current Year / Semester</th>
+                        <th>Career Status</th>
+                        <th>Organisation / Work</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="mt-3">
+            <small class="text-muted" id="recordCount">Showing 0 records</small>
+        </div>
+    </div>
+
+    </div>
+
+<script>
+/* -----------------------------------
+   SAMPLE VIJETAAS DATA
+----------------------------------- */
+
+const vijetaasData = [
+    {name:"Ananya Sharma",degree:"Graduation",stream:"Arts",year:"2023-24",currentYear:"Final Year",career:"Employed",organisation:"ABC Foundation"},
+    {name:"Priyanka Das",degree:"Graduation",stream:"Science",year:"2023-24",currentYear:"Final Year",career:"Internship",organisation:"Tech Solutions"},
+    {name:"Sneha Gupta",degree:"Post Graduation",stream:"Management",year:"2024-25",currentYear:"2nd Semester",career:"Employed",organisation:"North Bengal Services"},
+    {name:"Moumita Sen",degree:"Graduation",stream:"Commerce",year:"2024-25",currentYear:"3rd Year",career:"Self-employed",organisation:"Home-based Business"},
+    {name:"Ritika Das",degree:"Graduation",stream:"Science",year:"2024-25",currentYear:"2nd Year",career:"Studying",organisation:"North Bengal University"},
+    {name:"Pooja Roy",degree:"Diploma",stream:"Computer Applications",year:"2024-25",currentYear:"Final Semester",career:"Internship",organisation:"Digital Hub"},
+    {name:"Kavita Sen",degree:"Graduation",stream:"Arts",year:"2025-26",currentYear:"2nd Year",career:"Employed",organisation:"Community Centre"},
+    {name:"Meena Paul",degree:"Professional Course",stream:"Management",year:"2025-26",currentYear:"1st Year",career:"Studying",organisation:"Professional Studies"},
+    {name:"Tina Roy",degree:"Graduation",stream:"Commerce",year:"2025-26",currentYear:"1st Year",career:"Dropout",organisation:"Not Applicable"},
+    {name:"Neha Das",degree:"Post Graduation",stream:"Science",year:"2025-26",currentYear:"2nd Semester",career:"Employed",organisation:"Health Services"},
+    {name:"Aditi Ghosh",degree:"Graduation",stream:"Computer Applications",year:"2025-26",currentYear:"3rd Year",career:"Self-employed",organisation:"Freelance Services"},
+    {name:"Mita Roy",degree:"Diploma",stream:"Computer Applications",year:"2026-27",currentYear:"1st Semester",career:"Internship",organisation:"IT Support Centre"},
+    {name:"Suman Das",degree:"Graduation",stream:"Arts",year:"2026-27",currentYear:"1st Year",career:"Studying",organisation:"College"},
+    {name:"Riya Paul",degree:"Graduation",stream:"Science",year:"2026-27",currentYear:"1st Year",career:"Dropout",organisation:"Not Applicable"},
+    {name:"Nandita Roy",degree:"Post Graduation",stream:"Management",year:"2026-27",currentYear:"1st Semester",career:"Employed",organisation:"Retail Management"},
+    {name:"Shreya Das",degree:"Graduation",stream:"Commerce",year:"2023-24",currentYear:"Completed",career:"Self-employed",organisation:"Small Business"}
+];
+
+let filteredData = [...vijetaasData];
+let charts = {};
+
+Chart.defaults.font.family = "Arial";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = "#666";
+
+const chartColors = ["#315b91","#45a477","#e5a34b","#8767b5","#d66c6c"];
+
+function createChart(id,config) {
+    if(charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id),config);
+}
+
+/* -----------------------------------
+   FILTERS
+----------------------------------- */
+
+function applyFilters() {
+    const year = document.getElementById("yearFilter").value;
+    const degree = document.getElementById("degreeFilter").value;
+    const stream = document.getElementById("streamFilter").value;
+    const career = document.getElementById("careerFilter").value;
+
+    filteredData = vijetaasData.filter(item =>
+        (!year || item.year === year) &&
+        (!degree || item.degree === degree) &&
+        (!stream || item.stream === stream) &&
+        (!career || item.career === career)
+    );
+
+    renderReport();
+}
+
+function resetFilters() {
+    ["yearFilter","degreeFilter","streamFilter","careerFilter","tableSearch"]
+        .forEach(id => document.getElementById(id).value = "");
+
+    filteredData = [...vijetaasData];
+    renderReport();
+}
+
+/* -----------------------------------
+   SUMMARY CARDS
+----------------------------------- */
+
+function renderSummary() {
+    const count = status => filteredData.filter(x=>x.career===status).length;
+
+    document.getElementById("totalStudents").textContent = filteredData.length;
+    document.getElementById("employedStudents").textContent = count("Employed");
+    document.getElementById("internshipStudents").textContent = count("Internship");
+    document.getElementById("dropoutStudents").textContent = count("Dropout");
+}
+
+/* -----------------------------------
+   YEAR-WISE DISTRIBUTION
+----------------------------------- */
+
+function renderYearChart() {
+    const years = ["2023-24","2024-25","2025-26","2026-27"];
+
+    const values = years.map(year =>
+        filteredData.filter(x=>x.year===year).length
+    );
+
+    createChart("yearChart",{
+        type:"bar",
+        data:{
+            labels:years,
+            datasets:[{
+                label:"Students",
+                data:values,
+                backgroundColor:"#315b91",
+                borderRadius:6,
+                maxBarThickness:42
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{legend:{display:false}},
+            scales:{
+                y:{beginAtZero:true,ticks:{precision:0},grid:{color:"#edf0f4"}},
+                x:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   CAREER OUTCOME CHART
+----------------------------------- */
+
+function renderCareerChart() {
+    const statuses = ["Employed","Self-employed","Internship","Studying","Dropout"];
+
+    const values = statuses.map(status =>
+        filteredData.filter(x=>x.career===status).length
+    );
+
+    createChart("careerChart",{
+        type:"doughnut",
+        data:{
+            labels:statuses,
+            datasets:[{
+                data:values,
+                backgroundColor:chartColors,
+                borderWidth:2,
+                borderColor:"#fff"
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            cutout:"62%",
+            plugins:{
+                legend:{
+                    position:"bottom",
+                    labels:{usePointStyle:true,padding:13}
+                }
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   DEGREE CHART
+----------------------------------- */
+
+function renderDegreeChart() {
+    const degrees = [...new Set(vijetaasData.map(x=>x.degree))];
+
+    const values = degrees.map(degree =>
+        filteredData.filter(x=>x.degree===degree).length
+    );
+
+    createChart("degreeChart",{
+        type:"bar",
+        data:{
+            labels:degrees,
+            datasets:[{
+                label:"Students",
+                data:values,
+                backgroundColor:"#45a477",
+                borderRadius:6,
+                maxBarThickness:40
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{legend:{display:false}},
+            scales:{
+                y:{beginAtZero:true,ticks:{precision:0},grid:{color:"#edf0f4"}},
+                x:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   YEAR-WISE EMPLOYMENT OUTCOMES
+----------------------------------- */
+
+function renderEmploymentChart() {
+    const years = ["2023-24","2024-25","2025-26","2026-27"];
+
+    const statuses = ["Employed","Self-employed","Internship"];
+
+    const datasets = statuses.map((status,index)=>({
+        label:status,
+        data:years.map(year=>
+            filteredData.filter(x=>x.year===year && x.career===status).length
+        ),
+        backgroundColor:chartColors[index],
+        borderRadius:5
+    }));
+
+    createChart("employmentChart",{
+        type:"bar",
+        data:{labels:years,datasets},
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{
+                legend:{position:"bottom",labels:{usePointStyle:true,padding:14}}
+            },
+            scales:{
+                y:{beginAtZero:true,ticks:{precision:0},grid:{color:"#edf0f4"}},
+                x:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   STREAM SUMMARY TABLE
+----------------------------------- */
+
+function renderStreamSummary() {
+    const streams = [...new Set(vijetaasData.map(x=>x.stream))];
+    const tbody = document.getElementById("streamSummaryBody");
+
+    if(!filteredData.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="no-data">No records found.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = streams.map(stream=>{
+        const records = filteredData.filter(x=>x.stream===stream);
+        const count = status=>records.filter(x=>x.career===status).length;
+
+        if(!records.length) return "";
+
+        return `
+            <tr>
+                <td class="fw-semibold">${escapeHTML(stream)}</td>
+                <td>${records.length}</td>
+                <td>${count("Employed")}</td>
+                <td>${count("Self-employed")}</td>
+                <td>${count("Internship")}</td>
+                <td>${count("Studying")}</td>
+                <td>${count("Dropout")}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/* -----------------------------------
+   STUDENT DETAILS TABLE
+----------------------------------- */
+
+function getCareerBadge(status) {
+    const classes = {
+        "Employed":"badge-employed",
+        "Self-employed":"badge-self",
+        "Internship":"badge-internship",
+        "Studying":"badge-studying",
+        "Dropout":"badge-dropout"
+    };
+    return classes[status] || "badge-program";
+}
+
+function renderStudentTable() {
+    const search = document.getElementById("tableSearch").value.toLowerCase();
+
+    const data = filteredData.filter(item =>
+        Object.values(item).some(value =>
+            String(value).toLowerCase().includes(search)
+        )
+    );
+
+    const tbody = document.getElementById("studentTableBody");
+
+    if(!data.length) {
+        tbody.innerHTML = `<tr><td colspan="8" class="no-data">No student records found.</td></tr>`;
+        document.getElementById("recordCount").textContent = "Showing 0 records";
+        return;
+    }
+
+    tbody.innerHTML = data.map((item,index)=>`
+        <tr>
+            <td>${index+1}</td>
+            <td class="fw-semibold">${escapeHTML(item.name)}</td>
+            <td>${escapeHTML(item.degree)}</td>
+            <td>${escapeHTML(item.stream)}</td>
+            <td>${escapeHTML(item.year)}</td>
+            <td>${escapeHTML(item.currentYear)}</td>
+            <td><span class="badge ${getCareerBadge(item.career)}">${escapeHTML(item.career)}</span></td>
+            <td>${escapeHTML(item.organisation)}</td>
+        </tr>
+    `).join("");
+
+    document.getElementById("recordCount").textContent =
+        `Showing ${data.length} of ${filteredData.length} records`;
+}
+
+/* -----------------------------------
+   CSV EXPORT
+----------------------------------- */
+
+function exportCSV() {
+    const headers = [
+        "Student Name","Degree","Stream","Academic Year",
+        "Current Year / Semester","Career Status","Organisation / Work"
+    ];
+
+    const rows = filteredData.map(item=>[
+        item.name,item.degree,item.stream,item.year,
+        item.currentYear,item.career,item.organisation
+    ]);
+
+    const csv = [headers,...rows]
+        .map(row=>row.map(value=>
+            `"${String(value).replace(/"/g,'""')}"`
+        ).join(","))
+        .join("\n");
+
+    const blob = new Blob(["\uFEFF"+csv],{
+        type:"text/csv;charset=utf-8;"
+    });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "vijetaas-reports.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+/* -----------------------------------
+   HELPERS AND MAIN RENDER
+----------------------------------- */
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g,char=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    })[char]);
+}
+
+function renderReport() {
+    renderSummary();
+    renderYearChart();
+    renderCareerChart();
+    renderDegreeChart();
+    renderEmploymentChart();
+    renderStreamSummary();
+    renderStudentTable();
+}
+
+document.getElementById("tableSearch").addEventListener("input",renderStudentTable);
+
+renderReport();
+</script>
+</body>
+</html>

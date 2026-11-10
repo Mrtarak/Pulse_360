@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Reports | Pulse 360</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    background: #f3f4f6;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.page-shell {
+    max-width: 1515px;
+    margin: 25px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 18px;
+    min-height: 600px;
+}
+
+.breadcrumb {
+    font-size: 14px;
+    margin-bottom: 22px;
+}
+
+.breadcrumb a {
+    color: #1d477f;
+    text-decoration: none;
+}
+
+.page-heading {
+    color: #1d477f;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+.page-subtitle {
+    color: #777;
+    font-size: 14px;
+}
+
+.section-card {
+    border: 1px solid #e5e9f0;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fff;
+    margin-bottom: 22px;
+}
+
+.section-title {
+    color: #1d477f;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.filter-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 7px;
+}
+
+.form-control, .form-select {
+    min-height: 40px;
+    border-color: #dce2ea;
+    font-size: 13px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #315b91;
+    box-shadow: 0 0 0 .15rem rgba(49,91,145,.12);
+}
+
+.summary-card {
+    border: 1px solid #e7ebf1;
+    border-radius: 12px;
+    padding: 18px;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    flex-shrink: 0;
+}
+
+.summary-label {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.summary-value {
+    color: #26384d;
+    font-size: 25px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+.table thead th {
+    background: #f1f5fa;
+    color: #344b68;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    padding: 13px 12px;
+}
+
+.table tbody td {
+    font-size: 13px;
+    padding: 12px;
+    vertical-align: middle;
+}
+
+.table-responsive {
+    border-radius: 8px;
+}
+
+.btn-primary {
+    background: #315b91;
+    border-color: #315b91;
+}
+
+.btn-primary:hover {
+    background: #244873;
+    border-color: #244873;
+}
+
+.btn-outline-primary {
+    color: #315b91;
+    border-color: #315b91;
+}
+
+.btn-outline-primary:hover {
+    background: #315b91;
+    border-color: #315b91;
+}
+
+.badge-program {
+    background: #eaf0f8;
+    color: #315b91;
+    font-weight: 600;
+    padding: 6px 9px;
+}
+
+.badge-type {
+    background: #edf5f0;
+    color: #39835b;
+    font-weight: 600;
+    padding: 6px 9px;
+}
+
+.no-data {
+    text-align: center;
+    color: #888;
+    padding: 25px !important;
+}
+
+@media(max-width: 768px) {
+    .page-shell {
+        margin: 10px;
+        padding: 17px;
+    }
+
+    .page-heading {
+        font-size: 21px;
+    }
+
+    .chart-container {
+        height: 260px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-shell">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="reports-dashboard.html">Reports</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Session Reports</li>
+        </ol>
+    </nav>
+
+    <!-- PAGE HEADING -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h3 class="page-heading mb-1">
+                <i class="mdi mdi-calendar-multiple me-2"></i>Session Reports
+            </h3>
+            <p class="page-subtitle mb-0">
+                View and analyse sessions conducted across programmes and centres.
+            </p>
+        </div>
+
+        <button class="btn btn-primary" onclick="exportCSV()">
+            <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+        </button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="section-title mb-0">
+                <i class="mdi mdi-filter-variant me-1"></i> Filter Sessions
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" onclick="resetFilters()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+            </button>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">From Date</label>
+                <input type="date" class="form-control" id="fromDate">
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">To Date</label>
+                <input type="date" class="form-control" id="toDate">
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Programme</label>
+                <select class="form-select" id="programmeFilter">
+                    <option value="">All Programmes</option>
+                    <option>Learning Adda</option>
+                    <option>Doosra Mauka</option>
+                    <option>Digital Shakti</option>
+                    <option>School Shyaog</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Centre</label>
+                <select class="form-select" id="centreFilter">
+                    <option value="">All Centres</option>
+                    <option>Siliguri Centre</option>
+                    <option>Matigara Centre</option>
+                    <option>Bagdogra Centre</option>
+                    <option>Jalpaiguri Centre</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="filter-label">Batch</label>
+                <select class="form-select" id="batchFilter">
+                    <option value="">All Batches</option>
+                    <option>Batch 2024-25</option>
+                    <option>Batch 2025-26</option>
+                    <option>Batch 2026-27</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6 d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="applyFilters()">
+                    <i class="bi bi-search me-1"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#eaf0f8;color:#315b91;">
+                    <i class="mdi mdi-calendar-check"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Total Sessions Conducted</div>
+                    <h4 class="summary-value" id="totalSessions">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#eaf5ee;color:#45a477;">
+                    <i class="mdi mdi-book-open-variant"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Programmes Covered</div>
+                    <h4 class="summary-value" id="totalProgrammes">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#fff3e3;color:#e5a34b;">
+                    <i class="mdi mdi-map-marker-multiple"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Centres Covered</div>
+                    <h4 class="summary-value" id="totalCentres">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-icon" style="background:#f1ebfa;color:#8767b5;">
+                    <i class="mdi mdi-chart-box"></i>
+                </div>
+                <div>
+                    <div class="summary-label">Average Sessions per Centre</div>
+                    <h4 class="summary-value" id="averageSessions">0</h4>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="row g-3">
+
+        <div class="col-lg-8">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-bar me-1"></i> Monthly Sessions Conducted
+                </h5>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-donut me-1"></i> Programme-wise Sessions
+                </h5>
+                <div class="chart-container">
+                    <canvas id="programmeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS ROW 2 -->
+    <div class="row g-3">
+
+        <div class="col-lg-6">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-bar me-1"></i> Centre-wise Sessions
+                </h5>
+                <div class="chart-container">
+                    <canvas id="centreChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="section-card">
+                <h5 class="section-title">
+                    <i class="mdi mdi-chart-line me-1"></i> Year-wise Session Comparison
+                </h5>
+                <div class="chart-container">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SESSION DETAILS TABLE -->
+    <div class="section-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <div>
+                <h5 class="section-title mb-1">
+                    <i class="mdi mdi-table me-1"></i> Session Details
+                </h5>
+                <p class="text-muted small mb-0">
+                    Detailed list of sessions conducted across programmes and centres.
+                </p>
+            </div>
+
+            <div style="max-width:280px;width:100%;">
+                <input type="text" class="form-control" id="tableSearch"
+                       placeholder="Search session details...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Session Date</th>
+                        <th>Session Name / Topic</th>
+                        <th>Programme</th>
+                        <th>Centre</th>
+                        <th>Batch</th>
+                        <th>Facilitator</th>
+                        <th>Participants Present</th>
+                    </tr>
+                </thead>
+                <tbody id="sessionTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <small class="text-muted" id="recordCount">Showing 0 records</small>
+        </div>
+    </div>
+
+    
+</div>
+
+<script>
+/* -----------------------------------
+   SAMPLE SESSION DATA
+----------------------------------- */
+
+const sessionData = [
+    {date:"2026-01-05",topic:"Communication Skills",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",facilitator:"Ananya Sen",participants:28},
+    {date:"2026-01-12",topic:"Basic Computer Skills",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2025-26",facilitator:"Rahul Das",participants:24},
+    {date:"2026-01-18",topic:"Career Guidance",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2024-25",facilitator:"Mita Roy",participants:19},
+    {date:"2026-01-22",topic:"Academic Development",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",facilitator:"Priya Sharma",participants:31},
+
+    {date:"2026-02-03",topic:"English Speaking",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",facilitator:"Ananya Sen",participants:26},
+    {date:"2026-02-09",topic:"Digital Literacy",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2025-26",facilitator:"Rahul Das",participants:22},
+    {date:"2026-02-15",topic:"Interview Preparation",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2024-25",facilitator:"Mita Roy",participants:17},
+    {date:"2026-02-21",topic:"Mathematics Support",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",facilitator:"Priya Sharma",participants:29},
+
+    {date:"2026-03-04",topic:"Personality Development",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",facilitator:"Ananya Sen",participants:27},
+    {date:"2026-03-10",topic:"Online Safety Awareness",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2025-26",facilitator:"Rahul Das",participants:23},
+    {date:"2026-03-17",topic:"Resume Writing",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2024-25",facilitator:"Mita Roy",participants:18},
+    {date:"2026-03-24",topic:"Science Learning",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",facilitator:"Priya Sharma",participants:30},
+
+    {date:"2026-04-06",topic:"Creative Writing",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",facilitator:"Ananya Sen",participants:25},
+    {date:"2026-04-13",topic:"Advanced Computer Skills",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2025-26",facilitator:"Rahul Das",participants:21},
+    {date:"2026-04-19",topic:"Workplace Readiness",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2024-25",facilitator:"Mita Roy",participants:16},
+    {date:"2026-04-26",topic:"English Grammar",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",facilitator:"Priya Sharma",participants:28},
+
+    {date:"2025-05-05",topic:"Reading Skills",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2024-25",facilitator:"Ananya Sen",participants:23},
+    {date:"2025-05-12",topic:"Computer Fundamentals",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2024-25",facilitator:"Rahul Das",participants:20},
+    {date:"2025-05-19",topic:"Career Planning",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2024-25",facilitator:"Mita Roy",participants:15},
+    {date:"2025-05-26",topic:"General Knowledge",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",facilitator:"Priya Sharma",participants:27},
+
+    {date:"2025-06-04",topic:"Spoken English",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2024-25",facilitator:"Ananya Sen",participants:24},
+    {date:"2025-06-11",topic:"Internet Awareness",programme:"Digital Shakti",centre:"Matigara Centre",batch:"Batch 2024-25",facilitator:"Rahul Das",participants:19},
+    {date:"2025-06-18",topic:"Communication at Work",programme:"Doosra Mauka",centre:"Bagdogra Centre",batch:"Batch 2024-25",facilitator:"Mita Roy",participants:16},
+    {date:"2025-06-25",topic:"Academic Support",programme:"School Shyaog",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",facilitator:"Priya Sharma",participants:26}
+];
+
+let filteredData = [...sessionData];
+let charts = {};
+
+/* -----------------------------------
+   CHART DEFAULTS
+----------------------------------- */
+
+Chart.defaults.font.family = "Arial";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = "#666";
+
+const chartColors = [
+    "#315b91",
+    "#45a477",
+    "#e5a34b",
+    "#8767b5",
+    "#d66c6c"
+];
+
+function createChart(id, config) {
+    if (charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id), config);
+}
+
+/* -----------------------------------
+   FILTER DATA
+----------------------------------- */
+
+function applyFilters() {
+    const from = document.getElementById("fromDate").value;
+    const to = document.getElementById("toDate").value;
+    const programme = document.getElementById("programmeFilter").value;
+    const centre = document.getElementById("centreFilter").value;
+    const batch = document.getElementById("batchFilter").value;
+
+    filteredData = sessionData.filter(item => {
+        return (!from || item.date >= from) &&
+               (!to || item.date <= to) &&
+               (!programme || item.programme === programme) &&
+               (!centre || item.centre === centre) &&
+               (!batch || item.batch === batch);
+    });
+
+    renderReport();
+}
+
+function resetFilters() {
+    document.getElementById("fromDate").value = "";
+    document.getElementById("toDate").value = "";
+    document.getElementById("programmeFilter").value = "";
+    document.getElementById("centreFilter").value = "";
+    document.getElementById("batchFilter").value = "";
+    document.getElementById("tableSearch").value = "";
+
+    filteredData = [...sessionData];
+    renderReport();
+}
+
+/* -----------------------------------
+   SUMMARY CARDS
+----------------------------------- */
+
+function renderSummary() {
+    const programmes = [...new Set(filteredData.map(x => x.programme))];
+    const centres = [...new Set(filteredData.map(x => x.centre))];
+
+    document.getElementById("totalSessions").textContent = filteredData.length;
+    document.getElementById("totalProgrammes").textContent = programmes.length;
+    document.getElementById("totalCentres").textContent = centres.length;
+
+    const average = centres.length
+        ? (filteredData.length / centres.length).toFixed(1)
+        : "0";
+
+    document.getElementById("averageSessions").textContent = average;
+}
+
+/* -----------------------------------
+   MONTHLY CHART
+----------------------------------- */
+
+function renderMonthlyChart() {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                    "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    const counts = Array(12).fill(0);
+
+    filteredData.forEach(item => {
+        const month = new Date(item.date + "T00:00:00").getMonth();
+        counts[month]++;
+    });
+
+    createChart("monthlyChart", {
+        type: "bar",
+        data: {
+            labels: months,
+            datasets: [{
+                label: "Sessions Conducted",
+                data: counts,
+                backgroundColor: "#315b91",
+                borderRadius: 6,
+                maxBarThickness: 35
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {display:false}
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {precision:0},
+                    grid: {color:"#edf0f4"}
+                },
+                x: {grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   PROGRAMME CHART
+----------------------------------- */
+
+function renderProgrammeChart() {
+    const names = [...new Set(filteredData.map(x => x.programme))];
+    const values = names.map(name =>
+        filteredData.filter(x => x.programme === name).length
+    );
+
+    createChart("programmeChart", {
+        type: "doughnut",
+        data: {
+            labels: names,
+            datasets: [{
+                data: values,
+                backgroundColor: chartColors,
+                borderWidth: 2,
+                borderColor: "#fff"
+            }]
+        },
+        options: {
+            responsive:true,
+            maintainAspectRatio:false,
+            cutout:"62%",
+            plugins:{
+                legend:{
+                    position:"bottom",
+                    labels:{usePointStyle:true, padding:15}
+                }
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   CENTRE CHART
+----------------------------------- */
+
+function renderCentreChart() {
+    const names = [...new Set(filteredData.map(x => x.centre))];
+    const values = names.map(name =>
+        filteredData.filter(x => x.centre === name).length
+    );
+
+    createChart("centreChart", {
+        type:"bar",
+        data:{
+            labels:names,
+            datasets:[{
+                label:"Sessions",
+                data:values,
+                backgroundColor:"#45a477",
+                borderRadius:6,
+                maxBarThickness:38
+            }]
+        },
+        options:{
+            indexAxis:"y",
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{legend:{display:false}},
+            scales:{
+                x:{
+                    beginAtZero:true,
+                    ticks:{precision:0},
+                    grid:{color:"#edf0f4"}
+                },
+                y:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   YEAR-WISE CHART
+   This chart keeps all years visible
+   and respects programme/centre/batch.
+----------------------------------- */
+
+function renderYearChart() {
+    const programme = document.getElementById("programmeFilter").value;
+    const centre = document.getElementById("centreFilter").value;
+    const batch = document.getElementById("batchFilter").value;
+
+    const yearData = sessionData.filter(item =>
+        (!programme || item.programme === programme) &&
+        (!centre || item.centre === centre) &&
+        (!batch || item.batch === batch)
+    );
+
+    const years = [...new Set(yearData.map(item =>
+        item.date.substring(0,4)
+    ))].sort();
+
+    const values = years.map(year =>
+        yearData.filter(item => item.date.startsWith(year)).length
+    );
+
+    createChart("yearChart", {
+        type:"line",
+        data:{
+            labels:years,
+            datasets:[{
+                label:"Sessions Conducted",
+                data:values,
+                borderColor:"#8767b5",
+                backgroundColor:"rgba(135,103,181,.12)",
+                fill:true,
+                tension:.35,
+                pointRadius:5,
+                pointBackgroundColor:"#8767b5"
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{legend:{display:false}},
+            scales:{
+                y:{
+                    beginAtZero:true,
+                    ticks:{precision:0},
+                    grid:{color:"#edf0f4"}
+                },
+                x:{grid:{display:false}}
+            }
+        }
+    });
+}
+
+/* -----------------------------------
+   SESSION TABLE
+----------------------------------- */
+
+function renderTable() {
+    const search = document.getElementById("tableSearch")
+        .value.toLowerCase();
+
+    const data = filteredData.filter(item =>
+        Object.values(item).some(value =>
+            String(value).toLowerCase().includes(search)
+        )
+    );
+
+    const tbody = document.getElementById("sessionTableBody");
+
+    if (!data.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="no-data">
+                    No session records found.
+                </td>
+            </tr>`;
+        document.getElementById("recordCount").textContent =
+            "Showing 0 records";
+        return;
+    }
+
+    tbody.innerHTML = data.map((item,index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${formatDate(item.date)}</td>
+            <td class="fw-semibold">${escapeHTML(item.topic)}</td>
+            <td><span class="badge badge-program">${escapeHTML(item.programme)}</span></td>
+            <td>${escapeHTML(item.centre)}</td>
+            <td>${escapeHTML(item.batch)}</td>
+            <td>${escapeHTML(item.facilitator)}</td>
+            <td class="text-center fw-semibold">${item.participants}</td>
+        </tr>
+    `).join("");
+
+    document.getElementById("recordCount").textContent =
+        `Showing ${data.length} of ${filteredData.length} records`;
+}
+
+function formatDate(date) {
+    return new Date(date + "T00:00:00").toLocaleDateString("en-IN", {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+    })[char]);
+}
+
+/* -----------------------------------
+   CSV EXPORT
+----------------------------------- */
+
+function exportCSV() {
+    const headers = [
+        "Session Date",
+        "Session Name / Topic",
+        "Programme",
+        "Centre",
+        "Batch",
+        "Facilitator",
+        "Participants Present"
+    ];
+
+    const rows = filteredData.map(item => [
+        item.date,
+        item.topic,
+        item.programme,
+        item.centre,
+        item.batch,
+        item.facilitator,
+        item.participants
+    ]);
+
+    const csv = [headers, ...rows]
+        .map(row => row.map(value =>
+            `"${String(value).replace(/"/g,'""')}"`
+        ).join(","))
+        .join("\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {
+        type:"text/csv;charset=utf-8;"
+    });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "session-reports.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+/* -----------------------------------
+   MAIN RENDER
+----------------------------------- */
+
+function renderReport() {
+    renderSummary();
+    renderMonthlyChart();
+    renderProgrammeChart();
+    renderCentreChart();
+    renderYearChart();
+    renderTable();
+}
+
+document.getElementById("tableSearch").addEventListener("input", renderTable);
+
+renderReport();
+</script>
+
+</body>
+</html>

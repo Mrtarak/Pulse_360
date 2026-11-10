@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Reports | Pulse 360</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background: #f3f4f6;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .page-shell {
+            max-width: 1515px;
+            margin: 25px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 18px;
+            min-height: 600px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.05);
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .breadcrumb a {
+            color: #1d477f;
+            text-decoration: none;
+        }
+
+        .page-title {
+            color: #1d477f;
+            font-weight: 700;
+            font-size: 25px;
+        }
+
+        .page-subtitle {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .filter-card,
+        .report-card {
+            border: 1px solid #e4e8ef;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,.035);
+        }
+
+        .filter-card {
+            padding: 20px;
+        }
+
+        .report-card {
+            padding: 20px;
+            height: 100%;
+        }
+
+        .section-heading {
+            color: #1d477f;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-control,
+        .form-select {
+            font-size: 13px;
+            min-height: 39px;
+            border-color: #d8dee8;
+        }
+
+        .btn-primary {
+            background: #1d477f;
+            border-color: #1d477f;
+        }
+
+        .btn-primary:hover {
+            background: #15365f;
+            border-color: #15365f;
+        }
+
+        .btn-outline-primary {
+            color: #1d477f;
+            border-color: #1d477f;
+        }
+
+        .btn-outline-primary:hover {
+            background: #1d477f;
+            color: #fff;
+        }
+
+        .summary-card {
+            border: 1px solid #e5e9f0;
+            border-radius: 12px;
+            padding: 19px;
+            background: #fff;
+            height: 100%;
+        }
+
+        .summary-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .icon-blue {
+            background: #e8efff;
+            color: #315b91;
+        }
+
+        .icon-green {
+            background: #e5f7ed;
+            color: #45a477;
+        }
+
+        .icon-orange {
+            background: #fff1df;
+            color: #e5a34b;
+        }
+
+        .icon-purple {
+            background: #f1eaff;
+            color: #8767b5;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            font-size: 25px;
+            font-weight: 700;
+            color: #1d477f;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .table thead th {
+            background: #eef2f8;
+            color: #1d477f;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .badge-active {
+            background: #e3f6eb;
+            color: #198754;
+        }
+
+        .badge-completed {
+            background: #e8efff;
+            color: #2454a6;
+        }
+
+        .badge-dropout {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+
+        .table-responsive {
+            border-radius: 8px;
+        }
+
+        .record-count {
+            font-size: 13px;
+            color: #777;
+        }
+
+        @media(max-width: 768px) {
+            .page-shell {
+                margin: 10px;
+                padding: 18px;
+            }
+
+            .page-title {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-shell">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="dashboard.html">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="reports-dashboard.html">Reports</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Enrollment Reports
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h3 class="page-title">
+                <i class="mdi mdi-account-group-outline me-2"></i>
+                Enrollment Reports
+            </h3>
+            <p class="page-subtitle mb-0">
+                Analyse participant enrollment across programmes, centres and locations.
+            </p>
+        </div>
+
+        <button class="btn btn-success btn-sm" onclick="exportCSV()">
+            <i class="mdi mdi-microsoft-excel me-1"></i>
+            Export Excel
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-card mb-4">
+
+        <h5 class="section-heading">
+            <i class="mdi mdi-filter-outline me-2"></i>
+            Report Filters
+        </h5>
+
+        <div class="row g-3">
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">From Date</label>
+                <input type="date" class="form-control" id="fromDate">
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">To Date</label>
+                <input type="date" class="form-control" id="toDate">
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Programme</label>
+                <select class="form-select" id="programFilter">
+                    <option value="">All Programmes</option>
+                    <option value="Learning Adda">Learning Adda</option>
+                    <option value="Doosra Mauka">Doosra Mauka</option>
+                    <option value="Digital Shakti">Digital Shakti</option>
+                    <option value="Vijetaas">Vijetaas</option>
+                    <option value="School Sahyog">School Sahyog</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Centre</label>
+                <select class="form-select" id="centerFilter">
+                    <option value="">All Centres</option>
+                    <option value="Siliguri Centre">Siliguri Centre</option>
+                    <option value="Kolkata Centre">Kolkata Centre</option>
+                    <option value="Jalpaiguri Centre">Jalpaiguri Centre</option>
+                    <option value="Darjeeling Centre">Darjeeling Centre</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Batch</label>
+                <select class="form-select" id="batchFilter">
+                    <option value="">All Batches</option>
+                    <option value="Batch A">Batch A</option>
+                    <option value="Batch B">Batch B</option>
+                    <option value="Batch C">Batch C</option>
+                    <option value="Batch D">Batch D</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Session</label>
+                <select class="form-select" id="sessionFilter">
+                    <option value="">All Sessions</option>
+                    <option value="2024-2025">2024-2025</option>
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2026-2027">2026-2027</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Gender</label>
+                <select class="form-select" id="genderFilter">
+                    <option value="">All</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Participant Group</label>
+                <select class="form-select" id="groupFilter">
+                    <option value="">All Groups</option>
+                    <option value="Children">Children</option>
+                    <option value="Women">Women</option>
+                    <option value="Youth">Youth</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-primary btn-sm px-4" onclick="applyFilters()">
+                <i class="mdi mdi-filter-check me-1"></i>
+                Apply Filters
+            </button>
+
+            <button class="btn btn-outline-secondary btn-sm px-4" onclick="resetFilters()">
+                <i class="mdi mdi-refresh me-1"></i>
+                Reset
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-blue">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div class="summary-label">Total Enrolled</div>
+                <div class="summary-value" id="totalEnrolled">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-green">
+                    <i class="mdi mdi-account-plus"></i>
+                </div>
+                <div class="summary-label">New Enrollments</div>
+                <div class="summary-value" id="newEnrollments">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-purple">
+                    <i class="mdi mdi-gender-female"></i>
+                </div>
+                <div class="summary-label">Female Participants</div>
+                <div class="summary-value" id="femaleParticipants">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-orange">
+                    <i class="mdi mdi-map-marker-multiple"></i>
+                </div>
+                <div class="summary-label">Total Centres</div>
+                <div class="summary-value" id="totalCenters">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-blue">
+                    <i class="mdi mdi-book-multiple"></i>
+                </div>
+                <div class="summary-label">Programmes</div>
+                <div class="summary-value" id="totalPrograms">0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">Year-wise Enrollment Growth</h5>
+                <div class="chart-container">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">Programme-wise Enrollment</h5>
+                <div class="chart-container">
+                    <canvas id="programChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">Centre-wise Enrollment</h5>
+                <div class="chart-container">
+                    <canvas id="centerChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">Gender-wise Distribution</h5>
+                <div class="chart-container">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">Participant Group Distribution</h5>
+                <div class="chart-container">
+                    <canvas id="groupChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">Location-wise Enrollment</h5>
+                <div class="chart-container">
+                    <canvas id="locationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Participant Details -->
+    <div class="report-card">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h5 class="section-heading mb-1">Participant Enrollment Details</h5>
+                <span class="record-count" id="recordCount">Showing 0 records</span>
+            </div>
+
+            <div style="max-width:250px;width:100%;">
+                <input type="text" class="form-control" id="tableSearch"
+                       placeholder="Search participant...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Participant Name</th>
+                        <th>Programme</th>
+                        <th>Centre</th>
+                        <th>Batch</th>
+                        <th>Session</th>
+                        <th>Enrollment Date</th>
+                        <th>Gender</th>
+                        <th>Group</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="enrollmentTable"></tbody>
+            </table>
+        </div>
+
+        <div id="noRecords" class="text-center text-muted py-4 d-none">
+            <i class="mdi mdi-database-search-outline fs-2"></i>
+            <p class="mb-0">No enrollment records found.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Demo enrollment data
+    const enrollmentData = [
+        {name:"Aarohi Sharma",program:"Learning Adda",center:"Siliguri Centre",batch:"Batch A",session:"2024-2025",date:"2024-06-15",gender:"Female",group:"Children",status:"Active",location:"Siliguri"},
+        {name:"Riya Das",program:"Vijetaas",center:"Kolkata Centre",batch:"Batch B",session:"2024-2025",date:"2024-08-10",gender:"Female",group:"Youth",status:"Active",location:"Kolkata"},
+        {name:"Rahul Roy",program:"Digital Shakti",center:"Jalpaiguri Centre",batch:"Batch A",session:"2024-2025",date:"2024-09-20",gender:"Male",group:"Children",status:"Completed",location:"Jalpaiguri"},
+        {name:"Priya Singh",program:"Doosra Mauka",center:"Siliguri Centre",batch:"Batch C",session:"2025-2026",date:"2025-04-12",gender:"Female",group:"Women",status:"Active",location:"Siliguri"},
+        {name:"Ananya Roy",program:"Learning Adda",center:"Darjeeling Centre",batch:"Batch B",session:"2025-2026",date:"2025-05-18",gender:"Female",group:"Children",status:"Active",location:"Darjeeling"},
+        {name:"Amit Das",program:"School Sahyog",center:"Kolkata Centre",batch:"Batch D",session:"2025-2026",date:"2025-06-22",gender:"Male",group:"Youth",status:"Dropout",location:"Kolkata"},
+        {name:"Sneha Gupta",program:"Vijetaas",center:"Jalpaiguri Centre",batch:"Batch A",session:"2025-2026",date:"2025-08-05",gender:"Female",group:"Youth",status:"Active",location:"Jalpaiguri"},
+        {name:"Pooja Sharma",program:"Doosra Mauka",center:"Darjeeling Centre",batch:"Batch C",session:"2025-2026",date:"2025-10-14",gender:"Female",group:"Women",status:"Completed",location:"Darjeeling"},
+        {name:"Suman Das",program:"Digital Shakti",center:"Siliguri Centre",batch:"Batch D",session:"2026-2027",date:"2026-04-08",gender:"Male",group:"Youth",status:"Active",location:"Siliguri"},
+        {name:"Moumita Sen",program:"Learning Adda",center:"Kolkata Centre",batch:"Batch A",session:"2026-2027",date:"2026-04-19",gender:"Female",group:"Children",status:"Active",location:"Kolkata"},
+        {name:"Neha Roy",program:"Vijetaas",center:"Darjeeling Centre",batch:"Batch B",session:"2026-2027",date:"2026-05-11",gender:"Female",group:"Youth",status:"Active",location:"Darjeeling"},
+        {name:"Karan Singh",program:"School Sahyog",center:"Jalpaiguri Centre",batch:"Batch D",session:"2026-2027",date:"2026-06-16",gender:"Male",group:"Children",status:"Active",location:"Jalpaiguri"},
+        {name:"Meena Devi",program:"Doosra Mauka",center:"Siliguri Centre",batch:"Batch C",session:"2026-2027",date:"2026-07-02",gender:"Female",group:"Women",status:"Active",location:"Siliguri"},
+        {name:"Arjun Paul",program:"Digital Shakti",center:"Kolkata Centre",batch:"Batch A",session:"2026-2027",date:"2026-08-21",gender:"Male",group:"Youth",status:"Completed",location:"Kolkata"},
+        {name:"Ishita Roy",program:"Learning Adda",center:"Jalpaiguri Centre",batch:"Batch B",session:"2026-2026",date:"2026-09-10",gender:"Female",group:"Children",status:"Active",location:"Jalpaiguri"}
+    ];
+
+    let filteredData = [...enrollmentData];
+    let charts = {};
+
+    // Previous chart colour palette
+    const chartColors = [
+        '#315b91',
+        '#45a477',
+        '#e5a34b',
+        '#8767b5',
+        '#d66c6c'
+    ];
+
+    // Shared chart styling
+    const commonChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 18,
+                    boxWidth: 8,
+                    boxHeight: 8,
+                    font: {
+                        size: 11
+                    }
+                }
+            }
+        }
+    };
+
+    // Count records by a field
+    function getCounts(data, key) {
+        const counts = {};
+
+        data.forEach(item => {
+            const value = item[key] || 'Not specified';
+            counts[value] = (counts[value] || 0) + 1;
+        });
+
+        return counts;
+    }
+
+    // Destroy old chart before drawing updated chart
+    function destroyChart(id) {
+        if (charts[id]) {
+            charts[id].destroy();
+        }
+    }
+
+    // Previous bar chart style
+    function createBarChart(id, labels, values, horizontal = false) {
+        destroyChart(id);
+
+        const options = {
+            ...commonChartOptions,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#edf0f4'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: horizontal ? '#edf0f4' : 'transparent'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        };
+
+        if (horizontal) {
+            options.indexAxis = 'y';
+        }
+
+        charts[id] = new Chart(document.getElementById(id), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Participants',
+                    data: values,
+                    backgroundColor: chartColors,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    barThickness: 'flex',
+                    maxBarThickness: 38
+                }]
+            },
+            options: options
+        });
+    }
+
+    // Previous doughnut chart style
+    function createDoughnutChart(id, labels, values) {
+        destroyChart(id);
+
+        charts[id] = new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: chartColors,
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                cutout: '62%'
+            }
+        });
+    }
+
+    // Previous pie chart style
+    function createPieChart(id, labels, values) {
+        destroyChart(id);
+
+        charts[id] = new Chart(document.getElementById(id), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: chartColors,
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: commonChartOptions
+        });
+    }
+
+    // Update all report cards, charts and table
+    function updateReport(data) {
+
+        // Summary cards
+        document.getElementById('totalEnrolled').textContent = data.length;
+
+        const currentYear = new Date().getFullYear();
+
+        const newCount = data.filter(item =>
+            new Date(item.date + 'T00:00:00').getFullYear() === currentYear
+        ).length;
+
+        document.getElementById('newEnrollments').textContent = newCount;
+
+        document.getElementById('femaleParticipants').textContent =
+            data.filter(item => item.gender === 'Female').length;
+
+        document.getElementById('totalCenters').textContent =
+            new Set(data.map(item => item.center)).size;
+
+        document.getElementById('totalPrograms').textContent =
+            new Set(data.map(item => item.program)).size;
+
+        // Year-wise Enrollment Growth - Bar chart
+        const yearCounts = {};
+
+        data.forEach(item => {
+            const year = item.date.substring(0, 4);
+            yearCounts[year] = (yearCounts[year] || 0) + 1;
+        });
+
+        const years = Object.keys(yearCounts).sort();
+
+        createBarChart(
+            'yearChart',
+            years,
+            years.map(year => yearCounts[year])
+        );
+
+        // Programme-wise Enrollment - Doughnut chart
+        const programCounts = getCounts(data, 'program');
+
+        createDoughnutChart(
+            'programChart',
+            Object.keys(programCounts),
+            Object.values(programCounts)
+        );
+
+        // Centre-wise Enrollment - Horizontal bar chart
+        const centerCounts = getCounts(data, 'center');
+
+        createBarChart(
+            'centerChart',
+            Object.keys(centerCounts),
+            Object.values(centerCounts),
+            true
+        );
+
+        // Gender-wise Distribution - Pie chart
+        const genderCounts = getCounts(data, 'gender');
+
+        createPieChart(
+            'genderChart',
+            Object.keys(genderCounts),
+            Object.values(genderCounts)
+        );
+
+        // Participant Group Distribution - Bar chart
+        const groupCounts = getCounts(data, 'group');
+
+        createBarChart(
+            'groupChart',
+            Object.keys(groupCounts),
+            Object.values(groupCounts)
+        );
+
+        // Location-wise Enrollment - Bar chart
+        const locationCounts = getCounts(data, 'location');
+
+        createBarChart(
+            'locationChart',
+            Object.keys(locationCounts),
+            Object.values(locationCounts)
+        );
+
+        renderTable(data);
+    }
+
+    // Format date for display
+    function formatDate(dateString) {
+        const parts = dateString.split('-');
+        return parts[2] + '-' + parts[1] + '-' + parts[0];
+    }
+
+    // Render participant table
+    function renderTable(data) {
+
+        const tbody = document.getElementById('enrollmentTable');
+        const search = document.getElementById('tableSearch').value.toLowerCase();
+
+        const searchedData = data.filter(item =>
+            item.name.toLowerCase().includes(search) ||
+            item.program.toLowerCase().includes(search) ||
+            item.center.toLowerCase().includes(search)
+        );
+
+        tbody.innerHTML = '';
+
+        document.getElementById('recordCount').textContent =
+            'Showing ' + searchedData.length + ' of ' + data.length + ' records';
+
+        document.getElementById('noRecords').classList.toggle(
+            'd-none',
+            searchedData.length !== 0
+        );
+
+        searchedData.forEach((item, index) => {
+
+            let badgeClass = 'badge-active';
+
+            if (item.status === 'Completed') {
+                badgeClass = 'badge-completed';
+            } else if (item.status === 'Dropout') {
+                badgeClass = 'badge-dropout';
+            }
+
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.program}</td>
+                    <td>${item.center}</td>
+                    <td>${item.batch}</td>
+                    <td>${item.session}</td>
+                    <td>${formatDate(item.date)}</td>
+                    <td>${item.gender}</td>
+                    <td>${item.group}</td>
+                    <td>
+                        <span class="badge ${badgeClass}">
+                            ${item.status}
+                        </span>
+                    </td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Apply all filters
+    function applyFilters() {
+
+        const fromDate = document.getElementById('fromDate').value;
+        const toDate = document.getElementById('toDate').value;
+
+        const program = document.getElementById('programFilter').value;
+        const center = document.getElementById('centerFilter').value;
+        const batch = document.getElementById('batchFilter').value;
+        const session = document.getElementById('sessionFilter').value;
+        const gender = document.getElementById('genderFilter').value;
+        const group = document.getElementById('groupFilter').value;
+
+        if (fromDate && toDate && fromDate > toDate) {
+            alert('To Date should not be earlier than From Date.');
+            return;
+        }
+
+        filteredData = enrollmentData.filter(item => {
+
+            const dateMatch =
+                (!fromDate || item.date >= fromDate) &&
+                (!toDate || item.date <= toDate);
+
+            return dateMatch &&
+                (!program || item.program === program) &&
+                (!center || item.center === center) &&
+                (!batch || item.batch === batch) &&
+                (!session || item.session === session) &&
+                (!gender || item.gender === gender) &&
+                (!group || item.group === group);
+        });
+
+        updateReport(filteredData);
+    }
+
+    // Reset all filters
+    function resetFilters() {
+
+        document.getElementById('fromDate').value = '';
+        document.getElementById('toDate').value = '';
+        document.getElementById('programFilter').value = '';
+        document.getElementById('centerFilter').value = '';
+        document.getElementById('batchFilter').value = '';
+        document.getElementById('sessionFilter').value = '';
+        document.getElementById('genderFilter').value = '';
+        document.getElementById('groupFilter').value = '';
+        document.getElementById('tableSearch').value = '';
+
+        filteredData = [...enrollmentData];
+
+        updateReport(filteredData);
+    }
+
+    // Search table records
+    document.getElementById('tableSearch').addEventListener('input', function() {
+        renderTable(filteredData);
+    });
+
+    // Export filtered records as CSV
+    function exportCSV() {
+
+        if (filteredData.length === 0) {
+            alert('No records available to export.');
+            return;
+        }
+
+        const headers = [
+            'Participant Name',
+            'Programme',
+            'Centre',
+            'Batch',
+            'Session',
+            'Enrollment Date',
+            'Gender',
+            'Participant Group',
+            'Status',
+            'Location'
+        ];
+
+        const rows = filteredData.map(item => [
+            item.name,
+            item.program,
+            item.center,
+            item.batch,
+            item.session,
+            item.date,
+            item.gender,
+            item.group,
+            item.status,
+            item.location
+        ]);
+
+        const csvContent = [headers, ...rows]
+            .map(row => row.map(value =>
+                '"' + String(value).replace(/"/g, '""') + '"'
+            ).join(','))
+            .join('\n');
+
+        const blob = new Blob(
+            ['\uFEFF' + csvContent],
+            { type: 'text/csv;charset=utf-8;' }
+        );
+
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+
+        link.href = url;
+        link.download = 'Enrollment_Report.csv';
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+    }
+
+    // Initial page load
+    updateReport(filteredData);
+
+</script>
+
+</body>
+</html>

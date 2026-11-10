@@ -1,6 +1,34 @@
 <?php
 
 use Config\CorePrograms;
+
+// Permissions loaded during login.
+$directRights = session()->get('User_Rights');
+$directRights = is_array($directRights) ? $directRights : [];
+
+$visibleRights = session()->get('User_Visible_Rights');
+$visibleRights = is_array($visibleRights) ? $visibleRights : [];
+
+$isSuperAdmin = session()->get('Is_Super_Admin') === true;
+
+// Direct rights control individual menu links.
+$hasRight = static function (string $rightKey) use ($directRights, $isSuperAdmin): bool {
+  return $isSuperAdmin || in_array($rightKey, $directRights, true);
+};
+
+// Visible rights control parent menus and menu categories.
+$hasVisibleRight = static function (string $rightKey) use ($visibleRights, $isSuperAdmin): bool {
+  return $isSuperAdmin || in_array($rightKey, $visibleRights, true);
+};
+
+$hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
+  foreach ($rightKeys as $rightKey) {
+    if ($hasRight($rightKey)) {
+      return true;
+    }
+  }
+  return false;
+};
 ?>
 
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
@@ -21,444 +49,554 @@ use Config\CorePrograms;
     <!-- =========================================================
          SETTINGS
     ========================================================== -->
-    <li class="nav-item nav-category">SETTINGS</li>
+    <?php if ($hasAnyRight([
+      'program_themes',
+      'manage_programs_page',
+      'manage_centers',
+      'manage_batches',
+      'goal_types',
+      'goals',
+      'roles',
+      'assign_rights',
+      'manage_users'
+    ])): ?>
+      <li class="nav-item nav-category">SETTINGS</li>
+    <?php endif; ?>
 
 
-    <!-- =========================================================
+    <?php if ($hasVisibleRight('manage_programs_group') && $hasAnyRight(['program_themes', 'manage_programs_page'])): ?>
+      <!-- =========================================================
          MANAGE PROGRAMS
     ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#programs"
-        aria-expanded="false">
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#programs"
+          aria-expanded="false">
 
-        <i class="mdi mdi-folder-multiple menu-icon"></i>
-        <span class="menu-title">Manage Programs</span>
-        <i class="menu-arrow"></i>
+          <i class="mdi mdi-folder-multiple menu-icon"></i>
+          <span class="menu-title">Manage Programs</span>
+          <i class="menu-arrow"></i>
 
-      </a>
+        </a>
 
-      <div class="collapse" id="programs">
+        <div class="collapse" id="programs">
 
-        <ul class="nav flex-column sub-menu">
+          <ul class="nav flex-column sub-menu">
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('program_theme') ?>">
-              Program Themes
-            </a>
-          </li>
+            <?php if ($hasRight('program_themes')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('program_theme') ?>">
+                  Program Themes
+                </a>
+              </li>
+            <?php endif; ?>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('programs') ?>">
-              Manage Programs
-            </a>
-          </li>
+            <?php if ($hasRight('manage_programs_page')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('programs') ?>">
+                  Manage Programs
+                </a>
+              </li>
+            <?php endif; ?>
 
-        </ul>
+          </ul>
 
-      </div>
+        </div>
 
-    </li>
+      </li>
 
 
-    <!-- =========================================================
+    <?php endif; ?>
+
+    <?php if ($hasRight('manage_centers')): ?>
+      <!-- =========================================================
          MANAGE CENTERS
     ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        href="<?= site_url('center') ?>">
+        <a class="nav-link"
+          href="<?= site_url('center') ?>">
 
-        <i class="mdi mdi-map-marker-radius menu-icon"></i>
-        <span class="menu-title">Manage Centers</span>
+          <i class="mdi mdi-map-marker-radius menu-icon"></i>
+          <span class="menu-title">Manage Centers</span>
 
-      </a>
+        </a>
 
-    </li>
+      </li>
 
 
-    <!-- =========================================================
+    <?php endif; ?>
+
+    <?php if ($hasRight('manage_batches')): ?>
+      <!-- =========================================================
          MANAGE BATCHES
     ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        href="<?= site_url('batches') ?>">
+        <a class="nav-link"
+          href="<?= site_url('batches') ?>">
 
-        <i class="mdi mdi-calendar-clock menu-icon"></i>
-        <span class="menu-title">Manage Batches</span>
+          <i class="mdi mdi-calendar-clock menu-icon"></i>
+          <span class="menu-title">Manage Batches</span>
 
-      </a>
+        </a>
 
-    </li>
+      </li>
 
 
-    <!-- =========================================================
+    <?php endif; ?>
+
+    <?php if ($hasRight('goal_types')): ?>
+      <!-- =========================================================
          GOAL TYPES
     ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        href="<?= site_url('goals/types') ?>">
+        <a class="nav-link"
+          href="<?= site_url('goals/types') ?>">
 
-        <i class="mdi mdi-calendar-multiselect menu-icon"></i>
-        <span class="menu-title">Goal Types</span>
+          <i class="mdi mdi-calendar-multiselect menu-icon"></i>
+          <span class="menu-title">Goal Types</span>
 
-      </a>
+        </a>
 
-    </li>
+      </li>
 
 
-    <!-- =========================================================
+    <?php endif; ?>
+
+    <?php if ($hasRight('goals')): ?>
+      <!-- =========================================================
          GOALS
     ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        href="<?= site_url('goals') ?>">
+        <a class="nav-link"
+          href="<?= site_url('goals') ?>">
 
-        <i class="mdi mdi-target menu-icon"></i>
-        <span class="menu-title">Goals</span>
+          <i class="mdi mdi-target menu-icon"></i>
+          <span class="menu-title">Goals</span>
 
-      </a>
+        </a>
 
-    </li>
+      </li>
 
-    <!-- =========================================================
+    <?php endif; ?>
+
+    <?php if ($hasVisibleRight('role_rights') && $hasAnyRight(['roles', 'assign_rights'])): ?>
+      <!-- =========================================================
      MANAGE ROLE & RIGHTS
 ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#roleRights"
-        aria-expanded="false">
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#roleRights"
+          aria-expanded="false">
 
-        <i class="mdi mdi-shield-account menu-icon"></i>
-        <span class="menu-title">Role & Rights </span>
-        <i class="menu-arrow"></i>
+          <i class="mdi mdi-shield-account menu-icon"></i>
+          <span class="menu-title">Role & Rights </span>
+          <i class="menu-arrow"></i>
 
-      </a>
+        </a>
 
-      <div class="collapse" id="roleRights">
+        <div class="collapse" id="roleRights">
 
-        <ul class="nav flex-column sub-menu">
+          <ul class="nav flex-column sub-menu">
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('roles') ?>">
-              Role
-            </a>
-          </li>
+            <?php if ($hasRight('roles')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('roles') ?>">
+                  Role
+                </a>
+              </li>
+            <?php endif; ?>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('roles/assign-rights') ?>">
-              Assign Right
-            </a>
-          </li>
+            <?php if ($hasRight('assign_rights')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('roles/assign-rights') ?>">
+                  Assign Right
+                </a>
+              </li>
+            <?php endif; ?>
 
-        </ul>
+          </ul>
 
-      </div>
+        </div>
 
-    </li>
+      </li>
 
 
-    <!-- =========================================================
+    <?php endif; ?>
+
+    <?php if ($hasRight('manage_users')): ?>
+      <!-- =========================================================
      MANAGE USERS
       ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        href="<?= site_url('users') ?>">
+        <a class="nav-link"
+          href="<?= site_url('users') ?>">
 
-        <i class="mdi mdi-account-multiple menu-icon"></i>
-        <span class="menu-title">Manage Users</span>
+          <i class="mdi mdi-account-multiple menu-icon"></i>
+          <span class="menu-title">Manage Users</span>
 
-      </a>
+        </a>
 
-    </li>
+      </li>
 
+
+    <?php endif; ?>
 
     <!-- =========================================================
          PROGRAM
     ========================================================== -->
-    <li class="nav-item nav-category">PROGRAM</li>
+    <?php if ($hasAnyRight([
+      'vijetaas_students',
+      'learning_adda_students',
+      'learning_adda_assessment',
+      'learning_adda_attendance',
+      'learning_adda_fees',
+      'school_sahyog_students',
+      'school_sahyog_assessment',
+      'school_sahyog_attendance',
+      'school_sahyog_fees',
+      'digital_shakti_students',
+      'digital_shakti_assessment',
+      'digital_shakti_attendance',
+      'digital_shakti_fees',
+      'doosra_mauka_students',
+      'doosra_mauka_assessment',
+      'doosra_mauka_attendance',
+      'doosra_mauka_fees'
+    ])): ?>
+      <li class="nav-item nav-category">PROGRAM</li>
+    <?php endif; ?>
 
 
-    <!-- =========================================================
+    <?php if ($hasVisibleRight('project_vijetaas') && $hasRight('vijetaas_students')): ?>
+      <!-- =========================================================
          PROJECT VIJETAAS
     ========================================================== -->
-    <li class="nav-item">
+      <li class="nav-item">
+
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#vijetaasProgramSubmenu"
+          aria-expanded="false">
 
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#vijetaasProgramSubmenu"
-        aria-expanded="false">
+          <i class="mdi mdi-account-group menu-icon"></i>
+          <span class="menu-title">Project Vijetaas</span>
+          <i class="menu-arrow"></i>
 
-        <i class="mdi mdi-account-group menu-icon"></i>
-        <span class="menu-title">Project Vijetaas</span>
-        <i class="menu-arrow"></i>
+        </a>
 
-      </a>
 
+        <div class="collapse" id="vijetaasProgramSubmenu">
 
-      <div class="collapse" id="vijetaasProgramSubmenu">
+          <ul class="nav flex-column sub-menu">
 
-        <ul class="nav flex-column sub-menu">
+            <!-- All Students -->
+            <?php if ($hasRight('vijetaas_students')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('students/vijetaas') ?>">
+                  All Students
+                </a>
+              </li>
+            <?php endif; ?>
 
-          <!-- All Students -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('students/vijetaas') ?>">
-              All Students
-            </a>
-          </li>
 
+          </ul>
 
-        </ul>
+        </div>
 
-      </div>
+      </li>
 
-    </li>
 
+    <?php endif; ?>
 
-    <!-- LEARNING ADDA -->
-    <li class="nav-item">
+    <?php if ($hasVisibleRight('learning_adda') && $hasAnyRight(['learning_adda_students', 'learning_adda_assessment', 'learning_adda_attendance', 'learning_adda_fees'])): ?>
+      <!-- LEARNING ADDA -->
+      <li class="nav-item">
 
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#learningAddaSubmenu"
-        aria-expanded="false">
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#learningAddaSubmenu"
+          aria-expanded="false">
+
+          <!-- Learning Adda -->
+          <i class="mdi mdi-book-open-page-variant menu-icon"></i>
+          <span class="menu-title">Learning Adda</span>
+          <i class="menu-arrow"></i>
+
+        </a>
+
+        <div class="collapse" id="learningAddaSubmenu">
+
+          <ul class="nav flex-column sub-menu">
+
+            <!-- All Students -->
+            <?php if ($hasRight('learning_adda_students')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('students/learning_adda') ?>">
+                  All Students
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Assessment -->
+            <?php if ($hasRight('learning_adda_assessment')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('assessment/learning-adda') ?>">
+                  Assessment
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Attendance -->
+            <?php if ($hasRight('learning_adda_attendance')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('attendance/class?program_id=' . CorePrograms::LEARNING_ADDA) ?>">
+                  Attendance
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Fees -->
+            <?php if ($hasRight('learning_adda_fees')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('fees?program_id=' . CorePrograms::LEARNING_ADDA) ?>">
+                  Fees
+                </a>
+              </li>
+            <?php endif; ?>
 
-        <!-- Learning Adda -->
-        <i class="mdi mdi-book-open-page-variant menu-icon"></i>
-        <span class="menu-title">Learning Adda</span>
-        <i class="menu-arrow"></i>
+          </ul>
 
-      </a>
-
-      <div class="collapse" id="learningAddaSubmenu">
-
-        <ul class="nav flex-column sub-menu">
-
-          <!-- All Students -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('students/learning_adda') ?>">
-              All Students
-            </a>
-          </li>
-
-          <!-- Assessment -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('assessment/learning-adda') ?>">
-              Assessment
-            </a>
-          </li>
-
-          <!-- Attendance -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('attendance/class?program_id=' . CorePrograms::LEARNING_ADDA) ?>">
-              Attendance
-            </a>
-          </li>
-
-          <!-- Fees -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('fees?program_id=' . CorePrograms::LEARNING_ADDA) ?>">
-              Fees
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </li>
-
-
-    <!-- SCHOOL SAHYOG -->
-    <li class="nav-item">
-
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#schoolSahyogSubmenu"
-        aria-expanded="false">
-
-        <!-- School Sahyog -->
-        <i class="mdi mdi-school-outline menu-icon"></i>
-        <span class="menu-title">School Sahyog</span>
-        <i class="menu-arrow"></i>
-
-      </a>
-
-      <div class="collapse" id="schoolSahyogSubmenu">
-
-        <ul class="nav flex-column sub-menu">
-
-          <!-- All Students -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('students/school_sahyog') ?>">
-              All Students
-            </a>
-          </li>
-
-          <!-- Assessment -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('assessment/school-sahyog') ?>">
-              Assessment
-            </a>
-          </li>
-
-          <!-- Attendance -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('attendance/class?program_id=' . CorePrograms::SCHOOL_SAHYOG) ?>">
-              Attendance
-            </a>
-          </li>
-
-          <!-- Fees -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('fees?program_id=' . CorePrograms::SCHOOL_SAHYOG) ?>">
-              Fees
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </li>
-
-
-    <!-- DIGITAL SHAKTI -->
-    <li class="nav-item">
-
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#digitalShaktiSubmenu"
-        aria-expanded="false">
-
-        <!-- Digital Shakti -->
-        <i class="mdi mdi-laptop menu-icon"></i>
-        <span class="menu-title">Digital Shakti</span>
-        <i class="menu-arrow"></i>
-
-      </a>
-
-      <div class="collapse" id="digitalShaktiSubmenu">
-
-        <ul class="nav flex-column sub-menu">
-
-          <!-- All Students -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('digitalshakti') ?>">
-              All Students
-            </a>
-          </li>
-
-          <!-- Assessment -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('assessment/digital-shakti') ?>">
-              Assessment
-            </a>
-          </li>
-
-          <!-- Attendance -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('attendance/class?program_id=' . CorePrograms::DIGITAL_SHAKTI) ?>">
-              Attendance
-            </a>
-          </li>
-
-          <!-- Fees -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('fees?program_id=' . CorePrograms::DIGITAL_SHAKTI) ?>">
-              Fees
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </li>
-
-
-    <!-- DOOSRA MAUKA -->
-    <li class="nav-item">
-
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#doosraMaukaSubmenu"
-        aria-expanded="false">
-
-        <!-- Doosra Mauka -->
-        <i class="mdi mdi-account-convert-outline menu-icon"></i>
-        <span class="menu-title">Doosra Mauka</span>
-        <i class="menu-arrow"></i>
-
-      </a>
-
-      <div class="collapse" id="doosraMaukaSubmenu">
-
-        <ul class="nav flex-column sub-menu">
-
-          <!-- All Students -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('ManageStudents/DoosraMauka') ?>">
-              All Students
-            </a>
-          </li>
-
-          <!-- Assessment -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('assessment/doosra-mauka') ?>">
-              Assessment
-            </a>
-          </li>
-
-          <!-- Attendance -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('attendance/class?program_id=' . CorePrograms::DOOSRA_MAUKA) ?>">
-              Attendance
-            </a>
-          </li>
-
-          <!-- Fees -->
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= site_url('fees?program_id=' . CorePrograms::DOOSRA_MAUKA) ?>">
-              Fees
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </li>
-
+        </div>
+
+      </li>
+
+
+    <?php endif; ?>
+
+    <?php if ($hasVisibleRight('school_sahyog') && $hasAnyRight(['school_sahyog_students', 'school_sahyog_assessment', 'school_sahyog_attendance', 'school_sahyog_fees'])): ?>
+      <!-- SCHOOL SAHYOG -->
+      <li class="nav-item">
+
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#schoolSahyogSubmenu"
+          aria-expanded="false">
+
+          <!-- School Sahyog -->
+          <i class="mdi mdi-school-outline menu-icon"></i>
+          <span class="menu-title">School Sahyog</span>
+          <i class="menu-arrow"></i>
+
+        </a>
+
+        <div class="collapse" id="schoolSahyogSubmenu">
+
+          <ul class="nav flex-column sub-menu">
+
+            <!-- All Students -->
+            <?php if ($hasRight('school_sahyog_students')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('students/school_sahyog') ?>">
+                  All Students
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Assessment -->
+            <?php if ($hasRight('school_sahyog_assessment')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('assessment/school-sahyog') ?>">
+                  Assessment
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Attendance -->
+            <?php if ($hasRight('school_sahyog_attendance')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('attendance/class?program_id=' . CorePrograms::SCHOOL_SAHYOG) ?>">
+                  Attendance
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Fees -->
+            <?php if ($hasRight('school_sahyog_fees')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('fees?program_id=' . CorePrograms::SCHOOL_SAHYOG) ?>">
+                  Fees
+                </a>
+              </li>
+            <?php endif; ?>
+
+          </ul>
+
+        </div>
+
+      </li>
+
+
+    <?php endif; ?>
+
+    <?php if ($hasVisibleRight('digital_shakti') && $hasAnyRight(['digital_shakti_students', 'digital_shakti_assessment', 'digital_shakti_attendance', 'digital_shakti_fees'])): ?>
+      <!-- DIGITAL SHAKTI -->
+      <li class="nav-item">
+
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#digitalShaktiSubmenu"
+          aria-expanded="false">
+
+          <!-- Digital Shakti -->
+          <i class="mdi mdi-laptop menu-icon"></i>
+          <span class="menu-title">Digital Shakti</span>
+          <i class="menu-arrow"></i>
+
+        </a>
+
+        <div class="collapse" id="digitalShaktiSubmenu">
+
+          <ul class="nav flex-column sub-menu">
+
+            <!-- All Students -->
+            <?php if ($hasRight('digital_shakti_students')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('digitalshakti') ?>">
+                  All Students
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Assessment -->
+            <?php if ($hasRight('digital_shakti_assessment')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('assessment/digital-shakti') ?>">
+                  Assessment
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Attendance -->
+            <?php if ($hasRight('digital_shakti_attendance')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('attendance/class?program_id=' . CorePrograms::DIGITAL_SHAKTI) ?>">
+                  Attendance
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Fees -->
+            <?php if ($hasRight('digital_shakti_fees')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('fees?program_id=' . CorePrograms::DIGITAL_SHAKTI) ?>">
+                  Fees
+                </a>
+              </li>
+            <?php endif; ?>
+
+          </ul>
+
+        </div>
+
+      </li>
+
+
+    <?php endif; ?>
+
+    <?php if ($hasVisibleRight('doosra_mauka') && $hasAnyRight(['doosra_mauka_students', 'doosra_mauka_assessment', 'doosra_mauka_attendance', 'doosra_mauka_fees'])): ?>
+      <!-- DOOSRA MAUKA -->
+      <li class="nav-item">
+
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#doosraMaukaSubmenu"
+          aria-expanded="false">
+
+          <!-- Doosra Mauka -->
+          <i class="mdi mdi-account-convert-outline menu-icon"></i>
+          <span class="menu-title">Doosra Mauka</span>
+          <i class="menu-arrow"></i>
+
+        </a>
+
+        <div class="collapse" id="doosraMaukaSubmenu">
+
+          <ul class="nav flex-column sub-menu">
+
+            <!-- All Students -->
+            <?php if ($hasRight('doosra_mauka_students')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('ManageStudents/DoosraMauka') ?>">
+                  All Students
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Assessment -->
+            <?php if ($hasRight('doosra_mauka_assessment')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('assessment/doosra-mauka') ?>">
+                  Assessment
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Attendance -->
+            <?php if ($hasRight('doosra_mauka_attendance')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('attendance/class?program_id=' . CorePrograms::DOOSRA_MAUKA) ?>">
+                  Attendance
+                </a>
+              </li>
+            <?php endif; ?>
+
+            <!-- Fees -->
+            <?php if ($hasRight('doosra_mauka_fees')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('fees?program_id=' . CorePrograms::DOOSRA_MAUKA) ?>">
+                  Fees
+                </a>
+              </li>
+            <?php endif; ?>
+
+          </ul>
+
+        </div>
+
+      </li>
+
+
+    <?php endif; ?>
 
     <!-- =========================================================
          FINANCE
@@ -508,126 +646,219 @@ use Config\CorePrograms;
     </li>-->
 
 
-    <!-- =========================================================
+    <?php if ($isSuperAdmin): ?>
+      <!-- =========================================================
          STATIC PAGES
     ========================================================== -->
-    <li class="nav-item nav-category">STATIC PAGES</li>
+      <li class="nav-item nav-category">STATIC PAGES</li>
 
 
-    <li class="nav-item">
+      <li class="nav-item">
 
-      <a class="nav-link"
-        data-bs-toggle="collapse"
-        href="#staticPagesSubmenu"
-        aria-expanded="false">
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#staticPagesSubmenu"
+          aria-expanded="false">
 
-        <i class="mdi mdi-file-document-multiple menu-icon"></i>
-        <span class="menu-title">Static Pages</span>
-        <i class="menu-arrow"></i>
+          <i class="mdi mdi-file-document-multiple menu-icon"></i>
+          <span class="menu-title">Static Pages</span>
+          <i class="menu-arrow"></i>
 
-      </a>
+        </a>
 
 
-      <div class="collapse" id="staticPagesSubmenu">
+        <div class="collapse" id="staticPagesSubmenu">
 
-        <ul class="nav flex-column sub-menu">
+          <ul class="nav flex-column sub-menu">
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/LA_Assessment.html') ?>">
-              LA Assessment
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/LA_Assessment.html') ?>">
+                LA Assessment
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/LA_Assessment_Add.html') ?>">
-              LA Assessment Add
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/LA_Assessment_Add.html') ?>">
+                LA Assessment Add
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/LA_Assessment_View.html') ?>">
-              LA Assessment View
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/LA_Assessment_View.html') ?>">
+                LA Assessment View
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/DM_Assessment.html') ?>">
-              DM Assessment
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/DM_Assessment.html') ?>">
+                DM Assessment
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/DM_Assessment_Add.html') ?>">
-              DM Assessment Add
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/DM_Assessment_Add.html') ?>">
+                DM Assessment Add
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/DM_Assessment_View.html') ?>">
-              DM Assessment View
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/DM_Assessment_View.html') ?>">
+                DM Assessment View
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/SS_Assessment.html') ?>">
-              SS Assessment
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/SS_Assessment.html') ?>">
+                SS Assessment
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/SS_Assessment_Add.html') ?>">
-              SS Assessment Add
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/SS_Assessment_Add.html') ?>">
+                SS Assessment Add
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/SS_Assessment_View.html') ?>">
-              SS Assessment View
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/SS_Assessment_View.html') ?>">
+                SS Assessment View
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/DS_Assessment.html') ?>">
-              DS Assessment
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/DS_Assessment.html') ?>">
+                DS Assessment
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/DM_Income_Generation.html') ?>">
-              DM Income Generation
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/DM_Income_Generation.html') ?>">
+                DM Income Generation
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/Daily_Session_Update.html') ?>">
-              Daily Session Update
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/Daily_Session_Update.html') ?>">
+                Daily Session Update
+              </a>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link"
-              href="<?= base_url('static-pages/LA_PTM.html') ?>">
-              LA PTM
-            </a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('static-pages/LA_PTM.html') ?>">
+                LA PTM
+              </a>
+            </li>
 
-        </ul>
+          </ul>
 
-      </div>
+        </div>
 
-    </li>
+      </li>
+    <?php endif; ?>
+
+    <?php if ($isSuperAdmin): ?>
+
+      <!-- =========================================================
+       REPORTS
+  ========================================================== -->
+
+      <li class="nav-item nav-category">REPORTS</li>
+
+      <li class="nav-item">
+
+        <a class="nav-link"
+          data-bs-toggle="collapse"
+          href="#reportsSubmenu"
+          aria-expanded="false">
+
+          <i class="mdi mdi-chart-box-multiple menu-icon"></i>
+
+          <span class="menu-title">Reports</span>
+
+          <i class="menu-arrow"></i>
+
+        </a>
+
+        <div class="collapse" id="reportsSubmenu">
+
+          <ul class="nav flex-column sub-menu">
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/Report dashboard.html') ?>">
+                Report Dashboard
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/assessment-reports.html') ?>">
+                Assessment Reports
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/attendance-reports.html') ?>">
+                Attendance Reports
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/enrollment-reports.html') ?>">
+                Enrollment Reports
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/fees-reports.html') ?>">
+                Fees Reports
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/programme-completion-reports.html') ?>">
+                Programme Completion Reports
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/session-reports.html') ?>">
+                Session Reports
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link"
+                href="<?= base_url('reports/vijetaas-reports.html') ?>">
+                Vijetaas Reports
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </li>
+
+    <?php endif; ?>
 
   </ul>
 

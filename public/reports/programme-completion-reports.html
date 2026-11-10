@@ -1,0 +1,1091 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme Completion Reports | Pulse 360</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background: #f3f4f6;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .page-shell {
+            max-width: 1515px;
+            margin: 25px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 18px;
+            min-height: 600px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.05);
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .breadcrumb a {
+            color: #1d477f;
+            text-decoration: none;
+        }
+
+        .page-title {
+            color: #1d477f;
+            font-weight: 700;
+            font-size: 25px;
+        }
+
+        .page-subtitle {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .filter-card,
+        .report-card {
+            border: 1px solid #e4e8ef;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,.035);
+        }
+
+        .filter-card {
+            padding: 20px;
+        }
+
+        .report-card {
+            padding: 20px;
+            height: 100%;
+        }
+
+        .section-heading {
+            color: #1d477f;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-control,
+        .form-select {
+            font-size: 13px;
+            min-height: 39px;
+            border-color: #d8dee8;
+        }
+
+        .btn-primary {
+            background: #1d477f;
+            border-color: #1d477f;
+        }
+
+        .btn-primary:hover {
+            background: #15365f;
+            border-color: #15365f;
+        }
+
+        .summary-card {
+            border: 1px solid #e5e9f0;
+            border-radius: 12px;
+            padding: 19px;
+            background: #fff;
+            height: 100%;
+        }
+
+        .summary-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .icon-blue {
+            background: #e8efff;
+            color: #315b91;
+        }
+
+        .icon-green {
+            background: #e5f7ed;
+            color: #45a477;
+        }
+
+        .icon-orange {
+            background: #fff1df;
+            color: #e5a34b;
+        }
+
+        .icon-red {
+            background: #fde8e8;
+            color: #d66c6c;
+        }
+
+        .icon-purple {
+            background: #f1eaff;
+            color: #8767b5;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            font-size: 25px;
+            font-weight: 700;
+            color: #1d477f;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .table thead th {
+            background: #eef2f8;
+            color: #1d477f;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .badge-active {
+            background: #e3f6eb;
+            color: #198754;
+        }
+
+        .badge-completed {
+            background: #e8efff;
+            color: #2454a6;
+        }
+
+        .badge-dropout {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+
+        .table-responsive {
+            border-radius: 8px;
+        }
+
+        .record-count {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .status-legend {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            height: 9px;
+            width: 9px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        @media(max-width: 768px) {
+            .page-shell {
+                margin: 10px;
+                padding: 18px;
+            }
+
+            .page-title {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-shell">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="dashboard.html">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="reports-dashboard.html">Reports</a>
+            </li>
+            <li class="breadcrumb-item active">
+                Programme Completion Reports
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h3 class="page-title">
+                <i class="mdi mdi-chart-box-outline me-2"></i>
+                Programme Completion Reports
+            </h3>
+            <p class="page-subtitle mb-0">
+                Analyse active and dropout participants across programmes and years.
+            </p>
+        </div>
+
+        <button class="btn btn-success btn-sm" onclick="exportCSV()">
+            <i class="mdi mdi-microsoft-excel me-1"></i>
+            Export Excel
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-card mb-4">
+
+        <h5 class="section-heading">
+            <i class="mdi mdi-filter-outline me-2"></i>
+            Report Filters
+        </h5>
+
+        <div class="row g-3">
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Select Year</label>
+                <select class="form-select" id="yearFilter">
+                    <option value="">All Years</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Programme</label>
+                <select class="form-select" id="programFilter">
+                    <option value="">All Programmes</option>
+                    <option value="Learning Adda">Learning Adda</option>
+                    <option value="Doosra Mauka">Doosra Mauka</option>
+                    <option value="Digital Shakti">Digital Shakti</option>
+                    <option value="Vijetaas">Vijetaas</option>
+                    <option value="School Sahyog">School Sahyog</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Centre</label>
+                <select class="form-select" id="centerFilter">
+                    <option value="">All Centres</option>
+                    <option value="Siliguri Centre">Siliguri Centre</option>
+                    <option value="Kolkata Centre">Kolkata Centre</option>
+                    <option value="Jalpaiguri Centre">Jalpaiguri Centre</option>
+                    <option value="Darjeeling Centre">Darjeeling Centre</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Batch</label>
+                <select class="form-select" id="batchFilter">
+                    <option value="">All Batches</option>
+                    <option value="Batch A">Batch A</option>
+                    <option value="Batch B">Batch B</option>
+                    <option value="Batch C">Batch C</option>
+                    <option value="Batch D">Batch D</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Session</label>
+                <select class="form-select" id="sessionFilter">
+                    <option value="">All Sessions</option>
+                    <option value="2024-2025">2024-2025</option>
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2026-2027">2026-2027</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Participant Status</label>
+                <select class="form-select" id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Dropout">Dropout</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-primary btn-sm px-4" onclick="applyFilters()">
+                <i class="mdi mdi-filter-check me-1"></i>
+                Apply Filters
+            </button>
+
+            <button class="btn btn-outline-secondary btn-sm px-4" onclick="resetFilters()">
+                <i class="mdi mdi-refresh me-1"></i>
+                Reset
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-blue">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div class="summary-label">Total Participants</div>
+                <div class="summary-value" id="totalParticipants">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-green">
+                    <i class="mdi mdi-account-check"></i>
+                </div>
+                <div class="summary-label">Active Students</div>
+                <div class="summary-value" id="activeStudents">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-red">
+                    <i class="mdi mdi-account-cancel"></i>
+                </div>
+                <div class="summary-label">Dropout Students</div>
+                <div class="summary-value" id="dropoutStudents">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-purple">
+                    <i class="mdi mdi-check-decagram"></i>
+                </div>
+                <div class="summary-label">Completed Students</div>
+                <div class="summary-value" id="completedStudents">0</div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="summary-card">
+                <div class="summary-icon icon-orange">
+                    <i class="mdi mdi-book-multiple"></i>
+                </div>
+                <div class="summary-label">Programmes</div>
+                <div class="summary-value" id="totalPrograms">0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">
+                    Programme-wise Active Students
+                </h5>
+                <div class="chart-container">
+                    <canvas id="activeProgramChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">
+                    Programme-wise Dropout Students
+                </h5>
+                <div class="chart-container">
+                    <canvas id="dropoutProgramChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">
+                    Active vs. Dropout Comparison
+                </h5>
+                <div class="status-legend">
+                    <span><i class="legend-dot" style="background:#45a477;"></i>Active</span>
+                    <span><i class="legend-dot" style="background:#d66c6c;"></i>Dropout</span>
+                    <span><i class="legend-dot" style="background:#e5a34b;"></i>Completed</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5 class="section-heading">
+                    Year-on-Year Programme Comparison
+                </h5>
+                <div class="chart-container">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Programme Summary Table -->
+    <div class="report-card mb-4">
+
+        <h5 class="section-heading">
+            Programme-wise Completion Summary
+        </h5>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Programme</th>
+                        <th>Total Participants</th>
+                        <th>Active</th>
+                        <th>Dropout</th>
+                        <th>Completed</th>
+                    </tr>
+                </thead>
+
+                <tbody id="programmeSummaryTable"></tbody>
+            </table>
+        </div>
+
+        <div id="noSummaryRecords" class="text-center text-muted py-3 d-none">
+            No programme summary records found.
+        </div>
+
+    </div>
+
+    <!-- Participant Details -->
+    <div class="report-card">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h5 class="section-heading mb-1">
+                    Participant Completion Details
+                </h5>
+                <span class="record-count" id="recordCount">
+                    Showing 0 records
+                </span>
+            </div>
+
+            <div style="max-width:250px;width:100%;">
+                <input type="text" class="form-control" id="tableSearch"
+                       placeholder="Search participant...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Participant Name</th>
+                        <th>Programme</th>
+                        <th>Centre</th>
+                        <th>Batch</th>
+                        <th>Session</th>
+                        <th>Enrollment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="participantTable"></tbody>
+            </table>
+        </div>
+
+        <div id="noRecords" class="text-center text-muted py-4 d-none">
+            <i class="mdi mdi-database-search-outline fs-2"></i>
+            <p class="mb-0">No participant records found.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    /*
+     * DEMO DATA
+     * Replace with database records when connecting CI4.
+     * Status values used in this demo:
+     * Active, Dropout, Completed.
+     */
+
+    const participantData = [
+        {name:"Aarohi Sharma",program:"Learning Adda",center:"Siliguri Centre",batch:"Batch A",session:"2024-2025",date:"2024-06-15",status:"Active"},
+        {name:"Riya Das",program:"Vijetaas",center:"Kolkata Centre",batch:"Batch B",session:"2024-2025",date:"2024-08-10",status:"Active"},
+        {name:"Rahul Roy",program:"Digital Shakti",center:"Jalpaiguri Centre",batch:"Batch A",session:"2024-2025",date:"2024-09-20",status:"Completed"},
+        {name:"Priya Singh",program:"Doosra Mauka",center:"Siliguri Centre",batch:"Batch C",session:"2025-2026",date:"2025-04-12",status:"Active"},
+        {name:"Ananya Roy",program:"Learning Adda",center:"Darjeeling Centre",batch:"Batch B",session:"2025-2026",date:"2025-05-18",status:"Active"},
+        {name:"Amit Das",program:"School Sahyog",center:"Kolkata Centre",batch:"Batch D",session:"2025-2026",date:"2025-06-22",status:"Dropout"},
+        {name:"Sneha Gupta",program:"Vijetaas",center:"Jalpaiguri Centre",batch:"Batch A",session:"2025-2026",date:"2025-08-05",status:"Active"},
+        {name:"Pooja Sharma",program:"Doosra Mauka",center:"Darjeeling Centre",batch:"Batch C",session:"2025-2026",date:"2025-10-14",status:"Completed"},
+        {name:"Suman Das",program:"Digital Shakti",center:"Siliguri Centre",batch:"Batch D",session:"2026-2027",date:"2026-04-08",status:"Active"},
+        {name:"Moumita Sen",program:"Learning Adda",center:"Kolkata Centre",batch:"Batch A",session:"2026-2027",date:"2026-04-19",status:"Active"},
+        {name:"Neha Roy",program:"Vijetaas",center:"Darjeeling Centre",batch:"Batch B",session:"2026-2027",date:"2026-05-11",status:"Dropout"},
+        {name:"Karan Singh",program:"School Sahyog",center:"Jalpaiguri Centre",batch:"Batch D",session:"2026-2027",date:"2026-06-16",status:"Active"},
+        {name:"Meena Devi",program:"Doosra Mauka",center:"Siliguri Centre",batch:"Batch C",session:"2026-2027",date:"2026-07-02",status:"Active"},
+        {name:"Arjun Paul",program:"Digital Shakti",center:"Kolkata Centre",batch:"Batch A",session:"2026-2027",date:"2026-08-21",status:"Completed"},
+        {name:"Ishita Roy",program:"Learning Adda",center:"Jalpaiguri Centre",batch:"Batch B",session:"2026-2027",date:"2026-09-10",status:"Active"},
+        {name:"Sonia Das",program:"Vijetaas",center:"Siliguri Centre",batch:"Batch C",session:"2024-2025",date:"2024-11-12",status:"Completed"},
+        {name:"Rakesh Paul",program:"School Sahyog",center:"Kolkata Centre",batch:"Batch A",session:"2024-2025",date:"2024-12-05",status:"Dropout"},
+        {name:"Mita Roy",program:"Doosra Mauka",center:"Jalpaiguri Centre",batch:"Batch B",session:"2024-2025",date:"2024-10-17",status:"Active"},
+        {name:"Tina Sharma",program:"Digital Shakti",center:"Darjeeling Centre",batch:"Batch C",session:"2025-2026",date:"2025-07-14",status:"Dropout"},
+        {name:"Rohan Das",program:"Learning Adda",center:"Siliguri Centre",batch:"Batch D",session:"2025-2026",date:"2025-09-08",status:"Completed"},
+        {name:"Kavita Roy",program:"Vijetaas",center:"Kolkata Centre",batch:"Batch A",session:"2026-2027",date:"2026-09-15",status:"Active"},
+        {name:"Suman Paul",program:"School Sahyog",center:"Darjeeling Centre",batch:"Batch B",session:"2026-2027",date:"2026-10-02",status:"Dropout"}
+    ];
+
+    let filteredData = [...participantData];
+    let charts = {};
+
+    const chartColors = [
+        '#315b91',
+        '#45a477',
+        '#e5a34b',
+        '#8767b5',
+        '#d66c6c'
+    ];
+
+    const statusColors = {
+        Active: '#45a477',
+        Dropout: '#d66c6c',
+        Completed: '#e5a34b'
+    };
+
+    const commonChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 18,
+                    boxWidth: 8,
+                    boxHeight: 8,
+                    font: { size: 11 }
+                }
+            }
+        }
+    };
+
+    function destroyChart(id) {
+        if (charts[id]) {
+            charts[id].destroy();
+        }
+    }
+
+    function getCounts(data, key) {
+        const counts = {};
+
+        data.forEach(item => {
+            const value = item[key] || 'Not specified';
+            counts[value] = (counts[value] || 0) + 1;
+        });
+
+        return counts;
+    }
+
+    // Previous bar chart design
+    function createBarChart(id, labels, values, horizontal = false) {
+        destroyChart(id);
+
+        const options = {
+            ...commonChartOptions,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { color: '#edf0f4' },
+                    ticks: { precision: 0 }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: horizontal ? '#edf0f4' : 'transparent'
+                    },
+                    ticks: { precision: 0 }
+                }
+            }
+        };
+
+        if (horizontal) {
+            options.indexAxis = 'y';
+        }
+
+        charts[id] = new Chart(document.getElementById(id), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Participants',
+                    data: values,
+                    backgroundColor: chartColors,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    barThickness: 'flex',
+                    maxBarThickness: 38
+                }]
+            },
+            options: options
+        });
+    }
+
+    // Previous doughnut chart design
+    function createDoughnutChart(id, labels, values) {
+        destroyChart(id);
+
+        charts[id] = new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: chartColors,
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                cutout: '62%'
+            }
+        });
+    }
+
+    // Programme-wise active and dropout counts
+    function getProgramStatusCounts(data, status) {
+        const programs = [
+            'Learning Adda',
+            'Doosra Mauka',
+            'Digital Shakti',
+            'Vijetaas',
+            'School Sahyog'
+        ];
+
+        return programs.map(program =>
+            data.filter(item =>
+                item.program === program && item.status === status
+            ).length
+        );
+    }
+
+    // Programme summary table
+    function renderProgrammeSummary(data) {
+
+        const tbody = document.getElementById('programmeSummaryTable');
+        tbody.innerHTML = '';
+
+        const programs = [...new Set(data.map(item => item.program))];
+
+        document.getElementById('noSummaryRecords').classList.toggle(
+            'd-none',
+            programs.length !== 0
+        );
+
+        programs.forEach((program, index) => {
+
+            const programData = data.filter(item => item.program === program);
+
+            const active = programData.filter(item => item.status === 'Active').length;
+            const dropout = programData.filter(item => item.status === 'Dropout').length;
+            const completed = programData.filter(item => item.status === 'Completed').length;
+
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${program}</strong></td>
+                    <td>${programData.length}</td>
+                    <td><span class="badge badge-active">${active}</span></td>
+                    <td><span class="badge badge-dropout">${dropout}</span></td>
+                    <td><span class="badge badge-completed">${completed}</span></td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Render participant details
+    function renderTable(data) {
+
+        const tbody = document.getElementById('participantTable');
+        const search = document.getElementById('tableSearch').value.toLowerCase();
+
+        const searchedData = data.filter(item =>
+            item.name.toLowerCase().includes(search) ||
+            item.program.toLowerCase().includes(search) ||
+            item.center.toLowerCase().includes(search)
+        );
+
+        tbody.innerHTML = '';
+
+        document.getElementById('recordCount').textContent =
+            'Showing ' + searchedData.length + ' of ' + data.length + ' records';
+
+        document.getElementById('noRecords').classList.toggle(
+            'd-none',
+            searchedData.length !== 0
+        );
+
+        searchedData.forEach((item, index) => {
+
+            let badgeClass = 'badge-active';
+
+            if (item.status === 'Dropout') {
+                badgeClass = 'badge-dropout';
+            } else if (item.status === 'Completed') {
+                badgeClass = 'badge-completed';
+            }
+
+            const parts = item.date.split('-');
+            const formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.program}</td>
+                    <td>${item.center}</td>
+                    <td>${item.batch}</td>
+                    <td>${item.session}</td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <span class="badge ${badgeClass}">
+                            ${item.status}
+                        </span>
+                    </td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Update cards and charts
+    function updateReport(data) {
+
+        const active = data.filter(item => item.status === 'Active').length;
+        const dropout = data.filter(item => item.status === 'Dropout').length;
+        const completed = data.filter(item => item.status === 'Completed').length;
+
+        document.getElementById('totalParticipants').textContent = data.length;
+        document.getElementById('activeStudents').textContent = active;
+        document.getElementById('dropoutStudents').textContent = dropout;
+        document.getElementById('completedStudents').textContent = completed;
+        document.getElementById('totalPrograms').textContent =
+            new Set(data.map(item => item.program)).size;
+
+        const programs = [...new Set(data.map(item => item.program))];
+
+        // Active students by programme
+        const activeCounts = programs.map(program =>
+            data.filter(item =>
+                item.program === program && item.status === 'Active'
+            ).length
+        );
+
+        createBarChart(
+            'activeProgramChart',
+            programs,
+            activeCounts,
+            true
+        );
+
+        // Dropout students by programme
+        const dropoutCounts = programs.map(program =>
+            data.filter(item =>
+                item.program === program && item.status === 'Dropout'
+            ).length
+        );
+
+        createBarChart(
+            'dropoutProgramChart',
+            programs,
+            dropoutCounts,
+            true
+        );
+
+        // Active, dropout and completed comparison
+        destroyChart('statusChart');
+
+        charts.statusChart = new Chart(
+            document.getElementById('statusChart'),
+            {
+                type: 'bar',
+                data: {
+                    labels: programs,
+                    datasets: [
+                        {
+                            label: 'Active',
+                            data: programs.map(program =>
+                                data.filter(item =>
+                                    item.program === program && item.status === 'Active'
+                                ).length
+                            ),
+                            backgroundColor: statusColors.Active,
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Dropout',
+                            data: programs.map(program =>
+                                data.filter(item =>
+                                    item.program === program && item.status === 'Dropout'
+                                ).length
+                            ),
+                            backgroundColor: statusColors.Dropout,
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Completed',
+                            data: programs.map(program =>
+                                data.filter(item =>
+                                    item.program === program && item.status === 'Completed'
+                                ).length
+                            ),
+                            backgroundColor: statusColors.Completed,
+                            borderRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 },
+                            grid: { color: '#edf0f4' }
+                        }
+                    }
+                }
+            }
+        );
+
+        // Year-on-year comparison
+        // Uses all records matching programme/centre/batch/session filters,
+        // but intentionally ignores the selected year so multiple years remain visible.
+        const yearData = participantData.filter(item => {
+
+            const program = document.getElementById('programFilter').value;
+            const center = document.getElementById('centerFilter').value;
+            const batch = document.getElementById('batchFilter').value;
+            const session = document.getElementById('sessionFilter').value;
+
+            return (!program || item.program === program) &&
+                   (!center || item.center === center) &&
+                   (!batch || item.batch === batch) &&
+                   (!session || item.session === session);
+        });
+
+        const years = [...new Set(yearData.map(item =>
+            item.date.substring(0, 4)
+        ))].sort();
+
+        destroyChart('yearChart');
+
+        charts.yearChart = new Chart(
+            document.getElementById('yearChart'),
+            {
+                type: 'bar',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Active',
+                            data: years.map(year =>
+                                yearData.filter(item =>
+                                    item.date.startsWith(year) && item.status === 'Active'
+                                ).length
+                            ),
+                            backgroundColor: statusColors.Active,
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Dropout',
+                            data: years.map(year =>
+                                yearData.filter(item =>
+                                    item.date.startsWith(year) && item.status === 'Dropout'
+                                ).length
+                            ),
+                            backgroundColor: statusColors.Dropout,
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Completed',
+                            data: years.map(year =>
+                                yearData.filter(item =>
+                                    item.date.startsWith(year) && item.status === 'Completed'
+                                ).length
+                            ),
+                            backgroundColor: statusColors.Completed,
+                            borderRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 },
+                            grid: { color: '#edf0f4' }
+                        }
+                    }
+                }
+            }
+        );
+
+        renderProgrammeSummary(data);
+        renderTable(data);
+    }
+
+    // Apply filters
+    function applyFilters() {
+
+        const year = document.getElementById('yearFilter').value;
+        const program = document.getElementById('programFilter').value;
+        const center = document.getElementById('centerFilter').value;
+        const batch = document.getElementById('batchFilter').value;
+        const session = document.getElementById('sessionFilter').value;
+        const status = document.getElementById('statusFilter').value;
+
+        filteredData = participantData.filter(item => {
+
+            const yearMatch = !year || item.date.startsWith(year);
+
+            return yearMatch &&
+                (!program || item.program === program) &&
+                (!center || item.center === center) &&
+                (!batch || item.batch === batch) &&
+                (!session || item.session === session) &&
+                (!status || item.status === status);
+        });
+
+        updateReport(filteredData);
+    }
+
+    // Reset filters
+    function resetFilters() {
+
+        document.getElementById('yearFilter').value = '';
+        document.getElementById('programFilter').value = '';
+        document.getElementById('centerFilter').value = '';
+        document.getElementById('batchFilter').value = '';
+        document.getElementById('sessionFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('tableSearch').value = '';
+
+        filteredData = [...participantData];
+
+        updateReport(filteredData);
+    }
+
+    // Table search
+    document.getElementById('tableSearch').addEventListener('input', function() {
+        renderTable(filteredData);
+    });
+
+    // Export filtered data as CSV
+    function exportCSV() {
+
+        if (filteredData.length === 0) {
+            alert('No records available to export.');
+            return;
+        }
+
+        const headers = [
+            'Participant Name',
+            'Programme',
+            'Centre',
+            'Batch',
+            'Session',
+            'Enrollment Date',
+            'Status'
+        ];
+
+        const rows = filteredData.map(item => [
+            item.name,
+            item.program,
+            item.center,
+            item.batch,
+            item.session,
+            item.date,
+            item.status
+        ]);
+
+        const csvContent = [headers, ...rows]
+            .map(row => row.map(value =>
+                '"' + String(value).replace(/"/g, '""') + '"'
+            ).join(','))
+            .join('\n');
+
+        const blob = new Blob(
+            ['\uFEFF' + csvContent],
+            { type: 'text/csv;charset=utf-8;' }
+        );
+
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+
+        link.href = url;
+        link.download = 'Programme_Completion_Report.csv';
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+    }
+
+    // Initial page load
+    updateReport(filteredData);
+
+</script>
+
+</body>
+</html>

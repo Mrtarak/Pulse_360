@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Reports | Pulse 360</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.materialdesignicons.com/7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: #f3f4f6;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+
+    .page-shell {
+      max-width: 1515px;
+      margin: 25px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 18px;
+      min-height: 600px;
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .breadcrumb-item a {
+      color: #315b91;
+      text-decoration: none;
+    }
+
+    .page-title {
+      color: #1d477f;
+      font-weight: 700;
+      font-size: 26px;
+    }
+
+    .section-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      background: #fff;
+      height: 100%;
+    }
+
+    .section-title {
+      color: #1d477f;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .filter-label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: #444;
+    }
+
+    .form-control, .form-select {
+      font-size: 13px;
+      min-height: 39px;
+      border-color: #d8dee8;
+    }
+
+    .summary-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+      background: #fff;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--card-color);
+    }
+
+    .summary-icon {
+      font-size: 25px;
+      color: var(--card-color);
+    }
+
+    .summary-label {
+      color: #6b7280;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .summary-value {
+      font-size: 25px;
+      font-weight: 700;
+      color: #26364a;
+      margin-top: 5px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+
+    .table thead th {
+      background: #edf2f8;
+      color: #1d477f;
+      font-size: 13px;
+      white-space: nowrap;
+      padding: 12px;
+    }
+
+    .table tbody td {
+      font-size: 13px;
+      vertical-align: middle;
+      padding: 11px 12px;
+    }
+
+    .table-responsive {
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      background: #315b91;
+      border-color: #315b91;
+    }
+
+    .btn-primary:hover {
+      background: #244875;
+      border-color: #244875;
+    }
+
+    .percentage {
+      font-weight: 700;
+      color: #315b91;
+    }
+
+    .progress {
+      height: 7px;
+      min-width: 75px;
+      background: #e9edf3;
+    }
+
+    .progress-bar {
+      background: #45a477;
+    }
+
+    @media (max-width: 768px) {
+      .page-shell {
+        margin: 10px;
+        padding: 16px;
+      }
+
+      .page-title {
+        font-size: 21px;
+      }
+
+      .chart-container {
+        height: 260px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+  <div class="page-shell">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="#">Reports</a></li>
+        <li class="breadcrumb-item active">Attendance Reports</li>
+      </ol>
+    </nav>
+
+    <!-- PAGE HEADING -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+      <div>
+        <h3 class="page-title mb-1">
+          <i class="mdi mdi-calendar-check"></i> Attendance Reports
+        </h3>
+        <p class="text-muted mb-0 small">Attendance performance and participant-wise attendance analysis</p>
+      </div>
+
+      <button class="btn btn-primary btn-sm" onclick="exportCSV()">
+        <i class="mdi mdi-file-excel"></i> Export Excel
+      </button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="section-card mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="section-title mb-0">
+          <i class="mdi mdi-filter-variant"></i> Filters
+        </h5>
+        <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()">
+          <i class="mdi mdi-refresh"></i> Reset
+        </button>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <label class="filter-label">From Date</label>
+          <input type="date" id="fromDate" class="form-control">
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <label class="filter-label">To Date</label>
+          <input type="date" id="toDate" class="form-control">
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <label class="filter-label">Programme</label>
+          <select id="programmeFilter" class="form-select">
+            <option value="">All Programmes</option>
+            <option>Learning Adda</option>
+            <option>Doosra Mauka</option>
+            <option>Digital Shakti</option>
+            <option>Vijetaas</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <label class="filter-label">Centre</label>
+          <select id="centreFilter" class="form-select">
+            <option value="">All Centres</option>
+            <option>Siliguri Centre</option>
+            <option>Matigara Centre</option>
+            <option>Bagdogra Centre</option>
+            <option>Jalpaiguri Centre</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <label class="filter-label">Batch</label>
+          <select id="batchFilter" class="form-select">
+            <option value="">All Batches</option>
+            <option>Batch 2024-25</option>
+            <option>Batch 2025-26</option>
+            <option>Batch 2026-27</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <label class="filter-label">Attendance Status</label>
+          <select id="statusFilter" class="form-select">
+            <option value="">All Status</option>
+            <option>Present</option>
+            <option>Absent</option>
+            <option>Leave</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+
+      <div class="col-xl-3 col-md-6">
+        <div class="summary-card" style="--card-color:#315b91">
+          <i class="mdi mdi-account-check summary-icon"></i>
+          <div class="summary-label">Present Attendance</div>
+          <div class="summary-value" id="presentPercentage">0%</div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="summary-card" style="--card-color:#d66c6c">
+          <i class="mdi mdi-account-cancel summary-icon"></i>
+          <div class="summary-label">Absent Attendance</div>
+          <div class="summary-value" id="absentPercentage">0%</div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="summary-card" style="--card-color:#e5a34b">
+          <i class="mdi mdi-calendar-remove summary-icon"></i>
+          <div class="summary-label">Leave Percentage</div>
+          <div class="summary-value" id="leavePercentage">0%</div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="summary-card" style="--card-color:#45a477">
+          <i class="mdi mdi-chart-donut summary-icon"></i>
+          <div class="summary-label">Overall Attendance Rate</div>
+          <div class="summary-value" id="overallPercentage">0%</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="row g-4 mb-4">
+
+      <div class="col-lg-8">
+        <div class="section-card">
+          <h5 class="section-title">Monthly Attendance Analysis</h5>
+          <div class="chart-container">
+            <canvas id="monthlyAttendanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="section-card">
+          <h5 class="section-title">Present vs Absent Distribution</h5>
+          <div class="chart-container">
+            <canvas id="attendanceDistributionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="section-card">
+          <h5 class="section-title">Centre-wise Attendance Comparison</h5>
+          <div class="chart-container">
+            <canvas id="centreAttendanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="section-card">
+          <h5 class="section-title">Programme-wise Attendance</h5>
+          <div class="chart-container">
+            <canvas id="programmeAttendanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CENTRE-WISE ATTENDANCE SUMMARY -->
+    <div class="section-card mb-4">
+      <h5 class="section-title">
+        <i class="mdi mdi-domain"></i> Centre-wise Attendance Summary
+      </h5>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Centre Name</th>
+              <th>Present %</th>
+              <th>Absent %</th>
+              <th>Leave %</th>
+              <th>Attendance Rate</th>
+            </tr>
+          </thead>
+          <tbody id="centreSummaryTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PARTICIPANT ATTENDANCE DETAILS -->
+    <div class="section-card">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h5 class="section-title mb-0">
+          <i class="mdi mdi-account-group"></i> Participant Attendance Details
+        </h5>
+
+        <input type="text" id="participantSearch"
+               class="form-control" style="max-width:260px"
+               placeholder="Search student name...">
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Programme</th>
+              <th>Centre</th>
+              <th>Batch</th>
+              <th>Attendance Days</th>
+              <th>Absent Days</th>
+              <th>Attendance Percentage</th>
+            </tr>
+          </thead>
+          <tbody id="participantTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+   
+  </div>
+</div>
+
+<script>
+  // SAMPLE ATTENDANCE DATA
+  // Each record represents one student's attendance on one date.
+  const attendanceData = [
+    {name:"Ananya Sharma",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-01-05",status:"Present"},
+    {name:"Ananya Sharma",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-01-06",status:"Present"},
+    {name:"Ananya Sharma",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-01-07",status:"Absent"},
+    {name:"Ananya Sharma",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-01-08",status:"Present"},
+    {name:"Ananya Sharma",programme:"Learning Adda",centre:"Siliguri Centre",batch:"Batch 2025-26",date:"2026-01-09",status:"Leave"},
+
+    {name:"Rahul Das",programme:"Doosra Mauka",centre:"Matigara Centre",batch:"Batch 2025-26",date:"2026-01-05",status:"Present"},
+    {name:"Rahul Das",programme:"Doosra Mauka",centre:"Matigara Centre",batch:"Batch 2025-26",date:"2026-01-06",status:"Absent"},
+    {name:"Rahul Das",programme:"Doosra Mauka",centre:"Matigara Centre",batch:"Batch 2025-26",date:"2026-01-07",status:"Present"},
+    {name:"Rahul Das",programme:"Doosra Mauka",centre:"Matigara Centre",batch:"Batch 2025-26",date:"2026-01-08",status:"Present"},
+    {name:"Rahul Das",programme:"Doosra Mauka",centre:"Matigara Centre",batch:"Batch 2025-26",date:"2026-01-09",status:"Present"},
+
+    {name:"Priya Roy",programme:"Digital Shakti",centre:"Bagdogra Centre",batch:"Batch 2026-27",date:"2026-01-05",status:"Present"},
+    {name:"Priya Roy",programme:"Digital Shakti",centre:"Bagdogra Centre",batch:"Batch 2026-27",date:"2026-01-06",status:"Present"},
+    {name:"Priya Roy",programme:"Digital Shakti",centre:"Bagdogra Centre",batch:"Batch 2026-27",date:"2026-01-07",status:"Present"},
+    {name:"Priya Roy",programme:"Digital Shakti",centre:"Bagdogra Centre",batch:"Batch 2026-27",date:"2026-01-08",status:"Absent"},
+    {name:"Priya Roy",programme:"Digital Shakti",centre:"Bagdogra Centre",batch:"Batch 2026-27",date:"2026-01-09",status:"Present"},
+
+    {name:"Sneha Gupta",programme:"Vijetaas",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-01-05",status:"Absent"},
+    {name:"Sneha Gupta",programme:"Vijetaas",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-01-06",status:"Present"},
+    {name:"Sneha Gupta",programme:"Vijetaas",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-01-07",status:"Present"},
+    {name:"Sneha Gupta",programme:"Vijetaas",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-01-08",status:"Leave"},
+    {name:"Sneha Gupta",programme:"Vijetaas",centre:"Jalpaiguri Centre",batch:"Batch 2024-25",date:"2026-01-09",status:"Present"}
+  ];
+
+  const chartColors = {
+    blue:"#315b91",
+    green:"#45a477",
+    orange:"#e5a34b",
+    purple:"#8767b5",
+    red:"#d66c6c"
+  };
+
+  let monthlyChart, distributionChart, centreChart, programmeChart;
+
+  function getFilteredData() {
+    const from = document.getElementById("fromDate").value;
+    const to = document.getElementById("toDate").value;
+    const programme = document.getElementById("programmeFilter").value;
+    const centre = document.getElementById("centreFilter").value;
+    const batch = document.getElementById("batchFilter").value;
+    const status = document.getElementById("statusFilter").value;
+
+    return attendanceData.filter(item => {
+      return (!from || item.date >= from) &&
+        (!to || item.date <= to) &&
+        (!programme || item.programme === programme) &&
+        (!centre || item.centre === centre) &&
+        (!batch || item.batch === batch) &&
+        (!status || item.status === status);
+    });
+  }
+
+  function percentage(value, total) {
+    return total ? ((value / total) * 100).toFixed(1) : "0.0";
+  }
+
+  function aggregate(records, key) {
+    const result = {};
+
+    records.forEach(item => {
+      if (!result[item[key]]) {
+        result[item[key]] = {present:0, absent:0, leave:0, total:0};
+      }
+
+      result[item[key]].total++;
+
+      if (item.status === "Present") result[item[key]].present++;
+      if (item.status === "Absent") result[item[key]].absent++;
+      if (item.status === "Leave") result[item[key]].leave++;
+    });
+
+    return result;
+  }
+
+  function updateSummary(data) {
+    const present = data.filter(x => x.status === "Present").length;
+    const absent = data.filter(x => x.status === "Absent").length;
+    const leave = data.filter(x => x.status === "Leave").length;
+    const total = data.length;
+
+    document.getElementById("presentPercentage").textContent =
+      percentage(present, total) + "%";
+
+    document.getElementById("absentPercentage").textContent =
+      percentage(absent, total) + "%";
+
+    document.getElementById("leavePercentage").textContent =
+      percentage(leave, total) + "%";
+
+    // Attendance rate excludes leave days.
+    const workingDays = present + absent;
+    document.getElementById("overallPercentage").textContent =
+      percentage(present, workingDays) + "%";
+  }
+
+  function updateCentreTable(data) {
+    const centres = aggregate(data, "centre");
+    const tbody = document.getElementById("centreSummaryTable");
+    tbody.innerHTML = "";
+
+    Object.entries(centres).forEach(([name, values]) => {
+      const workingDays = values.present + values.absent;
+      const rate = percentage(values.present, workingDays);
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${name}</td>
+          <td>${percentage(values.present, values.total)}%</td>
+          <td>${percentage(values.absent, values.total)}%</td>
+          <td>${percentage(values.leave, values.total)}%</td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <span class="percentage">${rate}%</span>
+              <div class="progress flex-grow-1">
+                <div class="progress-bar" style="width:${rate}%"></div>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+    });
+
+    if (!Object.keys(centres).length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No records found</td></tr>`;
+    }
+  }
+
+  function updateParticipantTable(data) {
+    const students = {};
+
+    data.forEach(item => {
+      const key = item.name + "|" + item.programme + "|" + item.centre + "|" + item.batch;
+
+      if (!students[key]) {
+        students[key] = {
+          name:item.name,
+          programme:item.programme,
+          centre:item.centre,
+          batch:item.batch,
+          present:0,
+          absent:0,
+          leave:0
+        };
+      }
+
+      if (item.status === "Present") students[key].present++;
+      if (item.status === "Absent") students[key].absent++;
+      if (item.status === "Leave") students[key].leave++;
+    });
+
+    const search = document.getElementById("participantSearch").value.toLowerCase();
+    const tbody = document.getElementById("participantTable");
+    tbody.innerHTML = "";
+
+    Object.values(students)
+      .filter(student => student.name.toLowerCase().includes(search))
+      .forEach(student => {
+        const attendanceDays = student.present;
+        const absentDays = student.absent;
+        const workingDays = attendanceDays + absentDays;
+        const rate = percentage(attendanceDays, workingDays);
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${student.name}</td>
+            <td>${student.programme}</td>
+            <td>${student.centre}</td>
+            <td>${student.batch}</td>
+            <td>${attendanceDays}</td>
+            <td>${absentDays}</td>
+            <td><span class="percentage">${rate}%</span></td>
+          </tr>`;
+      });
+
+    if (!tbody.innerHTML) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">No participant records found</td></tr>`;
+    }
+  }
+
+  function chartOptions(horizontal = false) {
+    return {
+      responsive:true,
+      maintainAspectRatio:false,
+      indexAxis: horizontal ? "y" : "x",
+      plugins:{
+        legend:{position:"bottom"},
+      },
+      scales:{
+        y:{
+          beginAtZero:true,
+          grid:{color:"#edf0f4"}
+        },
+        x:{
+          grid:{display:false}
+        }
+      }
+    };
+  }
+
+  function updateCharts(data) {
+    const monthly = {};
+    const centres = aggregate(data, "centre");
+    const programmes = aggregate(data, "programme");
+
+    data.forEach(item => {
+      const month = item.date.substring(0,7);
+
+      if (!monthly[month]) {
+        monthly[month] = {present:0, absent:0, leave:0};
+      }
+
+      if (item.status === "Present") monthly[month].present++;
+      if (item.status === "Absent") monthly[month].absent++;
+      if (item.status === "Leave") monthly[month].leave++;
+    });
+
+    const months = Object.keys(monthly).sort();
+
+    if (monthlyChart) monthlyChart.destroy();
+    monthlyChart = new Chart(document.getElementById("monthlyAttendanceChart"), {
+      type:"bar",
+      data:{
+        labels:months,
+        datasets:[
+          {label:"Present",data:months.map(m=>monthly[m].present),backgroundColor:chartColors.green,borderRadius:5},
+          {label:"Absent",data:months.map(m=>monthly[m].absent),backgroundColor:chartColors.red,borderRadius:5},
+          {label:"Leave",data:months.map(m=>monthly[m].leave),backgroundColor:chartColors.orange,borderRadius:5}
+        ]
+      },
+      options:chartOptions()
+    });
+
+    const present = data.filter(x=>x.status==="Present").length;
+    const absent = data.filter(x=>x.status==="Absent").length;
+    const leave = data.filter(x=>x.status==="Leave").length;
+
+    if (distributionChart) distributionChart.destroy();
+    distributionChart = new Chart(document.getElementById("attendanceDistributionChart"), {
+      type:"doughnut",
+      data:{
+        labels:["Present","Absent","Leave"],
+        datasets:[{
+          data:[present,absent,leave],
+          backgroundColor:[chartColors.green,chartColors.red,chartColors.orange],
+          borderWidth:0
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        cutout:"62%",
+        plugins:{legend:{position:"bottom"}}
+      }
+    });
+
+    const centreNames = Object.keys(centres);
+
+    if (centreChart) centreChart.destroy();
+    centreChart = new Chart(document.getElementById("centreAttendanceChart"), {
+      type:"bar",
+      data:{
+        labels:centreNames,
+        datasets:[{
+          label:"Attendance Rate %",
+          data:centreNames.map(name =>
+            Number(percentage(centres[name].present, centres[name].present + centres[name].absent))
+          ),
+          backgroundColor:chartColors.blue,
+          borderRadius:5
+        }]
+      },
+      options:{
+        ...chartOptions(true),
+        scales:{
+          x:{beginAtZero:true,max:100,grid:{color:"#edf0f4"}},
+          y:{grid:{display:false}}
+        }
+      }
+    });
+
+    const programmeNames = Object.keys(programmes);
+
+    if (programmeChart) programmeChart.destroy();
+    programmeChart = new Chart(document.getElementById("programmeAttendanceChart"), {
+      type:"bar",
+      data:{
+        labels:programmeNames,
+        datasets:[{
+          label:"Attendance Rate %",
+          data:programmeNames.map(name =>
+            Number(percentage(programmes[name].present, programmes[name].present + programmes[name].absent))
+          ),
+          backgroundColor:chartColors.purple,
+          borderRadius:5
+        }]
+      },
+      options:{
+        ...chartOptions(),
+        scales:{
+          y:{beginAtZero:true,max:100,grid:{color:"#edf0f4"}}
+        }
+      }
+    });
+  }
+
+  function renderReport() {
+    const data = getFilteredData();
+    updateSummary(data);
+    updateCentreTable(data);
+    updateParticipantTable(data);
+    updateCharts(data);
+  }
+
+  function resetFilters() {
+    ["fromDate","toDate","programmeFilter","centreFilter","batchFilter","statusFilter","participantSearch"]
+      .forEach(id => document.getElementById(id).value = "");
+    renderReport();
+  }
+
+  function exportCSV() {
+    const data = getFilteredData();
+    const students = {};
+
+    data.forEach(item => {
+      const key = item.name + "|" + item.programme + "|" + item.centre + "|" + item.batch;
+
+      if (!students[key]) {
+        students[key] = {
+          name:item.name,
+          programme:item.programme,
+          centre:item.centre,
+          batch:item.batch,
+          present:0,
+          absent:0
+        };
+      }
+
+      if (item.status === "Present") students[key].present++;
+      if (item.status === "Absent") students[key].absent++;
+    });
+
+    const rows = [
+      ["Student Name","Programme","Centre","Batch","Attendance Days","Absent Days","Attendance Percentage"]
+    ];
+
+    Object.values(students).forEach(student => {
+      const workingDays = student.present + student.absent;
+      rows.push([
+        student.name,
+        student.programme,
+        student.centre,
+        student.batch,
+        student.present,
+        student.absent,
+        percentage(student.present, workingDays) + "%"
+      ]);
+    });
+
+    const csv = rows.map(row =>
+      row.map(value => `"${String(value).replace(/"/g,'""')}"`).join(",")
+    ).join("\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8;"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "attendance-report.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  document.querySelectorAll(
+    "#fromDate,#toDate,#programmeFilter,#centreFilter,#batchFilter,#statusFilter"
+  ).forEach(element => element.addEventListener("change", renderReport));
+
+  document.getElementById("participantSearch")
+    .addEventListener("input", () => updateParticipantTable(getFilteredData()));
+
+  renderReport();
+</script>
+
+</body>
+</html>
