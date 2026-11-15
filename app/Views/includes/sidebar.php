@@ -172,7 +172,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
     <?php if ($hasRight('goals')): ?>
       <!-- =========================================================
          GOALS
-    ========================================================== -->
+    ========================================================== 
       <li class="nav-item">
 
         <a class="nav-link"
@@ -183,7 +183,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
 
         </a>
 
-      </li>
+      </li> -->
 
     <?php endif; ?>
 
@@ -307,7 +307,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
               <li class="nav-item">
                 <a class="nav-link"
                   href="<?= site_url('students/vijetaas') ?>">
-                  All Students
+                  Enrolement
                 </a>
               </li>
             <?php endif; ?>
@@ -347,7 +347,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
               <li class="nav-item">
                 <a class="nav-link"
                   href="<?= site_url('students/learning_adda') ?>">
-                  All Students
+                  Enrolement
                 </a>
               </li>
             <?php endif; ?>
@@ -416,7 +416,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
               <li class="nav-item">
                 <a class="nav-link"
                   href="<?= site_url('students/school_sahyog') ?>">
-                  All Students
+                  Enrolement
                 </a>
               </li>
             <?php endif; ?>
@@ -485,7 +485,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
               <li class="nav-item">
                 <a class="nav-link"
                   href="<?= site_url('digitalshakti') ?>">
-                  All Students
+                  Enrolement
                 </a>
               </li>
             <?php endif; ?>
@@ -554,7 +554,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
               <li class="nav-item">
                 <a class="nav-link"
                   href="<?= site_url('ManageStudents/DoosraMauka') ?>">
-                  All Students
+                  Enrolement
                 </a>
               </li>
             <?php endif; ?>

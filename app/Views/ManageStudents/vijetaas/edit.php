@@ -557,7 +557,7 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <label>Current Education Level <span class="text-danger">*</span></label>
+                                                <label>Education Level <span class="text-danger">*</span></label>
 
                                                 <select name="Current_Education_Level"
                                                     id="currentEducationLevel"
@@ -579,7 +579,7 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <label>Current Qualification / Class <span class="text-danger">*</span></label>
+                                                <label>Qualification / Class <span class="text-danger">*</span></label>
 
                                                 <select name="Current_Qualification"
                                                     id="currentQualification"
@@ -615,7 +615,7 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <label>Current Education Status <span class="text-danger">*</span></label>
+                                                <label>Education Status <span class="text-danger">*</span></label>
 
                                                 <select name="Current_Education_Status"
                                                     class="form-control"
@@ -685,12 +685,12 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-12 mt-4 mb-3">
-                                                <h5 class="text-primary">Highest Education Completed</h5>
+                                                <h5 class="text-primary">Last Highest Education Completed</h5>
                                                 <hr>
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <label>Highest Education Level <span class="text-danger">*</span></label>
+                                                <label>Education Level <span class="text-danger">*</span></label>
 
                                                 <select name="Highest_Education_Level"
                                                     id="highestEducationLevel"
@@ -712,7 +712,7 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <label>Highest Qualification / Class <span class="text-danger">*</span></label>
+                                                <label>Qualification / Class <span class="text-danger">*</span></label>
 
                                                 <select name="Highest_Qualification"
                                                     id="highestQualification"
@@ -725,7 +725,7 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <label>Highest Specialization / Subject</label>
+                                                <label>Specialization / Subject</label>
                                                 <input type="text"
                                                     name="Highest_Specialization_Subject"
                                                     class="form-control"

@@ -650,7 +650,7 @@
                                             <!-- Current Education Level -->
                                             <div class="col-md-6 mb-3">
                                                 <label>
-                                                    Current Education Level <span class="text-danger">*</span>
+                                                    Education Level <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select name="Current_Education_Level"
@@ -680,7 +680,7 @@
                                             <!-- Current Qualification -->
                                             <div class="col-md-6 mb-3">
                                                 <label>
-                                                    Current Qualification / Class <span class="text-danger">*</span>
+                                                    Qualification / Class <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select name="Current_Qualification"
@@ -731,7 +731,7 @@
                                             <!-- Current Education Status -->
                                             <div class="col-md-6 mb-3">
                                                 <label>
-                                                    Current Education Status <span class="text-danger">*</span>
+                                                    Education Status <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select name="Current_Education_Status"
@@ -838,7 +838,7 @@
 
                                             <!-- HIGHEST EDUCATION -->
                                             <div class="col-12 mt-4 mb-3">
-                                                <h5 class="text-primary">Highest Education Completed</h5>
+                                                <h5 class="text-primary">Last Highest Education Completed</h5>
                                                 <hr>
                                             </div>
 
@@ -846,7 +846,7 @@
                                             <!-- Highest Education Level -->
                                             <div class="col-md-6 mb-3">
                                                 <label>
-                                                    Highest Education Level <span class="text-danger">*</span>
+                                                    Education Level <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select name="Highest_Education_Level"
@@ -876,7 +876,7 @@
                                             <!-- Highest Qualification -->
                                             <div class="col-md-6 mb-3">
                                                 <label>
-                                                    Highest Qualification / Class <span class="text-danger">*</span>
+                                                    Qualification / Class <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select name="Highest_Qualification"

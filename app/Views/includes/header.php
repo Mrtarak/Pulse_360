@@ -99,6 +99,85 @@
       color: #000 !important;
       font-weight: 600;
     }
+
+
+    /* =========================================
+   GLOBAL FORM FIELD STYLING
+   Primary Colour: #1B4482
+========================================= */
+
+    /* Text inputs, textarea and dropdowns */
+    .form-control,
+    .form-select {
+      background-color: #F5F8FD !important;
+      border: 1.5px solid #1B4482 !important;
+      border-radius: 5px !important;
+
+      color: #26364B !important;
+      font-weight: 500;
+
+      box-shadow: none !important;
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* Input placeholder */
+    .form-control::placeholder {
+      color: #8492A6 !important;
+      opacity: 1;
+    }
+
+    /* Focus effect */
+    .form-control:focus,
+    .form-select:focus {
+      background-color: #FFFFFF !important;
+      border: 2px solid #1B4482 !important;
+
+      box-shadow: 0 0 0 3px rgba(27, 68, 130, 0.12) !important;
+      outline: none !important;
+    }
+
+    /* Dropdown options */
+    .form-select option {
+      background-color: #FFFFFF !important;
+      color: #26364B !important;
+    }
+
+    /* Form labels */
+    .form-label,
+    label {
+      color: #1B2F50 !important;
+      font-weight: 600;
+    }
+
+    /* Disabled fields */
+    .form-control:disabled,
+    .form-select:disabled,
+    .form-control[readonly] {
+      background-color: #E9EFF8 !important;
+      border-color: #A6B8D2 !important;
+      color: #596B83 !important;
+      opacity: 1;
+    }
+
+    /* File input */
+    .form-control[type="file"] {
+      background-color: #F5F8FD !important;
+      padding: 8px 10px;
+    }
+
+    /* Checkboxes */
+    .form-check-input {
+      border: 1.5px solid #1B4482 !important;
+    }
+
+    .form-check-input:checked {
+      background-color: #1B4482 !important;
+      border-color: #1B4482 !important;
+    }
+
+    .form-check-input:focus {
+      box-shadow: 0 0 0 3px rgba(27, 68, 130, 0.12) !important;
+    }
   </style>
   <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
