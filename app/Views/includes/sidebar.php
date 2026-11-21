@@ -302,16 +302,25 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
 
           <ul class="nav flex-column sub-menu">
 
-            <!-- All Students -->
+            <!-- Enrolment -->
             <?php if ($hasRight('vijetaas_students')): ?>
               <li class="nav-item">
                 <a class="nav-link"
                   href="<?= site_url('students/vijetaas') ?>">
-                  Enrolement
+                  Enrolment
                 </a>
               </li>
             <?php endif; ?>
 
+            <!-- Assign Goals -->
+            <?php if ($hasRight('vijetaas_students')): ?>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="<?= site_url('students/vijetaas/assign-goal') ?>">
+                  Assign Goals
+                </a>
+              </li>
+            <?php endif; ?>
 
           </ul>
 
@@ -646,128 +655,7 @@ $hasAnyRight = static function (array $rightKeys) use ($hasRight): bool {
     </li>-->
 
 
-    <?php if ($isSuperAdmin): ?>
-      <!-- =========================================================
-         STATIC PAGES
-    ========================================================== -->
-      <li class="nav-item nav-category">STATIC PAGES</li>
 
-
-      <li class="nav-item">
-
-        <a class="nav-link"
-          data-bs-toggle="collapse"
-          href="#staticPagesSubmenu"
-          aria-expanded="false">
-
-          <i class="mdi mdi-file-document-multiple menu-icon"></i>
-          <span class="menu-title">Static Pages</span>
-          <i class="menu-arrow"></i>
-
-        </a>
-
-
-        <div class="collapse" id="staticPagesSubmenu">
-
-          <ul class="nav flex-column sub-menu">
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/LA_Assessment.html') ?>">
-                LA Assessment
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/LA_Assessment_Add.html') ?>">
-                LA Assessment Add
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/LA_Assessment_View.html') ?>">
-                LA Assessment View
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/DM_Assessment.html') ?>">
-                DM Assessment
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/DM_Assessment_Add.html') ?>">
-                DM Assessment Add
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/DM_Assessment_View.html') ?>">
-                DM Assessment View
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/SS_Assessment.html') ?>">
-                SS Assessment
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/SS_Assessment_Add.html') ?>">
-                SS Assessment Add
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/SS_Assessment_View.html') ?>">
-                SS Assessment View
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/DS_Assessment.html') ?>">
-                DS Assessment
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/DM_Income_Generation.html') ?>">
-                DM Income Generation
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/Daily_Session_Update.html') ?>">
-                Daily Session Update
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link"
-                href="<?= base_url('static-pages/LA_PTM.html') ?>">
-                LA PTM
-              </a>
-            </li>
-
-          </ul>
-
-        </div>
-
-      </li>
-    <?php endif; ?>
 
     <?php if ($isSuperAdmin): ?>
 

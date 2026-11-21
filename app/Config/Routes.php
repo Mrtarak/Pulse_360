@@ -235,6 +235,16 @@ $routes->group('students/vijetaas', [
     $routes->get('goals/edit/(:any)', 'ManageStudents\VijetaasGoals::editGoal/$1');
     $routes->post('goals/update/(:any)', 'ManageStudents\VijetaasGoals::updateGoal/$1');
     $routes->get('goals/delete/(:any)', 'ManageStudents\VijetaasGoals::deleteGoal/$1');
+
+    $routes->get('assign-goal', 'ManageStudents\VijetaasGoals::assignGoalIndex');
+    $routes->get('assign-goal/(:any)', 'ManageStudents\VijetaasGoals::assignGoalForm/$1');
+    $routes->post('goals/assignment/store', 'ManageStudents\VijetaasGoals::storeAssignment');
+    $routes->get('goals/review/(:any)', 'ManageStudents\VijetaasGoals::reviewGoals/$1');
+    $routes->post('goals/review/store', 'ManageStudents\VijetaasGoals::storeReview');
+    $routes->get(
+        'goals/view-student/(:any)',
+        'ManageStudents\VijetaasGoals::viewStudentGoals/$1'
+    );
 });
 
 

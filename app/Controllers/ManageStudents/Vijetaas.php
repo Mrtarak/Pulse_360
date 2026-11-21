@@ -267,42 +267,15 @@ class Vijetaas extends BaseController
             )
             ->findAll();
 
-        /*
-        |----------------------------------------------------------------------
-        | Goal Details
-        |----------------------------------------------------------------------
-        */
 
-        $data['goalDetails'] = $vijetaasModel
-            ->select("
-                vijetaas_stu.Vijetaas_Stu_Id,
-                student.First_Name,
-                student.Last_Name,
-                goal_m.Goal_Title,
-                student_goal.Target_Value,
-                student_goal.Achieved_Value,
-                student_goal.Self_Progress,
-                student_goal.Mentor_Progress,
-                student_goal.Goal_Start_On,
-                student_goal.Expected_Completion_Date,
-                student_goal.Actual_Completion_Date
-            ")
-            ->join(
-                'student',
-                'student.Student_Id = vijetaas_stu.Student_Id'
-            )
-            ->join(
-                'goal_m',
-                'goal_m.Goal_Id = vijetaas_stu.Goal_Id',
-                'left'
-            )
-            ->join(
-                'student_goal',
-                'student_goal.Goal_Id = goal_m.Goal_Id
-                 AND student_goal.Student_Id = student.Student_Id',
-                'left'
-            )
-            ->findAll();
+        /*
+|--------------------------------------------------------------------------
+| Goal Details
+|--------------------------------------------------------------------------
+| Goals are now managed separately through the Goal Assignment module.
+*/
+        $data['goalDetails'] = [];
+
 
         /*
         |----------------------------------------------------------------------
