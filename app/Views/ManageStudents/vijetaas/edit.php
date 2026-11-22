@@ -4,6 +4,9 @@
 <?php
 $student = $student ?? [];
 $assignedMentorIds = $assignedMentorIds ?? [];
+$categories = $categories ?? [];
+
+$selectedCategoryId = old('Category_Id', $student['Category_Id'] ?? '');
 
 $currentQualification = $student['Current_Qualification'] ?? '';
 $highestQualification = $student['Highest_Qualification'] ?? '';
@@ -146,12 +149,16 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-4 mb-3">
-                                                <label>Caste <span class="text-danger">*</span></label>
-                                                <input type="text"
-                                                    name="caste"
-                                                    class="form-control"
-                                                    value="<?= esc($student['Student_Caste'] ?? '') ?>"
-                                                    required>
+                                                <label>Category <span class="text-danger">*</span></label>
+                                                <select name="Category_Id" class="form-control" required>
+                                                    <option value="">-- Select Category --</option>
+                                                    <?php foreach ($categories as $category): ?>
+                                                        <option value="<?= esc($category['Category_Id']) ?>"
+                                                            <?= (string) $selectedCategoryId === (string) $category['Category_Id'] ? 'selected' : '' ?>>
+                                                            <?= esc($category['Category_Name']) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
                                             </div>
 
                                             <div class="col-md-4 mb-3">
@@ -677,11 +684,20 @@ $declarationText = 'I confirm that the information provided is accurate to the b
                                             </div>
 
                                             <div class="col-md-6 mb-3">
+                                                <label>Course Start Date</label>
+                                                <input type="date"
+                                                    name="Course_Start_Date"
+                                                    class="form-control"
+                                                    value="<?= esc($student['Course_Start_Date'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
                                                 <label>Expected Course Completion Date</label>
                                                 <input type="date"
                                                     name="Expected_Course_Completion_Date"
                                                     class="form-control"
-                                                    value="<?= esc($student['Expected_Course_Completion_Date'] ?? '') ?>">
+                                                    value="<?= esc($student['Expected_Course_Completion_Date'] ?? '') ?>"
+                                                    min="<?= esc($student['Course_Start_Date'] ?? '') ?>">
                                             </div>
 
                                             <div class="col-12 mt-4 mb-3">

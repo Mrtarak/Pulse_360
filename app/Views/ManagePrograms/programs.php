@@ -169,67 +169,27 @@
                         <!-- SERIAL NUMBER -->
                         <td><?= $i++ ?></td>
 
-                        <!-- PROGRAM NAME AND PROFILE -->
+                        <!-- PROGRAM NAME -->
                         <td style="min-width:240px;">
 
-                          <div class="d-flex align-items-center gap-3">
+                          <div>
 
-                            <?php if (!empty($program['Thumbnail_Image'])): ?>
+                            <div class="fw-bold">
+                              <?= esc($program['Program_Name']) ?>
+                            </div>
 
-                              <img
-                                src="<?= base_url($program['Thumbnail_Image']) ?>"
-                                alt="Program Profile"
-                                style="
-                                                                    width:55px;
-                                                                    height:55px;
-                                                                    object-fit:cover;
-                                                                    border-radius:8px;
-                                                                    border:1px solid #ddd;
-                                                                ">
-
-                            <?php else: ?>
-
-                              <div style="
-                                                                width:55px;
-                                                                height:55px;
-                                                                border-radius:8px;
-                                                                background:#e9eef7;
-                                                                display:flex;
-                                                                align-items:center;
-                                                                justify-content:center;
-                                                            ">
-                                <i class="mdi mdi-book-open-page-variant"
-                                  style="font-size:25px;color:#1B4482;">
-                                </i>
-                              </div>
-
+                            <?php if (!empty($program['Banner_Head'])): ?>
+                              <small class="text-muted">
+                                <?= esc($program['Banner_Head']) ?>
+                              </small>
                             <?php endif; ?>
 
-                            <div>
-
-                              <div class="fw-bold">
-                                <?= esc($program['Program_Name']) ?>
-                              </div>
-
-                              <?php if (!empty($program['Banner_Head'])): ?>
-
-                                <small class="text-muted">
-                                  <?= esc($program['Banner_Head']) ?>
-                                </small>
-
-                              <?php endif; ?>
-
-                              <?php if (!empty($program['Banner_Subhead'])): ?>
-
-                                <br>
-
-                                <small class="text-muted">
-                                  <?= esc($program['Banner_Subhead']) ?>
-                                </small>
-
-                              <?php endif; ?>
-
-                            </div>
+                            <?php if (!empty($program['Banner_Subhead'])): ?>
+                              <br>
+                              <small class="text-muted">
+                                <?= esc($program['Banner_Subhead']) ?>
+                              </small>
+                            <?php endif; ?>
 
                           </div>
 

@@ -19,6 +19,9 @@ $declarationPath = !empty($student['Declaration_Certificate_URL'])
 $showValue = static function ($value) {
   return !empty($value) ? esc($value) : '<span class="text-muted">Not provided</span>';
 };
+
+// Category name: prefer joined Category_Name, otherwise use legacy Student_Caste.
+$categoryName = $student['Category_Name'] ?? $student['Student_Caste'] ?? '';
 ?>
 
 <div class="container-scroller">
@@ -206,8 +209,8 @@ $showValue = static function ($value) {
                       </tr>
 
                       <tr>
-                        <th>Caste</th>
-                        <td><?= $showValue($student['Student_Caste'] ?? '') ?></td>
+                        <th>Category</th>
+                        <td><?= $showValue($categoryName) ?></td>
                       </tr>
 
                       <tr>
@@ -460,6 +463,11 @@ $showValue = static function ($value) {
                           <td><?= $showValue($student['Number_of_Years'] ?? '') ?></td>
                         </tr>
                       <?php endif; ?>
+
+                      <tr>
+                        <th>Course Start Date</th>
+                        <td><?= $showValue($student['Course_Start_Date'] ?? '') ?></td>
+                      </tr>
 
                       <tr>
                         <th>Expected Course Completion Date</th>

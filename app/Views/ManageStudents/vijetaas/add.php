@@ -179,16 +179,22 @@
                                             </div>
 
                                             <!-- Caste -->
+                                            <!-- Student Category -->
                                             <div class="col-md-4 mb-3">
                                                 <label>
-                                                    Caste <span class="text-danger">*</span>
+                                                    Category <span class="text-danger">*</span>
                                                 </label>
 
-                                                <input type="text"
-                                                    name="caste"
-                                                    class="form-control"
-                                                    value="<?= old('caste') ?>"
-                                                    required>
+                                                <select name="Category_Id" class="form-control" required>
+                                                    <option value="">Select Category</option>
+
+                                                    <?php foreach (($categories ?? []) as $category): ?>
+                                                        <option value="<?= esc($category['Category_Id']) ?>"
+                                                            <?= old('Category_Id') === $category['Category_Id'] ? 'selected' : '' ?>>
+                                                            <?= esc($category['Category_Name']) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
                                             </div>
 
                                             <!-- Aadhaar -->
@@ -824,6 +830,16 @@
                                             </div>
 
 
+                                            <!-- Course Start Date -->
+                                            <div class="col-md-6 mb-3">
+                                                <label>Course Start Date</label>
+
+                                                <input type="date"
+                                                    name="Course_Start_Date"
+                                                    class="form-control"
+                                                    value="<?= old('Course_Start_Date') ?>">
+                                            </div>
+
                                             <!-- Expected Completion Date -->
                                             <div class="col-md-6 mb-3">
                                                 <label>Expected Course Completion Date</label>
@@ -1080,22 +1096,22 @@
 
                                                 <?php foreach ($mentors as $mentor): ?>
 
-                                                    <div class="col-md-6 col-lg-4 mb-3">
+                                                    <div class="col-md-6 col-lg-4 mb-3 d-flex">
 
-                                                        <div class="form-check">
+                                                        <div class="mentor-option">
 
                                                             <input type="checkbox"
-                                                                class="form-check-input"
+                                                                class="form-check-input mentor-checkbox"
                                                                 name="Mentor_Ids[]"
                                                                 value="<?= esc($mentor['User_Id']) ?>"
                                                                 id="mentor_<?= esc($mentor['User_Id']) ?>"
                                                                 <?= in_array(
                                                                     $mentor['User_Id'],
-                                                                    old('Mentor_Ids', []),
+                                                                    (array) old('Mentor_Ids', []),
                                                                     true
                                                                 ) ? 'checked' : '' ?>>
 
-                                                            <label class="form-check-label"
+                                                            <label class="mentor-label"
                                                                 for="mentor_<?= esc($mentor['User_Id']) ?>">
 
                                                                 <?= esc(
@@ -1323,6 +1339,47 @@
 </div>
 
 
+
+<!-- ================================================= -->
+<!-- PAGE-SPECIFIC STYLES -->
+<!-- ================================================= -->
+<style>
+    /* Keep mentor checkboxes and names consistently aligned. */
+    #mentor .mentor-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        min-height: 54px;
+        padding: 12px 15px;
+        border: 1px solid #d5deeb;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    #mentor .mentor-checkbox {
+        position: static;
+        float: none;
+        flex: 0 0 17px;
+        width: 17px;
+        height: 17px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    #mentor .mentor-label {
+        display: block;
+        margin: 0;
+        line-height: 1.4;
+        cursor: pointer;
+        overflow-wrap: anywhere;
+    }
+
+    #mentor .mentor-option:has(.mentor-checkbox:checked) {
+        border-color: #1B4482;
+        background: #f3f6fb;
+    }
+</style>
 
 <!-- ================================================= -->
 <!-- JAVASCRIPT -->
