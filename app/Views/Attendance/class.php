@@ -42,6 +42,16 @@
       color: #dc3545;
     }
 
+    .leave-label {
+      border-color: #ffc107;
+      color: #b88600;
+    }
+
+    .attendance-option:checked+.leave-label {
+      background: #ffc107;
+      color: #212529;
+    }
+
     .attendance-option:checked+.present-label {
       background: #28a745;
       color: #fff;
@@ -262,6 +272,7 @@
                               <th>Student Name</th>
                               <th>Present</th>
                               <th>Absent</th>
+                              <th>Leave</th>
                               <th>Remarks</th>
 
                             </tr>
@@ -272,7 +283,7 @@
 
                             <tr>
 
-                              <td colspan="6" class="text-center">
+                              <td colspan="7" class="text-center">
 
                                 Select Program → Center → Batch
 
@@ -414,7 +425,7 @@
 
               $('#studentTableBody').html(
                 '<tr>' +
-                '<td colspan="6" class="text-center">' +
+                '<td colspan="7" class="text-center">' +
                 'Select Center → Batch' +
                 '</td>' +
                 '</tr>'
@@ -462,7 +473,7 @@
 
           $('#studentTableBody').html(
             '<tr>' +
-            '<td colspan="6" class="text-center">' +
+            '<td colspan="7" class="text-center">' +
             'Select Batch' +
             '</td>' +
             '</tr>'
@@ -553,7 +564,7 @@
 
             $('#studentTableBody').html(
               '<tr>' +
-              '<td colspan="6" class="text-center">' +
+              '<td colspan="7" class="text-center">' +
               'Select Batch' +
               '</td>' +
               '</tr>'
@@ -630,7 +641,7 @@
 
           $('#studentTableBody').html(
             '<tr>' +
-            '<td colspan="6" class="text-center">' +
+            '<td colspan="7" class="text-center">' +
             'Click "Fetch Students" to load students' +
             '</td>' +
             '</tr>'
@@ -715,7 +726,7 @@
 
           $('#studentTableBody').html(
             '<tr>' +
-            '<td colspan="6" class="text-center">' +
+            '<td colspan="7" class="text-center">' +
             '<i class="mdi mdi-loading mdi-spin me-2"></i>' +
             'Loading students...' +
             '</td>' +
@@ -786,7 +797,7 @@
 
               $('#studentTableBody').html(
                 '<tr>' +
-                '<td colspan="6" class="text-center text-danger">' +
+                '<td colspan="7" class="text-center text-danger">' +
                 'Unable to load students.' +
                 '</td>' +
                 '</tr>'

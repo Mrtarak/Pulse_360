@@ -2,34 +2,35 @@
 
 <?php foreach ($students as $student): ?>
 
+    <?php
+    $studentId = $student['Student_Id'];
+    $currentStatus = $student['Attendance_Status'] ?? '';
+    ?>
+
     <tr>
 
         <td><?= $i++; ?></td>
 
-        <td><?= $student['Student_Id']; ?></td>
+        <td><?= esc($studentId); ?></td>
 
         <td>
-
-            <?= $student['First_Name']; ?>
-
-            <?= $student['Last_Name']; ?>
-
+            <?= esc($student['First_Name']); ?>
+            <?= esc($student['Last_Name']); ?>
         </td>
 
+        <!-- PRESENT -->
         <td class="text-center">
 
             <input
                 type="radio"
                 class="attendance-option"
-                id="present_<?= $student['Student_Id']; ?>"
-                name="attendance[<?= $student['Student_Id']; ?>]"
+                id="present_<?= esc($studentId); ?>"
+                name="attendance[<?= esc($studentId); ?>]"
                 value="Present"
-                <?= (($student['Attendance_Status'] ?? '') == 'Present')
-                    ? 'checked'
-                    : '' ?>>
+                <?= $currentStatus == 'Present' ? 'checked' : '' ?>>
 
             <label
-                for="present_<?= $student['Student_Id']; ?>"
+                for="present_<?= esc($studentId); ?>"
                 class="attendance-label present-label">
 
                 P
@@ -38,20 +39,19 @@
 
         </td>
 
+        <!-- ABSENT -->
         <td class="text-center">
 
             <input
                 type="radio"
                 class="attendance-option"
-                id="absent_<?= $student['Student_Id']; ?>"
-                name="attendance[<?= $student['Student_Id']; ?>]"
+                id="absent_<?= esc($studentId); ?>"
+                name="attendance[<?= esc($studentId); ?>]"
                 value="Absent"
-                <?= (($student['Attendance_Status'] ?? '') == 'Absent')
-                    ? 'checked'
-                    : '' ?>>
+                <?= $currentStatus == 'Absent' ? 'checked' : '' ?>>
 
             <label
-                for="absent_<?= $student['Student_Id']; ?>"
+                for="absent_<?= esc($studentId); ?>"
                 class="attendance-label absent-label">
 
                 A
@@ -60,13 +60,36 @@
 
         </td>
 
+        <!-- LEAVE -->
+        <td class="text-center">
+
+            <input
+                type="radio"
+                class="attendance-option"
+                id="leave_<?= esc($studentId); ?>"
+                name="attendance[<?= esc($studentId); ?>]"
+                value="Leave"
+                <?= $currentStatus == 'Leave' ? 'checked' : '' ?>>
+
+            <label
+                for="leave_<?= esc($studentId); ?>"
+                class="attendance-label leave-label">
+
+                L
+
+            </label>
+
+        </td>
+
+        <!-- REMARKS -->
         <td>
 
             <input
                 type="text"
                 class="form-control"
-                name="remark[<?= $student['Student_Id']; ?>]"
-                value="<?= $student['Remarks'] ?? '' ?>">
+                name="remark[<?= esc($studentId); ?>]"
+                value="<?= esc($student['Remarks'] ?? ''); ?>">
+
         </td>
 
     </tr>

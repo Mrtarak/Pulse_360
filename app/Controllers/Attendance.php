@@ -368,7 +368,7 @@ class Attendance extends BaseController
             /*
              * Validate attendance status.
              */
-            if (!in_array($status, ['Present', 'Absent'])) {
+            if (!in_array($status, ['Present', 'Absent', 'Leave'])) {
                 continue;
             }
 
